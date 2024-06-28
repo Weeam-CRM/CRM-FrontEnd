@@ -64,7 +64,36 @@ export default function UserReports() {
   const [task, setTask] = useState([]);
   const [contactData, setContactData] = useState([]);
   const [leadData, setLeadData] = useState([]);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([
+    {
+      name: "Lead",
+      length: 0,
+    },
+    {
+      name: "Contact",
+      length: 0,
+    },
+    {
+      name: "Property",
+      length: 0,
+    },
+    {
+      name: "Task",
+      length: 0,
+    },
+    {
+      name: "Meeting",
+      length: 0,
+    },
+    {
+      name: "Email",
+      length: 0,
+    },
+    {
+      name: "Call",
+      length: 0,
+    },
+  ]);
   const [fetched, setFetched] = useState(false);
   const [callData, setCallData] = useState([]);
 
@@ -212,8 +241,7 @@ export default function UserReports() {
 
   return (
     <>
-
-    <Header/>
+      <Header />
 
       <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap="20px" mb="20px">
         {/* , "2xl": 6 */}
@@ -294,7 +322,12 @@ export default function UserReports() {
                 h="40px"
                 bg={boxBg}
                 icon={
-                  <Icon w="20px" h="20px" as={PiPhoneCallBold} color={brandColor} />
+                  <Icon
+                    w="20px"
+                    h="20px"
+                    as={PiPhoneCallBold}
+                    color={brandColor}
+                  />
                 }
               />
             }
@@ -342,15 +375,16 @@ export default function UserReports() {
           </Card>
         </GridItem>
         <GridItem rowSpan={2} justifyContent={"center"} colSpan={{ base: 4 }}>
-
-            <div style={{
-              display: "flex", 
-              justifyContent: "center", 
-              alignItems: "center", 
-              height: "100%"
-            }}>
-              <RevenueProgressBar />
-            </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <RevenueProgressBar />
+          </div>
         </GridItem>
       </Grid>
 
@@ -359,70 +393,70 @@ export default function UserReports() {
           <Heading size="md" pb={3}>
             Statistics
           </Heading>
-          {data &&
-            data.length > 0 &&
-            data?.map((item, i) => (
-              <>
-                {((item.name === "Lead" &&
-                  (leadView?.create ||
-                    leadView?.update ||
-                    leadView?.delete ||
-                    leadView?.view)) ||
-                  (item.name === "Contact" &&
-                    (contactsView?.create ||
-                      contactsView?.update ||
-                      contactsView?.delete ||
-                      contactsView?.view)) ||
-                  (item.name === "Meeting" &&
-                    (meetingView?.create ||
-                      meetingView?.update ||
-                      meetingView?.delete ||
-                      meetingView?.view)) ||
-                  (item.name === "Call" &&
-                    (callView?.create ||
-                      callView?.update ||
-                      callView?.delete ||
-                      callView?.view)) ||
-                  (item.name === "Email" &&
-                    (emailView?.create ||
-                      emailView?.update ||
-                      emailView?.delete ||
-                      emailView?.view)) ||
-                  (item.name === "Property" &&
-                    (proprtyView?.create ||
-                      proprtyView?.update ||
-                      proprtyView?.delete ||
-                      proprtyView?.view)) ||
-                  (item.name === "Task" &&
-                    (taskView?.create ||
-                      taskView?.update ||
-                      taskView?.delete ||
-                      taskView?.view))) && (
-                  <Box border={"1px solid #e5e5e5"} p={2} m={1} key={i}>
-                    <Flex justifyContent={"space-between"}>
-                      <Text fontSize="sm" fontWeight={600} pb={2}>
-                        {item?.name}
-                      </Text>
-                      <Text color={"brand.500"} fontSize="sm" fontWeight={600} pb={2}>
-                        <CountUpComponent targetNumber={item?.length} />
-                      </Text>
-                    </Flex>
-                    <Progress
-                      colorScheme={"orange"}
-                      size="xs"
-                      value={item?.length}
-                      width={"100%"}
-                    />
-                  </Box>
-                )}
-              </>
-            ))}
+          {data?.map((item, i) => (
+            <>
+              {((item.name === "Lead" &&
+                (leadView?.create ||
+                  leadView?.update ||
+                  leadView?.delete ||
+                  leadView?.view)) ||
+                (item.name === "Contact" &&
+                  (contactsView?.create ||
+                    contactsView?.update ||
+                    contactsView?.delete ||
+                    contactsView?.view)) ||
+                (item.name === "Meeting" &&
+                  (meetingView?.create ||
+                    meetingView?.update ||
+                    meetingView?.delete ||
+                    meetingView?.view)) ||
+                (item.name === "Call" &&
+                  (callView?.create ||
+                    callView?.update ||
+                    callView?.delete ||
+                    callView?.view)) ||
+                (item.name === "Email" &&
+                  (emailView?.create ||
+                    emailView?.update ||
+                    emailView?.delete ||
+                    emailView?.view)) ||
+                (item.name === "Property" &&
+                  (proprtyView?.create ||
+                    proprtyView?.update ||
+                    proprtyView?.delete ||
+                    proprtyView?.view)) ||
+                (item.name === "Task" &&
+                  (taskView?.create ||
+                    taskView?.update ||
+                    taskView?.delete ||
+                    taskView?.view))) && (
+                <Box border={"1px solid #e5e5e5"} p={2} m={1} key={i}>
+                  <Flex justifyContent={"space-between"}>
+                    <Text fontSize="sm" fontWeight={600} pb={2}>
+                      {item?.name}
+                    </Text>
+                    <Text
+                      color={"brand.500"}
+                      fontSize="sm"
+                      fontWeight={600}
+                      pb={2}
+                    >
+                      <CountUpComponent targetNumber={item?.length} />
+                    </Text>
+                  </Flex>
+                  <Progress
+                    colorScheme={"orange"}
+                    size="xs"
+                    value={item?.length}
+                    width={"100%"}
+                  />
+                </Box>
+              )}
+            </>
+          ))}
         </Card>
 
         <Card>
-          <Heading size="md" pb={2}>
-            Lead Statistics
-          </Heading>
           {(leadView?.create ||
             leadView?.update ||
             leadView?.delete ||
@@ -460,8 +494,11 @@ export default function UserReports() {
                       targetNumber={
                         (leadData &&
                           leadData.length > 0 &&
-                          leadData?.filter((lead) => lead?.leadStatus === "new" || lead?.leadStatus === "")
-                            ?.length) ||
+                          leadData?.filter(
+                            (lead) =>
+                              lead?.leadStatus === "new" ||
+                              lead?.leadStatus === ""
+                          )?.length) ||
                         0
                       }
                     />
@@ -501,7 +538,7 @@ export default function UserReports() {
                   m={1}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3} >
+                  <Heading size="sm" pb={3}>
                     Not-interested Leads
                   </Heading>
                   <Text fontWeight={600} color={"brand.500"}>
@@ -577,7 +614,7 @@ export default function UserReports() {
                   m={1}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3} >
+                  <Heading size="sm" pb={3}>
                     No Answer{" "}
                   </Heading>
                   <Text fontWeight={600} color={"brand.500"}>
@@ -602,9 +639,6 @@ export default function UserReports() {
         </Card>
 
         <Card>
-          <Heading size="md" pb={3}>
-            Task Statistics
-          </Heading>
           <Grid templateColumns="repeat(12, 1fr)" gap={2} mb={2}>
             <GridItem colSpan={{ base: 12 }}>
               <Box
