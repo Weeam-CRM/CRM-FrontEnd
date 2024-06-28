@@ -10,8 +10,6 @@ import {
   Progress,
   Box,
   Text,
-  CircularProgress,
-  CircularProgressLabel,
 } from "@chakra-ui/react";
 // Assets
 // Custom components
@@ -32,6 +30,7 @@ import CountUpComponent from "../../../../src/components/countUpComponent/countU
 import RevenueProgressBar from "components/navbar/RevenueProgressBar";
 import MonthlyRevenueChart from "./components/MonthlyRevenueChart";
 import { PiPhoneCallBold } from "react-icons/pi";
+import Header from "./components/Header";
 
 export default function UserReports() {
   // Chakra Color Mode
@@ -214,6 +213,8 @@ export default function UserReports() {
   return (
     <>
 
+    <Header/>
+
       <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap="20px" mb="20px">
         {/* , "2xl": 6 */}
         {(taskView?.create ||
@@ -224,11 +225,11 @@ export default function UserReports() {
             onClick={() => navigate("/task")}
             startContent={
               <IconBox
-                w="56px"
-                h="56px"
+                w="40px"
+                h="40px"
                 bg={boxBg}
                 icon={
-                  <Icon w="28px" h="28px" as={MdAddTask} color={brandColor} />
+                  <Icon w="20px" h="20px" as={MdAddTask} color={brandColor} />
                 }
               />
             }
@@ -244,11 +245,11 @@ export default function UserReports() {
             onClick={() => navigate("/contacts")}
             startContent={
               <IconBox
-                w="56px"
-                h="56px"
+                w="40px"
+                h="40px"
                 bg={boxBg}
                 icon={
-                  <Icon w="32px" h="32px" as={MdContacts} color={brandColor} />
+                  <Icon w="20px" h="20px" as={MdContacts} color={brandColor} />
                 }
               />
             }
@@ -264,13 +265,13 @@ export default function UserReports() {
             onClick={() => navigate("/lead")}
             startContent={
               <IconBox
-                w="56px"
-                h="56px"
+                w="40px"
+                h="40px"
                 bg={boxBg}
                 icon={
                   <Icon
-                    w="32px"
-                    h="32px"
+                    w="20px"
+                    h="20px"
                     as={MdLeaderboard}
                     color={brandColor}
                   />
@@ -289,11 +290,11 @@ export default function UserReports() {
             onClick={() => navigate("/phone-call")}
             startContent={
               <IconBox
-                w="56px"
-                h="56px"
+                w="40px"
+                h="40px"
                 bg={boxBg}
                 icon={
-                  <Icon w="32px" h="32px" as={PiPhoneCallBold} color={brandColor} />
+                  <Icon w="20px" h="20px" as={PiPhoneCallBold} color={brandColor} />
                 }
               />
             }
@@ -402,12 +403,12 @@ export default function UserReports() {
                       <Text fontSize="sm" fontWeight={600} pb={2}>
                         {item?.name}
                       </Text>
-                      <Text fontSize="sm" fontWeight={600} pb={2}>
+                      <Text color={"brand.500"} fontSize="sm" fontWeight={600} pb={2}>
                         <CountUpComponent targetNumber={item?.length} />
                       </Text>
                     </Flex>
                     <Progress
-                      colorScheme={item?.color}
+                      colorScheme={"orange"}
                       size="xs"
                       value={item?.length}
                       width={"100%"}
@@ -429,32 +430,32 @@ export default function UserReports() {
             <Grid templateColumns="repeat(12, 1fr)" gap={2}>
               <GridItem colSpan={{ base: 12, md: 6 }}>
                 <Box
-                  backgroundColor={"#ebf5ff"}
                   borderRadius={"10px"}
                   p={2}
                   m={1}
+                  background={"whitesmoke"}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3} color={"#1f7eeb"}>
+                  <Heading size="sm" pb={3}>
                     Total Leads{" "}
                   </Heading>
-                  <Text fontWeight={600} color={"#1f7eeb"}>
+                  <Text fontWeight={600} color={"brand.500"}>
                     <CountUpComponent targetNumber={leadData?.length || 0} />{" "}
                   </Text>
                 </Box>
               </GridItem>
               <GridItem colSpan={{ base: 12, md: 6 }}>
                 <Box
-                  backgroundColor={"#ebf5ff"}
                   borderRadius={"10px"}
                   p={2}
                   m={1}
                   textAlign={"center"}
+                  background={"whitesmoke"}
                 >
-                  <Heading size="sm" pb={3} color={"#1f7eeb"}>
+                  <Heading size="sm" pb={3}>
                     New Leads{" "}
                   </Heading>
-                  <Text fontWeight={600} color={"#1f7eeb"}>
+                  <Text fontWeight={600} color={"brand.500"}>
                     <CountUpComponent
                       targetNumber={
                         (leadData &&
@@ -469,16 +470,16 @@ export default function UserReports() {
               </GridItem>
               <GridItem colSpan={{ base: 12, md: 6 }}>
                 <Box
-                  backgroundColor={"#eaf9e6"}
                   borderRadius={"10px"}
                   p={2}
                   m={1}
                   textAlign={"center"}
+                  background={"whitesmoke"}
                 >
-                  <Heading size="sm" pb={3} color={"#43882f"}>
+                  <Heading size="sm" pb={3}>
                     Interested Leads{" "}
                   </Heading>
-                  <Text fontWeight={600} color={"#43882f"}>
+                  <Text fontWeight={600} color={"brand.500"}>
                     <CountUpComponent
                       targetNumber={
                         (leadData &&
@@ -494,16 +495,16 @@ export default function UserReports() {
               </GridItem>
               <GridItem colSpan={{ base: 12, md: 6 }}>
                 <Box
-                  backgroundColor={"#fbf4dd"}
+                  backgroundColor={"whitesmoke"}
                   borderRadius={"10px"}
                   p={2}
                   m={1}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3} color={"#a37f08"}>
+                  <Heading size="sm" pb={3} >
                     Not-interested Leads
                   </Heading>
-                  <Text fontWeight={600} color={"#a37f08"}>
+                  <Text fontWeight={600} color={"brand.500"}>
                     <CountUpComponent
                       targetNumber={
                         (leadData &&
@@ -520,16 +521,16 @@ export default function UserReports() {
 
               <GridItem colSpan={{ base: 12, md: 6 }}>
                 <Box
-                  backgroundColor={"#ffeeeb"}
+                  backgroundColor={"whitesmoke"}
                   borderRadius={"10px"}
                   p={2}
                   m={1}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3} color={"#d6401d"}>
+                  <Heading size="sm" pb={3}>
                     Sold Leads{" "}
                   </Heading>
-                  <Text fontWeight={600} color={"#d6401d"}>
+                  <Text fontWeight={600} color={"brand.500"}>
                     <CountUpComponent
                       targetNumber={
                         (leadData &&
@@ -545,16 +546,16 @@ export default function UserReports() {
               </GridItem>
               <GridItem colSpan={{ base: 12, md: 6 }}>
                 <Box
-                  backgroundColor={"#ffeeeb"}
+                  backgroundColor={"whitesmoke"}
                   borderRadius={"10px"}
                   p={2}
                   m={1}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3} color={"#d6401d"}>
+                  <Heading size="sm" pb={3}>
                     Unreachable{" "}
                   </Heading>
-                  <Text fontWeight={600} color={"#d6401d"}>
+                  <Text fontWeight={600} color={"brand.500"}>
                     <CountUpComponent
                       targetNumber={
                         (leadData &&
@@ -570,16 +571,16 @@ export default function UserReports() {
               </GridItem>
               <GridItem colSpan={{ base: 12, md: 6 }}>
                 <Box
-                  backgroundColor={"#ffeeeb"}
+                  backgroundColor={"whitesmoke"}
                   borderRadius={"10px"}
                   p={2}
                   m={1}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3} color={"#d6401d"}>
+                  <Heading size="sm" pb={3} >
                     No Answer{" "}
                   </Heading>
-                  <Text fontWeight={600} color={"#d6401d"}>
+                  <Text fontWeight={600} color={"brand.500"}>
                     <CountUpComponent
                       targetNumber={
                         (leadData &&
@@ -607,16 +608,16 @@ export default function UserReports() {
           <Grid templateColumns="repeat(12, 1fr)" gap={2} mb={2}>
             <GridItem colSpan={{ base: 12 }}>
               <Box
-                backgroundColor={"#ebf5ff"}
+                backgroundColor={"whitesmoke"}
                 borderRadius={"10px"}
                 p={2}
                 m={1}
                 textAlign={"center"}
               >
-                <Heading size="sm" pb={3} color={"#1f7eeb"}>
+                <Heading size="sm" pb={3}>
                   Total Tasks{" "}
                 </Heading>
-                <Text fontWeight={600} color={"#1f7eeb"}>
+                <Text fontWeight={600} color={"brand.500"}>
                   <CountUpComponent targetNumber={task?.length || 0} />
                 </Text>
               </Box>
@@ -656,11 +657,11 @@ export default function UserReports() {
                       ></Box>
                     </Box>
 
-                    <Text ps={2} fontWeight={"bold"} color={`${item.color}`}>
+                    <Text fontSize={"sm"} ps={2} fontWeight={"bold"} color={``}>
                       {item.name}
                     </Text>
                   </Flex>
-                  <Box fontWeight={"bold"} color={`${item.color}`}>
+                  <Box fontWeight={"bold"} color={`brand.500`}>
                     <CountUpComponent targetNumber={item?.length} />
                   </Box>
                 </Flex>

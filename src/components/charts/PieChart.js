@@ -43,7 +43,6 @@ const ApexChart = (props) => {
   const options = {
     chart: {
       type: "pie",
-      // height: 350,
       width: 330,
     },
     legend: {
@@ -53,6 +52,7 @@ const ApexChart = (props) => {
     stroke: {
       lineCap: "round",
     },
+    colors: ["#B79045"],
     series: scaledSeries,
   
     labels: [

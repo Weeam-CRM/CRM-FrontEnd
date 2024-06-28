@@ -82,7 +82,7 @@ function App() {
 
 ReactDOM.render(
   <Provider store={store}>
-    <ChakraProvider theme={theme}>
+    <ChakraProvider theme={theme} cssVarsRoot="body">
       <React.StrictMode>
         <ThemeEditorProvider>
           <Router>

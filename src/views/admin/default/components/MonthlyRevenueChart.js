@@ -8,11 +8,11 @@ const MonthlyRevenueChart = () => {
     series: [
       {
         name: tree && ( tree?.hasOwnProperty("managers") && tree["managers"][0]?.firstName + " " + (tree?.hasOwnProperty("managers") && tree["managers"][0]?.lastName)),
-        data: [31, 40, 28, 51, 42, 109, 100],
+        data: [1, 2, 3, 4, 5, 6, 7],
       },
       {
         name: tree && (tree?.hasOwnProperty("managers") && tree["managers"][1]?.firstName + " " + (tree?.hasOwnProperty("managers") && tree["managers"][1]?.lastName)),
-        data: [11, 32, 45, 32, 34, 52, 41],
+        data: [2, 4, 6, 8, 10, 12, 8],
       },
     ],
     options: {
@@ -26,6 +26,7 @@ const MonthlyRevenueChart = () => {
       stroke: {
         curve: "smooth",
       },
+      colors: ["#B79045", "#E5B668"],
       xaxis: {
         type: "datetime",
         categories: [

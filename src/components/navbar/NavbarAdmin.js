@@ -79,13 +79,12 @@ export default function AdminNavbar(props) {
       transitionTimingFunction="linear, linear, linear, linear"
       alignItems={{ xl: "center" }}
       display={secondary ? "block" : "flex"}
-      minH="75px"
       justifyContent={{ xl: "center" }}
       lineHeight="25.6px"
       mx="auto"
       mt={secondaryMargin}
-      pb="6px"
       right={{ base: "0px" }}
+      py={3}
       // right={{ base: '12px', md: '30px', lg: '30px', xl: '30px' }}
       px={{
         sm: paddingX,
@@ -94,7 +93,6 @@ export default function AdminNavbar(props) {
       ps={{
         xl: "12px",
       }}
-      pt="8px"
       top={{ base: "0px" }}
       w={{
         base: "100vw",
@@ -144,9 +142,15 @@ export default function AdminNavbar(props) {
 
 					</Breadcrumb>
 					*/}
+           <Box
+            display={{ sm: "none", xl: "flex" }}
+            mx={4}
+            onClick={() => setOpenSidebar(!openSidebar)}
+            style={{ fontSize: "25px" }}
+          >
+            {openSidebar ? <AiOutlineMenuFold /> : <AiOutlineMenuUnfold />}
+          </Box>
           <Flex
-            me={openSidebar ? "" : "5"}
-            mx={openSidebar ? "14" : "1"}
             display={{ sm: "none", xl: "flex" }}
           >
             {(largeLogo && largeLogo[0]?.logoLgImg) ||
@@ -169,10 +173,8 @@ export default function AdminNavbar(props) {
               />
             ) : (
               <Heading
-                my={4}
                 style={{
                   fontSize: 25,
-                  width: openSidebar ? "165px" : "60px",
                   height: "52px",
                   display: "flex", 
                   alignItems: "center", 
@@ -182,18 +184,11 @@ export default function AdminNavbar(props) {
                 onClick={() => !props.from && setOpenSidebar(!openSidebar)}
                 userSelect={"none"}
               >
-                CRM
+                CRM.
               </Heading>
             )}
           </Flex>
-          <Box
-            display={{ sm: "none", xl: "flex" }}
-            ms={openSidebar ? "" : "3"}
-            onClick={() => setOpenSidebar(!openSidebar)}
-            style={{ fontSize: "25px" }}
-          >
-            {openSidebar ? <AiOutlineMenuFold /> : <AiOutlineMenuUnfold />}
-          </Box>
+         
           <Link color={mainText} display={{ sm: "flex", xl: "none" }}>
             {largeLogo && largeLogo[0]?.logoLgImg ? (
               <Image
@@ -211,7 +206,7 @@ export default function AdminNavbar(props) {
             )}
           </Link>
 
-          <Link
+          {/* <Link
             color={mainText}
             href="#"
             pt="2px"
@@ -232,7 +227,7 @@ export default function AdminNavbar(props) {
             }}
           >
             {brandText}
-          </Link>
+          </Link> */}
         </Box>
         <Flex alignItems={"center"} ms="auto" w={{ sm: "100%", md: "unset" }}>
           <AdminNavbarLinks

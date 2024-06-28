@@ -16,15 +16,15 @@ import { useEffect, useState } from "react";
 export function SidebarLinks(props) {
   //   Chakra color mode
   let location = useLocation();
-  let activeColor = useColorModeValue("brand.600", "white");
+  let activeColor = useColorModeValue("white", "white");
   let inactiveColor = useColorModeValue(
     "secondaryGray.600",
     "secondaryGray.600"
   );
-  let activeIcon = useColorModeValue("brand.600", "white");
+  let activeIcon = useColorModeValue("white", "white");
   let textColor = useColorModeValue("secondaryGray.500", "white");
   let brandColor = useColorModeValue("brand.500", "brand.400");
-  let sidebarBgColor = useColorModeValue("gray.200", "brand.200");
+  let sidebarBgColor = useColorModeValue("brand.500", "brand.200");
   const [routesData, setRoutesData] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -52,8 +52,9 @@ export function SidebarLinks(props) {
                 sm: "10px",
                 xl: "16px",
               }}
-              pt="18px"
-              pb="12px"
+              pt="15px"
+              pb="9px"
+              
               key={index}
             >
               {route.name}
@@ -88,8 +89,8 @@ export function SidebarLinks(props) {
                   activeRoute(route.path.toLowerCase()) ? sidebarBgColor : ""
                 }
                 ps={"25px"}
-                pb={"9px"}
-                pt={"20px"}
+                pb={"6px"}
+                pt={"17px"}
               >
                 <HStack
                   spacing={

@@ -7,55 +7,60 @@ const ApexChart = (props) => {
   const state = {
     series: [
       {
-        name: 'Data',
-        data: data?.map((item) => item.length)
-      }
+        name: "Data",
+        data: data?.map((item) => item.length),
+      },
     ],
     options: {
       chart: {
         height: 350,
-        type: 'bar',
+        type: "bar",
       },
       plotOptions: {
         bar: {
           borderRadius: 10,
-          columnWidth: '40%',
-        }
+          columnWidth: "40%",
+        },
       },
       stroke: {
-        width: 2
+        width: 2,
       },
       grid: {
         row: {
-          colors: ['#fff', '#f2f2f2']
-        }
+          colors: ["#fff", "#f2f2f2"],
+        },
       },
       xaxis: {
         categories: data?.map((item) => item.name),
-        tickPlacement: 'on'
+        tickPlacement: "on",
       },
 
       fill: {
-        type: 'gradient',
+        type: "gradient",
         gradient: {
-          shade: 'light',
+          shade: "light",
           type: "horizontal",
           shadeIntensity: 0.25,
+          gradientToColors: ["#D99A36"], // gradient ending color set to red
           inverseColors: true,
           opacityFrom: 0.85,
           opacityTo: 0.85,
-          stops: [50, 0, 100]
+          stops: [50, 0, 100],
         },
-      }
+      },
+      colors: ["#B79045"],
     },
   };
   return (
     <div id="chart">
-      <ReactApexChart options={state.options} series={state.series} type="bar" height={350}  />
+      <ReactApexChart
+        options={state.options}
+        series={state.series}
+        type="bar"
+        height={350}
+      />
     </div>
   );
 };
 
 export default ApexChart;
-
-

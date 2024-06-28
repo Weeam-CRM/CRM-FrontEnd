@@ -41,12 +41,12 @@ export function SidebarBrand(props) {
           />
         ) : (
           <Heading
-            my={4}
+            my={3}
             cursor={"pointer"}
             onClick={() => !from && setOpenSidebar(!openSidebar)}
             userSelect={"none"}
           >
-          CRM 
+          CRM.
           </Heading>
         )}
       </Flex>

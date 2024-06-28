@@ -27,11 +27,12 @@ export default function Default(props) {
           ? {
               background: "#422afb",
             }
-          : {}
+          : {
+          }
       }
       cursor={"pointer"}
       py="25px"
-      pb="80px"
+      pb="40px"
       onClick={props.onClick}
     >
       <Flex
@@ -41,10 +42,23 @@ export default function Default(props) {
         align={{ base: "start" }}
         justify={{ base: "center", xl: "center" }}
       >
-        {startContent}
+        <Flex alignItems={"center"}>
+          {startContent}
+            <Text
+              ms={2}
+              lineHeight="100%"
+              color={active ? "white" : "brand.500"}
+              fontSize={{
+                base: props.fontsize ? props.fontsize : "md",
+              }}
+            >
+              {name}
+            </Text>
+        </Flex>
 
         <Stat my="auto" mt={3}>
           <StatNumber
+          ms={2}
             color={active ? "white" : textColor}
             fontSize={{
               base: "2xl",
@@ -53,15 +67,7 @@ export default function Default(props) {
             <CountUpComponent targetNumber={value} />
             {/* {value} */}
           </StatNumber>
-          <StatLabel
-            lineHeight="100%"
-            color={active ? "white" : textColorSecondary}
-            fontSize={{
-              base: props.fontsize ? props.fontsize : "md",
-            }}
-          >
-            {name}
-          </StatLabel>
+        
 
           {growth ? (
             <Flex align="center">
