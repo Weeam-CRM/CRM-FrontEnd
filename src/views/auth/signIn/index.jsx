@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import AddAgent from "./AddAgent"; 
 // Chakra imports
 import {
   Box,
@@ -52,6 +53,7 @@ function SignIn() {
   const image = useSelector((state) => state?.images?.image);
 
   const [show, setShow] = React.useState(false);
+  const [addAgentModal, setAddAgentModal] = useState(false); 
   const showPass = () => setShow(!show);
 
   const initialValues = {
@@ -262,10 +264,24 @@ function SignIn() {
               >
                 {isLoding ? <Spinner /> : "Sign In"}
               </Button>
+              <Text textAlign={"center"} mt={5} color={"grey"}>OR</Text>
+              <Button
+                onClick={() => setAddAgentModal(true)}
+                fontSize="sm"
+                variant="ghost"
+                fontWeight="500"
+                w="100%"
+                h="50"
+                type="button"
+              >
+                Signup as an agent
+              </Button>
             </FormControl>
           </form>
         </Flex>
       </Flex>
+
+      {addAgentModal && <AddAgent onClose={() => setAddAgentModal(false)} isOpen={addAgentModal}/>}
     </DefaultAuth>
   );
 }
