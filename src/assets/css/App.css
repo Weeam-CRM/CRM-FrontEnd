@@ -234,3 +234,9 @@ progress {
 #generate-proposal-btn:hover {
   background-image: linear-gradient(to right, #34ca00, #00ee47);
 }
+
+@media all and (max-width: 560px) {
+  .auth-image {
+    display: none; 
+  }
+}

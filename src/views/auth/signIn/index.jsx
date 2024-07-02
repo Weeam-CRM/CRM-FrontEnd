@@ -96,8 +96,8 @@ function SignIn() {
 
   return (
     <DefaultAuth
-      illustrationBackground={image?.length > 0 && image[0]?.authImg}
-      image={image?.length > 0 && image[0]?.authImg}
+      illustrationBackground={""}
+      image={"https://images.unsplash.com/photo-1491975474562-1f4e30bc9468?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
     >
       <Flex
         maxW={{ base: "100%", md: "max-content" }}
