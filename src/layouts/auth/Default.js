@@ -19,8 +19,7 @@ function AuthIllustration(props) {
           lg: "100vh",
           xl: "97vh",
         }}
-        width={"50%"}
-        // maxW={{ md: "66%", lg: "1313px" }}
+        className="auth-form"
         pt={{ sm: "50px", md: "0px" }}
         px={{ lg: "30px", xl: "0px" }}
         ps={{ xl: "70px" }}

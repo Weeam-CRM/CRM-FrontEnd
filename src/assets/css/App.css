@@ -235,8 +235,16 @@ progress {
   background-image: linear-gradient(to right, #34ca00, #00ee47);
 }
 
+
+  .auth-form {
+    width: 50%; 
+  }
+
 @media all and (max-width: 560px) {
   .auth-image {
     display: none; 
+  }
+  .auth-form {
+    width: 100%; 
   }
 }
