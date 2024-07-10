@@ -362,8 +362,8 @@ export default function UserReports() {
         </GridItem>
       </Grid>
 
-      <Grid Grid templateColumns="repeat(12, 1fr)" mt={5} gap={3}>
-        <GridItem rowSpan={2} colSpan={{ base: 8 }}>
+      <Grid Grid templateColumns={{base: 1, xl: "repeat(12, 1fr)"}} mt={5} gap={3}>
+        <GridItem rowSpan={2} colSpan={{ base: 12, xl: 8 }}>
           <Card>
             <Flex mb={5} alignItems={"center"} justifyContent={"space-between"}>
               <Heading size="md">Revenue Analytics</Heading>
@@ -374,7 +374,7 @@ export default function UserReports() {
             <MonthlyRevenueChart dashboard={"dashboard"} data={data} />
           </Card>
         </GridItem>
-        <GridItem rowSpan={2} justifyContent={"center"} colSpan={{ base: 4 }}>
+        <GridItem rowSpan={2} justifyContent={"center"} colSpan={{ base: 12, xl: 4 }}>
           <div
             style={{
               display: "flex",

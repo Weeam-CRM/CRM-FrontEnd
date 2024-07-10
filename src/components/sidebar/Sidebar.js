@@ -41,7 +41,7 @@ function Sidebar(props) {
   // SIDEBAR
   return (
     <Box
-      display={{ sm: "none", xl: "block" }}
+      display={{ base: "none", xl: "block" }}
       w="100%"
       position="fixed"
       minH="100%"
@@ -91,7 +91,7 @@ export function SidebarResponsive(props) {
   };
 
   return (
-    <Flex display={{ sm: "flex", xl: "none" }} alignItems="center">
+    <Flex display={{ base: "flex", xl: "none" }} alignItems="center">
       <Flex
         ref={btnRef}
         w="max-content"

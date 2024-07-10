@@ -143,7 +143,7 @@ export default function AdminNavbar(props) {
 					</Breadcrumb>
 					*/}
            <Box
-            display={{ sm: "none", xl: "flex" }}
+            display={{ base: "none", xl: "flex" }}
             mx={4}
             onClick={() => setOpenSidebar(!openSidebar)}
             style={{ fontSize: "25px" }}
@@ -151,7 +151,7 @@ export default function AdminNavbar(props) {
             {openSidebar ? <AiOutlineMenuFold /> : <AiOutlineMenuUnfold />}
           </Box>
           <Flex
-            display={{ sm: "none", xl: "flex" }}
+            display={{ base: "none", xl: "flex" }}
           >
             {(largeLogo && largeLogo[0]?.logoLgImg) ||
             (largeLogo && largeLogo[0]?.logoSmImg) ? (
@@ -189,7 +189,7 @@ export default function AdminNavbar(props) {
             )}
           </Flex>
          
-          <Link color={mainText} display={{ sm: "flex", xl: "none" }}>
+          <Link color={mainText} display={{ base: "flex", xl: "none" }}>
             {largeLogo && largeLogo[0]?.logoLgImg ? (
               <Image
                 style={{ width: "100%", height: "52px" }}
@@ -200,7 +200,7 @@ export default function AdminNavbar(props) {
                 my={2}
               />
             ) : (
-              <Heading my={4} cursor={"pointer"} userSelect={"none"}>
+              <Heading my={4} ps={4} cursor={"pointer"} userSelect={"none"}>
                 CRM
               </Heading>
             )}
