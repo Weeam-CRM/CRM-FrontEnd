@@ -170,6 +170,8 @@ export default function CheckTable(props) {
     preferredContactMethod: yup.string(),
 
   });
+
+  const headingColor = useColorModeValue("secondaryGray.900", "white"); 
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
@@ -291,8 +293,9 @@ export default function CheckTable(props) {
             <Flex alignItems={"center"} flexWrap={"wrap"}>
               {window.location.pathname === "/contacts" ?
                 <Text
-                  color={"secondaryGray.900"}
                   fontSize="22px"
+                  color={headingColor}
+
                   fontWeight="700"
                 >
                   Contacts (<CountUpComponent key={data?.length} targetNumber={data?.length} />)

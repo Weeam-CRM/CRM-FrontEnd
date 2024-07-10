@@ -453,7 +453,7 @@ export default function CheckTable(props) {
           >
             <Flex alignItems={"center"} flexWrap={"wrap"}>
               <Text
-                color={"secondaryGray.900"}
+                color={useColorModeValue("secondaryGray.900", "white")}
                 fontSize="22px"
                 fontWeight="700"
               >

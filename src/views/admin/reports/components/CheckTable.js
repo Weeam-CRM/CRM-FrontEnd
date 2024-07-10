@@ -40,6 +40,8 @@ export default function CheckTable(props) {
     const data = useMemo(() => barData, [barData]);
     const [gopageValue, setGopageValue] = useState()
 
+    const headingColor = useColorModeValue("secondaryGray.900", "white"); 
+
 
     const tableInstance = useTable(
         {
@@ -121,7 +123,8 @@ export default function CheckTable(props) {
                                             align="center"
                                             justifyContent={column.center ? "center" : "start"}
                                             fontSize={{ sm: "14px", lg: "16px" }}
-                                            color="secondaryGray.900"
+                                                            color={headingColor}
+
                                         >
                                             <span style={{ textTransform: "capitalize", marginRight: "8px" }}>
                                                 {column.render("Header")}
