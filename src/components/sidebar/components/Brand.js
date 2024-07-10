@@ -21,6 +21,7 @@ export function SidebarBrand(props) {
         position: "sticky",
         top: "0",
         left: "0",
+        opacity: 0,
         background: "#fff",
       }}
     >
