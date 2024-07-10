@@ -470,7 +470,7 @@ export default function UserReports() {
                   background={"whitesmoke"}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3}>
+                  <Heading color={"black"} size="sm" pb={3}>
                     Total Leads{" "}
                   </Heading>
                   <Text fontWeight={600} color={"brand.500"}>
@@ -486,7 +486,7 @@ export default function UserReports() {
                   textAlign={"center"}
                   background={"whitesmoke"}
                 >
-                  <Heading size="sm" pb={3}>
+                  <Heading size="sm" color={"black"} pb={3}>
                     New Leads{" "}
                   </Heading>
                   <Text fontWeight={600} color={"brand.500"}>
@@ -513,7 +513,7 @@ export default function UserReports() {
                   textAlign={"center"}
                   background={"whitesmoke"}
                 >
-                  <Heading size="sm" pb={3}>
+                  <Heading size="sm" color={"black"} pb={3}>
                     Interested Leads{" "}
                   </Heading>
                   <Text fontWeight={600} color={"brand.500"}>
@@ -538,7 +538,7 @@ export default function UserReports() {
                   m={1}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3}>
+                  <Heading color={"black"} size="sm" pb={3}>
                     Not-interested Leads
                   </Heading>
                   <Text fontWeight={600} color={"brand.500"}>
@@ -564,7 +564,7 @@ export default function UserReports() {
                   m={1}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3}>
+                  <Heading color={"black"} size="sm" pb={3}>
                     Sold Leads{" "}
                   </Heading>
                   <Text fontWeight={600} color={"brand.500"}>
@@ -589,7 +589,7 @@ export default function UserReports() {
                   m={1}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3}>
+                  <Heading color={"black"} size="sm" pb={3}>
                     Unreachable{" "}
                   </Heading>
                   <Text fontWeight={600} color={"brand.500"}>
@@ -614,7 +614,7 @@ export default function UserReports() {
                   m={1}
                   textAlign={"center"}
                 >
-                  <Heading size="sm" pb={3}>
+                  <Heading color={"black"} size="sm" pb={3}>
                     No Answer{" "}
                   </Heading>
                   <Text fontWeight={600} color={"brand.500"}>
