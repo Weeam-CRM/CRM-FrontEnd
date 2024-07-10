@@ -231,6 +231,15 @@ progress {
 }
 
 
+.chakra-ui-dark input {
+  color: white; 
+}
+
+.chakra-ui-dark .chakra-tabs__tab-panel button {
+  color: #B79045; 
+}
+
+
 #generate-proposal-btn:hover {
   background-image: linear-gradient(to right, #34ca00, #00ee47);
 }

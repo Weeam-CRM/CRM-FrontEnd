@@ -1,26 +1,30 @@
-import { SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid, Text, useColorModeValue } from "@chakra-ui/react";
 
 const UserViewProperties = ({ usersList }) => {
+  const color = useColorModeValue("#eef1fa", "#202f66"); 
+  const textcolor = useColorModeValue("black", "white"); 
   return (
     <SimpleGrid columns={{ base: 3 }} gap="20px" mb="20px" mt={"30px"}>
       {usersList?.map((user) => {
         return (
-          <div
+          <Box
+          background={color}
             style={{
-              background: "#eef1fa",
               borderRadius: 8,
               padding: 14,
             }}
           >
-            <p style={{ marginBottom: 12 }}>
+            <Text color={textcolor} style={{ marginBottom: 12 }}>
               {user?.firstName + " " + user?.lastName}
-            </p>
+            </Text>
             <progress
               className="mini"
               value={100 * (user?.totalRevenue / user?.target)}
               max="100"
             ></progress>
-            <div
+            <Box 
+            color={textcolor}
+
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -29,8 +33,8 @@ const UserViewProperties = ({ usersList }) => {
             >
               <small>{user?.totalRevenue}</small>
               <small>{user?.target}</small>
-            </div>
-          </div>
+            </Box>
+          </Box>
         );
       })}
     </SimpleGrid>
