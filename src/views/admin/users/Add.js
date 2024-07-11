@@ -35,7 +35,7 @@ const AddUser = (props) => {
   const [isLoding, setIsLoding] = useState(false);
   const [roles, setRoles] = useState([]);
 
-  const tree = useSelector((state) => state.user); 
+  const tree = useSelector((state) => state.user);
 
   const [show, setShow] = React.useState(false);
   const showPass = () => setShow(!show);
@@ -46,9 +46,9 @@ const AddUser = (props) => {
     username: "",
     phoneNumber: "",
     password: "",
-    role: "", 
+    role: "",
     parent: "",
-      nationality: "",
+    nationality: "",
     dob: "",
     educationDegree: "",
     passportNum: "",
@@ -57,7 +57,7 @@ const AddUser = (props) => {
     drivingLicense: "",
     countryHomeAddress: "",
     countryPhoneNum: "",
-    };
+  };
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -78,29 +78,32 @@ const AddUser = (props) => {
     resetForm,
   } = formik;
 
-    const user = JSON.parse(localStorage.getItem("user")); 
-
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const AddData = async () => {
     try {
       setIsLoding(true);
-      const formValues = {...values}; 
+      const formValues = { ...values };
 
-      if(user?.roles[0]?.roleName === "Manager"){
-        formValues["parent"] = user?._id?.toString(); 
-        formValues["role"] = roles?.find((role) => role?.roleName === "Agent")?._id?.toString(); 
+      if (user?.roles[0]?.roleName === "Manager") {
+        formValues["parent"] = user?._id?.toString();
+        formValues["role"] = roles
+          ?.find((role) => role?.roleName === "Agent")
+          ?._id?.toString();
       } else {
-        if(roles.find((role) => role?._id === values.role)?.roleName === "Agent") {
-          formValues["parent"] = values.parent; 
+        if (
+          roles.find((role) => role?._id === values.role)?.roleName === "Agent"
+        ) {
+          formValues["parent"] = values.parent;
         }
       }
 
-      if(!formValues["parent"]) {
+      if (!formValues["parent"]) {
         delete formValues["parent"];
       }
 
-      if(values["role"]) {
-        formValues["roles"] = [values.role?.toString()]; 
+      if (values["role"]) {
+        formValues["roles"] = [values.role?.toString()];
       }
 
       let response = await postApi("api/user/register", formValues);
@@ -117,7 +120,6 @@ const AddUser = (props) => {
     }
   };
 
-
   const fetchRoles = async () => {
     let result = await getApi("api/role-access");
     setRoles(result.data);
@@ -127,7 +129,7 @@ const AddUser = (props) => {
     fetchRoles();
   }, []);
 
-  console.log(tree); 
+  console.log(tree);
 
   return (
     <Modal size="2xl" isOpen={isOpen} isCentered>
@@ -138,7 +140,13 @@ const AddUser = (props) => {
           <IconButton onClick={onClose} icon={<CloseIcon />} />
         </ModalHeader>
         <ModalBody>
-          <Grid templateColumns="repeat(12, 1fr)" gap={3}>
+          <Grid
+            h={"60vh"}
+            overflow={"scroll"}
+            pr={"4"}
+            templateColumns="repeat(12, 1fr)"
+            gap={3}
+          >
             <GridItem colSpan={{ base: 12 }}>
               <FormLabel
                 display="flex"
@@ -257,41 +265,58 @@ const AddUser = (props) => {
                   errors.phoneNumber}
               </Text>
             </GridItem>
-            {user?.roles[0]?.roleName !== "Manager" &&
-            <GridItem colSpan={{ base: 6 }}>
-              <FormLabel
-                display="flex"
-                ms="4px"
-                fontSize="sm"
-                fontWeight="500"
-                mb="8px"
-              >
-                Select Role <Text color={"red"}>*</Text>
-              </FormLabel>
-              <Select name="role" value={values.role} onChange={handleChange} onBlur={handleBlur} placeholder="Select Role">
-
-                {roles?.map((role) => <option value={role?._id}>{role?.roleName}</option>)}
-              </Select>
-    
-            </GridItem>
-            }
-            {(roles.find((role) => role?._id === values.role)?.roleName === "Agent" && user?.roles[0]?.roleName !=="Manager") && 
+            {user?.roles[0]?.roleName !== "Manager" && (
+              <GridItem colSpan={{ base: 6 }}>
+                <FormLabel
+                  display="flex"
+                  ms="4px"
+                  fontSize="sm"
+                  fontWeight="500"
+                  mb="8px"
+                >
+                  Select Role <Text color={"red"}>*</Text>
+                </FormLabel>
+                <Select
+                  name="role"
+                  value={values.role}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Select Role"
+                >
+                  {roles?.map((role) => (
+                    <option value={role?._id}>{role?.roleName}</option>
+                  ))}
+                </Select>
+              </GridItem>
+            )}
+            {roles.find((role) => role?._id === values.role)?.roleName ===
+              "Agent" &&
+              user?.roles[0]?.roleName !== "Manager" && (
                 <GridItem colSpan={{ base: 6 }}>
-              <FormLabel
-                display="flex"
-                ms="4px"
-                fontSize="sm"
-                fontWeight="500"
-                mb="8px"
-              >
-                Select Manager <Text color={"red"}>*</Text>
-              </FormLabel>
-              <Select name="parent" value={values.parent} onChange={handleChange} onBlur={handleBlur} placeholder="Select Manager">
-
-                {tree?.tree?.managers?.map((manager) => <option value={manager?._id}>{manager?.firstName + " " + manager?.lastName}</option>)}
-              </Select>
-            </GridItem>
-            }
+                  <FormLabel
+                    display="flex"
+                    ms="4px"
+                    fontSize="sm"
+                    fontWeight="500"
+                    mb="8px"
+                  >
+                    Select Manager <Text color={"red"}>*</Text>
+                  </FormLabel>
+                  <Select
+                    name="parent"
+                    value={values.parent}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="Select Manager"
+                  >
+                    {tree?.tree?.managers?.map((manager) => (
+                      <option value={manager?._id}>
+                        {manager?.firstName + " " + manager?.lastName}
+                      </option>
+                    ))}
+                  </Select>
+                </GridItem>
+              )}
             <GridItem colSpan={{ base: 12 }}>
               <FormLabel
                 display="flex"
@@ -335,7 +360,7 @@ const AddUser = (props) => {
                 {errors.password && touched.password && errors.password}
               </Text>
             </GridItem>
-             <GridItem colSpan={{ base: 12 }}>
+            <GridItem colSpan={{ base: 12 }}>
               <FormLabel
                 display="flex"
                 ms="4px"
