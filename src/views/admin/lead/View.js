@@ -221,6 +221,10 @@ const View = () => {
                                                     <Text>{data?.leadPhoneNumber ? data?.leadPhoneNumber : 'N/A'}</Text>
                                                 </GridItem>
                                                 <GridItem colSpan={{ base: 12, md: 6 }} >
+                                                    <Text color={'blackAlpha.900'} fontSize="sm" fontWeight="bold"> Lead Whatsapp Number</Text>
+                                                    <Text>{data?.leadWhatsappNumber ? data?.leadWhatsappNumber : 'N/A'}</Text>
+                                                </GridItem>
+                                                <GridItem colSpan={{ base: 12, md: 6 }} >
                                                     <Text color={'blackAlpha.900'} fontSize="sm" fontWeight="bold"> Lead Address</Text>
                                                     <Text>{data?.leadAddress ? data?.leadAddress : 'N/A'}</Text>
                                                 </GridItem>
@@ -299,6 +303,22 @@ const View = () => {
                                                 <GridItem colSpan={{ base: 12, md: 6 }} >
                                                     <Text color={'blackAlpha.900'} fontSize="sm" fontWeight="bold"> Lead Source Referral </Text>
                                                     <Text>{data?.leadSourceReferral ? data?.leadSourceReferral : 'N/A'}</Text>
+                                                </GridItem>
+                                                <GridItem colSpan={{ base: 12, md: 6 }} >
+                                                    <Text color={'blackAlpha.900'} fontSize="sm" fontWeight="bold">Nationality</Text>
+                                                    <Text>{data?.nationality ? data?.nationality : 'N/A'}</Text>
+                                                </GridItem>
+                                                <GridItem colSpan={{ base: 12, md: 6 }} >
+                                                    <Text color={'blackAlpha.900'} fontSize="sm" fontWeight="bold">Time to call</Text>
+                                                    <Text>{data?.timetocall ? data?.timetocall : 'N/A'}</Text>
+                                                </GridItem>
+                                                <GridItem colSpan={{ base: 12, md: 6 }} >
+                                                    <Text color={'blackAlpha.900'} fontSize="sm" fontWeight="bold">Are you in UAE?</Text>
+                                                    <Text>{data?.r_u_in_uae ? data?.r_u_in_uae : 'N/A'}</Text>
+                                                </GridItem>
+                                                <GridItem colSpan={{ base: 12, md: 6 }} >
+                                                    <Text color={'blackAlpha.900'} fontSize="sm" fontWeight="bold">Interest</Text>
+                                                    <Text>{data?.interest ? data?.interest : 'N/A'}</Text>
                                                 </GridItem>
                                             </Grid>
                                         </Card>

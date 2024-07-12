@@ -136,7 +136,7 @@ export default function CheckTable(props) {
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Email", accessor: "leadEmail" },
     { Header: "Phone Number", accessor: "leadPhoneNumber" },
-    { Header: "Score", accessor: "leadScore" },
+    { Header: "Timetocall", accessor: "timetocall" },
   ];
 
   let isColumnSelected;
@@ -886,7 +886,8 @@ export default function CheckTable(props) {
                               />
                             </>
                           );
-                        } else if (cell?.column.Header === "Score") {
+                        } 
+                        else if (cell?.column.Header === "Nationality") {
                           data = (
                             <Text
                               color={
@@ -900,7 +901,25 @@ export default function CheckTable(props) {
                               fontWeight="900"
                               textAlign={"center"}
                             >
-                              {cell?.value}
+                              {cell?.value || "-"}
+                            </Text>
+                          );
+                        }
+                        else if (cell?.column.Header === "Timetocall") {
+                          data = (
+                            <Text
+                              color={
+                                cell?.value < 40
+                                  ? "red.600"
+                                  : cell?.value < 80
+                                  ? "yellow.400"
+                                  : "green.600"
+                              }
+                              fontSize="md"
+                              fontWeight="900"
+                              textAlign={"center"}
+                            >
+                              {cell?.value || "-"}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Action") {

@@ -35,7 +35,8 @@ const Index = () => {
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Email", accessor: "leadEmail" },
     { Header: "Phone Number", accessor: "leadPhoneNumber" },
-    { Header: "Score", accessor: "leadScore" },
+    { Header: "Timetocall", accessor: "timetocall" },
+    { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
   ];
   const tableColumnsManager = [
@@ -45,7 +46,8 @@ const Index = () => {
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Email", accessor: "leadEmail" },
     { Header: "Phone Number", accessor: "leadPhoneNumber" },
-    { Header: "Score", accessor: "leadScore" },
+    { Header: "Timetocall", accessor: "timetocall" },
+    { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
   ];
   const tableColumnsAgent = [
@@ -54,7 +56,8 @@ const Index = () => {
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Email", accessor: "leadEmail" },
     { Header: "Phone Number", accessor: "leadPhoneNumber" },
-    { Header: "Score", accessor: "leadScore" },
+    { Header: "Timetocall", accessor: "timetocall" },
+    { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
   ];
 
