@@ -134,7 +134,7 @@ export default function CheckTable(props) {
   const csvColumns = [
     { Header: "Name", accessor: "leadName" },
     { Header: "Status", accessor: "leadStatus" },
-    { Header: "Email", accessor: "leadEmail" },
+    { Header: "Whatsapp Number", accessor: "leadWhatsappNumber" },
     { Header: "Phone Number", accessor: "leadPhoneNumber" },
     { Header: "Timetocall", accessor: "timetocall" },
   ];
@@ -781,36 +781,15 @@ export default function CheckTable(props) {
                               {cell?.value}
                             </Text>
                           );
-                        } else if (cell?.column.Header === "Email") {
-                          data = emailAccess?.create ? (
-                            <Text
-                              me="10px"
-                              fontSize="sm"
-                              // fontWeight="500"
-                              fontWeight="700"
-                              color="brand.600"
-                              sx={{
-                                "&:hover": {
-                                  color: "blue.500",
-                                  textDecoration: "underline",
-                                  cursor: "pointer",
-                                },
-                              }}
-                              onClick={() => {
-                                setAddEmailHistory(true);
-                                setSelectedId(cell?.row?.values._id);
-                              }}
-                            >
-                              {cell?.value}
-                            </Text>
-                          ) : (
+                        } else if (cell?.column.Header === "Whatsapp Number") {
+                          data = (
                             <Text
                               me="10px"
                               fontSize="sm"
                               // fontWeight="500"
                               fontWeight="700"
                             >
-                              {cell?.value}
+                              {cell?.value || "-"}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Phone Number") {
