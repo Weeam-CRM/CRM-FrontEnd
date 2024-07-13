@@ -956,9 +956,21 @@ export default function CheckTable(props) {
                                       Send Email
                                     </MenuItem>
                                   )}
+                                    <MenuItem
+                                    py={2.5}
+                                    width={"max-content"}
+                                    onClick={() => {
+                                      navigate(
+                                        "/leadCycle/" + cell?.row?.values?._id
+                                      );
+                                    }}
+                                    icon={<FaHistory fontSize={15} mb={1} />}
+                                  >
+                                    View Lead cycle
+                                  </MenuItem>
                                   <MenuItem
                                     py={2.5}
-                                    width={"165px"}
+                                    width={"max-content"}
                                     onClick={() => {
                                       navigate(
                                         "/leadHistory/" + cell?.row?.values?._id
@@ -966,8 +978,10 @@ export default function CheckTable(props) {
                                     }}
                                     icon={<FaHistory fontSize={15} mb={1} />}
                                   >
-                                    View history
+                                    View Call history
                                   </MenuItem>
+
+
 
                                   <MenuItem
                                     display={{ sm: "block", xl: "none" }}

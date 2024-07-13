@@ -40,6 +40,7 @@ const PropertyImport = React.lazy(() => import("views/admin/property/components/
 
 const Lead = React.lazy(() => import("views/admin/lead"));
 const CallHistory = React.lazy(() => import("views/admin/callHistory"));
+const LeadCycle = React.lazy(() => import("views/admin/leadCycle"));
 const LeadView = React.lazy(() => import("views/admin/lead/View"));
 const LeadImport = React.lazy(() => import("views/admin/lead/components/LeadImport"));
 
@@ -94,6 +95,15 @@ const routes = [
     path: "/leadHistory/:lid",
     icon: <Icon as={FaHistory} width='20px' height='20px' color='inherit' />,
     component: CallHistory,
+    under: "lead",
+    parentName: "Lead",
+  },
+  {
+    name: "Lead Cycle",
+    layout: [ROLE_PATH.superAdmin, ROLE_PATH.user],
+    path: "/leadCycle/:lid",
+    icon: <Icon as={FaHistory} width='20px' height='20px' color='inherit' />,
+    component: LeadCycle,
     under: "lead",
     parentName: "Lead",
   },
