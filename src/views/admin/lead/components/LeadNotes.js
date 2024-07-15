@@ -70,23 +70,17 @@ const LeadNotes = ({ lid, noteAdded }) => {
               <Table variant="simple">
                 <Thead>
                   <Tr>
+                    <Th>Created at</Th>
                     <Th>Note</Th>
                     <Th>Added by</Th>
-                    <Td>Created at</Td>
                     {/* <Th>Actions</Th> */}
                   </Tr>
                 </Thead>
                 <Tbody>
                   {allNotes.map((note) => {
                     return (
-                      <Tr>
-                        <Td color={"brand.800"}>{note.note}</Td>
-                        <Td>
-                          {note.addedBy?.firstName +
-                            " " +
-                            note.addedBy?.lastName}
-                        </Td>
-                        <Td>
+                      <Tr> 
+                      <Td>
                           <small>
                             {new Date(note.createdAt).toLocaleString("en-GB", {
                               year: "numeric",
@@ -99,6 +93,13 @@ const LeadNotes = ({ lid, noteAdded }) => {
                             })}
                           </small>
                         </Td>
+                        <Td color={"brand.800"}>{note.note}</Td>
+                        <Td>
+                          {note.addedBy?.firstName +
+                            " " +
+                            note.addedBy?.lastName}
+                        </Td>
+                       
                       </Tr>
                     );
                   })}
