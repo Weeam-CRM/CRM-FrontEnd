@@ -440,6 +440,64 @@ export default function CheckTable(props) {
 
   return (
     <>
+        <Flex
+          p={4}
+              alignItems={"center"}
+              style={{
+                position: "relative",
+                fontSize: 15,
+              }}
+              className="date-range-selector"
+            >
+              <Flex alignItems={"center"}>
+                <p>From:</p>
+                <div style={{ width: 10 }}></div>
+                <input
+                  value={dateTime.from}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      setDateTime({ ...dateTime, from: e.target.value });
+                    } else {
+                      setDateTime({ to: "", from: "" });
+                    }
+                  }}
+                  style={{ color: "#422afb" }}
+                  type="datetime-local"
+                />
+              </Flex>
+              {dateTime?.from && (
+                <div>
+                  <Flex ms={2} alignItems={"center"}>
+                    <p>To:</p>
+                    <div style={{ width: 10 }}></div>
+                    <input
+                      value={dateTime.to}
+                      onChange={(e) => {
+                        setDateTime({ ...dateTime, to: e.target.value });
+                      }}
+                      style={{ color: "#422afb" }}
+                      type="datetime-local"
+                    />
+                  </Flex>
+                </div>
+              )}
+
+
+              {(dateTime.from || dateTime.to) && 
+               <Button
+              colorScheme="red"
+              variant="outline"
+              ml={3}
+              size="sm"
+              onClick={() => setDateTime({
+                from: "",
+                to: ""
+              })}
+            >
+              Clear
+            </Button>
+              }
+            </Flex>
       <Card
         direction="column"
         w="100%"
@@ -447,7 +505,7 @@ export default function CheckTable(props) {
       >
         <Grid templateColumns="repeat(12, 1fr)" gap={2}>
           <GridItem
-            colSpan={{ base: 5 }}
+            colSpan={{ base: 8 }}
             display={"flex"}
             alignItems={"center"}
           >
@@ -510,7 +568,7 @@ export default function CheckTable(props) {
             </Flex>
           </GridItem>
 
-          <GridItem
+          {/* <GridItem
             display={"flex"}
             alignItems={"center"}
             colSpan={{ base: 5 }}
@@ -557,10 +615,10 @@ export default function CheckTable(props) {
                 </div>
               )}
             </Flex>
-          </GridItem>
+          </GridItem> */}
 
           <GridItem
-            colSpan={{ base: 2 }}
+            colSpan={{ base: 4 }}
             display={"flex"}
             justifyContent={"end"}
             alignItems={"center"}
@@ -964,7 +1022,7 @@ export default function CheckTable(props) {
                                         "/leadCycle/" + cell?.row?.values?._id
                                       );
                                     }}
-                                    icon={<FaHistory fontSize={15} mb={1} />}
+                                  icon={<FaHistory fontSize={15} mb={1} />}
                                   >
                                     View Lead cycle
                                   </MenuItem>
