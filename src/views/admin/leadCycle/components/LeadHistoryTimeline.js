@@ -1,7 +1,20 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 
+function formatDateTime(date) {
+    const options = { 
+        day: '2-digit', 
+        month: 'long', 
+        year: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: false 
+    };
+    
+    return date.toLocaleString('en-GB', options).replace(',', '');
+}
+
 export default function LeadHistoryTimeline({ timelineData }) {
-  console.log(timelineData)
   return (
     <>
       {timelineData.map((item) => {
@@ -15,33 +28,62 @@ export default function LeadHistoryTimeline({ timelineData }) {
             position={"relative"}
           >
             <Box>
-              <Text color={"#858585"}>{new Date(item?.updatedAt)?.toUTCString()}</Text>
+              <Text color={"#858585"}>
+                {formatDateTime(new Date(item?.updatedAt))}
+              </Text>
               {item?.type === "creation" && (
                 <Text color={"black"} fontSize={18} mb={3}>
                   Lead created by
                   <strong> {item?.updatedBy}</strong>
                 </Text>
               )}
-              {item?.type === "assignment-manager" && 
+              {item?.type === "assignment-manager" && (
                 <div>
                   <Text color={"black"} fontSize={18} mb={1}>
                     Lead assigned to manager:
-                    <strong> <u>{item?.updatedData}</u></strong>
+                    <strong>
+                      {" "}
+                      <u>{item?.updatedData}</u>
+                    </strong>
                   </Text>
-                  <Box display={"flex"} alignItems="center" fontSize={12}><Text mr={1}>By</Text> <Text color={"brand.500"}>{item?.updatedBy}</Text></Box>
+                  <Box display={"flex"} alignItems="center" fontSize={12}>
+                    <Text mr={1}>By</Text>{" "}
+                    <Text color={"brand.500"}>{item?.updatedBy}</Text>
+                  </Box>
                 </div>
-              }
+              )}
 
-               {item?.type === "assignment-agent" && 
+              {item?.type === "assignment-agent" && (
                 <div>
                   <Text color={"black"} fontSize={18} mb={1}>
                     Lead assigned to agent:
-                    <strong> <u>{item?.updatedData}</u></strong>
+                    <strong>
+                      {" "}
+                      <u>{item?.updatedData}</u>
+                    </strong>
                   </Text>
-                  <Box display={"flex"} alignItems="center" fontSize={12}><Text mr={1}>By</Text> <Text color={"brand.500"}>{item?.updatedBy}</Text></Box>
+                  <Box display={"flex"} alignItems="center" fontSize={12}>
+                    <Text mr={1}>By</Text>{" "}
+                    <Text color={"brand.500"}>{item?.updatedBy}</Text>
+                  </Box>
                 </div>
-              }
-              
+              )}
+
+              {item?.type === "status" && (
+                <div>
+                  <Text color={"black"} fontSize={18} mb={1}>
+                    Status changed to:
+                    <strong>
+                      {" "}
+                      <u>{item?.updatedData}</u>
+                    </strong>
+                  </Text>
+                  <Box display={"flex"} alignItems="center" fontSize={12}>
+                    <Text mr={1}>By</Text>{" "}
+                    <Text color={"brand.500"}>{item?.updatedBy}</Text>
+                  </Box>
+                </div>
+              )}
             </Box>
             <Box
               width={30}

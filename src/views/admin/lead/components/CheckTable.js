@@ -120,7 +120,11 @@ export default function CheckTable(props) {
   const navigate = useNavigate();
   const data = useMemo(() => tableData, [tableData]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isTaskOpen, onOpen: onTaskOpen, onClose: onTaskClose } = useDisclosure();
+  const {
+    isOpen: isTaskOpen,
+    onOpen: onTaskOpen,
+    onClose: onTaskClose,
+  } = useDisclosure();
   const [edit, setEdit] = useState(false);
   const [updatedPage, setUpdatedPage] = useState(0);
   const [isImportLead, setIsImportLead] = useState(false);
@@ -129,7 +133,7 @@ export default function CheckTable(props) {
   const [updatedStatuses, setUpdatedStatuses] = useState([]);
   const [manageColumns, setManageColumns] = useState(false);
   const [tempSelectedColumns, setTempSelectedColumns] = useState(dataColumn); // State to track changes
-  const [taskInits, setTaskInits] = useState({}); 
+  const [taskInits, setTaskInits] = useState({});
 
   const csvColumns = [
     { Header: "Name", accessor: "leadName" },
@@ -440,64 +444,65 @@ export default function CheckTable(props) {
 
   return (
     <>
-        <Flex
-          p={4}
-              alignItems={"center"}
-              style={{
-                position: "relative",
-                fontSize: 15,
-              }}
-              className="date-range-selector"
-            >
-              <Flex alignItems={"center"}>
-                <p>From:</p>
-                <div style={{ width: 10 }}></div>
-                <input
-                  value={dateTime.from}
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      setDateTime({ ...dateTime, from: e.target.value });
-                    } else {
-                      setDateTime({ to: "", from: "" });
-                    }
-                  }}
-                  style={{ color: "#422afb" }}
-                  type="datetime-local"
-                />
-              </Flex>
-              {dateTime?.from && (
-                <div>
-                  <Flex ms={2} alignItems={"center"}>
-                    <p>To:</p>
-                    <div style={{ width: 10 }}></div>
-                    <input
-                      value={dateTime.to}
-                      onChange={(e) => {
-                        setDateTime({ ...dateTime, to: e.target.value });
-                      }}
-                      style={{ color: "#422afb" }}
-                      type="datetime-local"
-                    />
-                  </Flex>
-                </div>
-              )}
-
-
-              {(dateTime.from || dateTime.to) && 
-               <Button
-              colorScheme="red"
-              variant="outline"
-              ml={3}
-              size="sm"
-              onClick={() => setDateTime({
-                from: "",
-                to: ""
-              })}
-            >
-              Clear
-            </Button>
+      <Flex
+        p={4}
+        alignItems={"center"}
+        style={{
+          position: "relative",
+          fontSize: 15,
+        }}
+        className="date-range-selector"
+      >
+        <Flex alignItems={"center"}>
+          <p>From:</p>
+          <div style={{ width: 10 }}></div>
+          <input
+            value={dateTime.from}
+            onChange={(e) => {
+              if (e.target.value) {
+                setDateTime({ ...dateTime, from: e.target.value });
+              } else {
+                setDateTime({ to: "", from: "" });
               }
+            }}
+            style={{ color: "#422afb" }}
+            type="datetime-local"
+          />
+        </Flex>
+        {dateTime?.from && (
+          <div>
+            <Flex ms={2} alignItems={"center"}>
+              <p>To:</p>
+              <div style={{ width: 10 }}></div>
+              <input
+                value={dateTime.to}
+                onChange={(e) => {
+                  setDateTime({ ...dateTime, to: e.target.value });
+                }}
+                style={{ color: "#422afb" }}
+                type="datetime-local"
+              />
             </Flex>
+          </div>
+        )}
+
+        {(dateTime.from || dateTime.to) && (
+          <Button
+            colorScheme="red"
+            variant="outline"
+            ml={3}
+            size="sm"
+            onClick={() =>
+              setDateTime({
+                from: "",
+                to: "",
+              })
+            }
+          >
+            Clear
+          </Button>
+        )}
+      </Flex>
       <Card
         direction="column"
         w="100%"
@@ -923,8 +928,7 @@ export default function CheckTable(props) {
                               />
                             </>
                           );
-                        } 
-                        else if (cell?.column.Header === "Nationality") {
+                        } else if (cell?.column.Header === "Nationality") {
                           data = (
                             <Text
                               color={
@@ -941,8 +945,7 @@ export default function CheckTable(props) {
                               {cell?.value || "-"}
                             </Text>
                           );
-                        }
-                        else if (cell?.column.Header === "Timetocall") {
+                        } else if (cell?.column.Header === "Timetocall") {
                           data = (
                             <Text
                               color={
@@ -1014,7 +1017,7 @@ export default function CheckTable(props) {
                                       Send Email
                                     </MenuItem>
                                   )}
-                                    <MenuItem
+                                  <MenuItem
                                     py={2.5}
                                     width={"max-content"}
                                     onClick={() => {
@@ -1022,7 +1025,7 @@ export default function CheckTable(props) {
                                         "/leadCycle/" + cell?.row?.values?._id
                                       );
                                     }}
-                                  icon={<FaHistory fontSize={15} mb={1} />}
+                                    icon={<FaHistory fontSize={15} mb={1} />}
                                   >
                                     View Lead cycle
                                   </MenuItem>
@@ -1038,8 +1041,6 @@ export default function CheckTable(props) {
                                   >
                                     View Call history
                                   </MenuItem>
-
-
 
                                   <MenuItem
                                     display={{ sm: "block", xl: "none" }}
@@ -1078,8 +1079,8 @@ export default function CheckTable(props) {
                                       py={2.5}
                                       width={"210px"}
                                       onClick={() => {
-                                        setTaskInits(row?.original) 
-                                        onTaskOpen(); 
+                                        setTaskInits(row?.original);
+                                        onTaskOpen();
                                       }}
                                       icon={<MdTask fontSize={15} mb={1} />}
                                     >
@@ -1172,8 +1173,12 @@ export default function CheckTable(props) {
           id={selectedId}
         />
 
-        <AddTask leadData={taskInits} fetchData={() => {}} isOpen={isTaskOpen} onClose={onTaskClose} />
-
+        <AddTask
+          leadData={taskInits}
+          fetchData={() => {}}
+          isOpen={isTaskOpen}
+          onClose={onTaskClose}
+        />
 
         <AddPhoneCall
           fetchData={fetchData}
