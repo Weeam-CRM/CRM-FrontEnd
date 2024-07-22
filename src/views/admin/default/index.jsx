@@ -31,6 +31,7 @@ import RevenueProgressBar from "components/navbar/RevenueProgressBar";
 import MonthlyRevenueChart from "./components/MonthlyRevenueChart";
 import { PiPhoneCallBold } from "react-icons/pi";
 import Header from "./components/Header";
+import Invoice from "./Invoice";
 
 export default function UserReports() {
   // Chakra Color Mode
@@ -700,6 +701,7 @@ export default function UserReports() {
                   </Box>
                 </Flex>
               </Box>
+              
             ))}
         </Card>
       </SimpleGrid>

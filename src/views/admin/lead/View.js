@@ -629,6 +629,34 @@ const View = () => {
                           </Text>
                           <Text>{data?.interest ? data?.interest : "N/A"}</Text>
                         </GridItem>
+                        <GridItem colSpan={{ base: 12, md: 6 }}>
+                          <Text
+                            color={"blackAlpha.900"}
+                            fontSize="sm"
+                            fontWeight="bold"
+                          >
+                            IP Address
+                          </Text>
+                          <Text>
+                            {data?.ip ? data?.ip : "N/A"}
+                          </Text>
+                        </GridItem>
+                        <GridItem colSpan={{ base: 12, md: 6 }}>
+                          <Text
+                            color={"blackAlpha.900"}
+                            fontSize="sm"
+                            fontWeight="bold"
+                          >
+                            Page URL
+                          </Text>
+                          <Text color="blue">
+                          {data?.pageUrl ? 
+                            <a href={data?.pageUrl || "#"} target="_blank" rel="noreferrer">
+                              {data?.pageUrl ? data?.pageUrl : "N/A"}
+                            </a>
+                            : "N/A" }
+                          </Text>
+                        </GridItem>
                       </Grid>
                     </Card>
                   </GridItem>
