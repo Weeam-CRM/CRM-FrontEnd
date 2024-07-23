@@ -69,9 +69,6 @@ import { BsColumnsGap, BsWhatsapp } from "react-icons/bs";
 import * as yup from "yup";
 import CustomSearchInput from "components/search/search";
 import DataNotFound from "components/notFoundData";
-import RenderManager from "./RenderManager";
-import RenderAgent from "./RenderAgent";
-import RenderStatus from "./RenderStatus";
 import { MdTask } from "react-icons/md";
 
 export default function CheckTable(props) {
@@ -896,31 +893,17 @@ export default function CheckTable(props) {
                         } else if (cell?.column.Header === "Status") {
                           data = (
                             <div className="selectOpt">
-                              <RenderStatus
-                                setUpdatedStatuses={setUpdatedStatuses}
-                                id={cell?.row?.original?._id}
-                                cellValue={cell?.value}
-                              />
+                             
                             </div>
                           );
                         } else if (cell?.column.Header === "Manager") {
                           data = (
-                            <RenderManager
-                              fetchData={fetchData}
-                              pageIndex={pageIndex}
-                              leadID={row?.original?._id?.toString()}
-                              value={cell?.value}
-                            />
+                            <></> 
                           );
                         } else if (cell?.column.Header === "Agent") {
                           data = (
                             <>
-                              <RenderAgent
-                                fetchData={fetchData}
-                                leadID={row?.original?._id?.toString()}
-                                managerAssigned={row?.original?.managerAssigned}
-                                value={cell?.value}
-                              />
+                             
                             </>
                           );
                         } else if (cell?.column.Header === "Nationality") {
