@@ -11,7 +11,7 @@ import {
 // icon
 import React from "react";
 import { AiFillFolderOpen, AiOutlineMail } from "react-icons/ai";
-import { FaCalendarAlt, FaHistory, FaRupeeSign, FaTasks, FaWpforms } from "react-icons/fa";
+import { FaCalendarAlt, FaFile, FaHistory, FaRupeeSign, FaTasks, FaWpforms } from "react-icons/fa";
 import { LuBuilding2 } from "react-icons/lu";
 import { PiPhoneCallBold } from "react-icons/pi";
 import { FaCreativeCommonsBy } from "react-icons/fa";
@@ -43,6 +43,7 @@ const CallHistory = React.lazy(() => import("views/admin/callHistory"));
 const LeadCycle = React.lazy(() => import("views/admin/leadCycle"));
 const LeadView = React.lazy(() => import("views/admin/lead/View"));
 const LeadImport = React.lazy(() => import("views/admin/lead/components/LeadImport"));
+const InvoiceView = React.lazy(() => import("views/admin/invoice"));
 
 
 const Task = React.lazy(() => import("views/admin/task"));
@@ -173,6 +174,13 @@ const routes = [
     parentName: "Property",
     path: "/propertyImport",
     component: PropertyImport,
+  },
+  {
+    name: "Invoice",
+    layout: [ROLE_PATH.superAdmin, ROLE_PATH.user],
+    icon: <Icon as={FaFile} width='20px' height='20px' color='inherit' />,
+    path: "/invoice",
+    component: InvoiceView,
   },
   // -----------------------------Admin setting-------------------------------------
   {

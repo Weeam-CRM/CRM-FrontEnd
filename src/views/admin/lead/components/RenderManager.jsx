@@ -10,9 +10,15 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex }) => {
 
   const handleChangeManager = async (e) => {
     try {
-      await putApi(`api/lead/edit/${leadID}`, {
+      const dataObj = {
         managerAssigned: e.target.value 
-      });
+      }
+
+      if(e.target.value === "") {
+        dataObj["agentAssigned"] = ""; 
+      }
+
+      await putApi(`api/lead/edit/${leadID}`, dataObj);
       toast.success("Manager updated successfuly");
       fetchData(); 
     } catch (error) {
@@ -23,18 +29,18 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex }) => {
 
   useEffect(() => {
     setManagerSelected(value);
-  }, [value]);
+  }, []);
 
   return (
     <Select
     style={{
         color: !ManagerSelected ? "grey" : "black"
     }}
-      value={ManagerSelected}
+      value={ManagerSelected || ""}
       onChange={handleChangeManager}
       placeholder="No Manager"
     >
-      {tree?.managers?.map((manager) => (
+      {tree && tree?.managers?.map((manager) => (
         <option key = { manager?._id?.toString()} value={manager?._id?.toString()}>
           {manager?.firstName + " " + manager?.lastName}
         </option>
