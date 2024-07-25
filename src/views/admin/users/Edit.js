@@ -293,6 +293,33 @@ const Edit = (props) => {
                 </InputGroup>
               </GridItem>
             )}
+
+             {(user?.role === "superAdmin" && (
+              <GridItem colSpan={{ base: 12 }}>
+                <FormLabel
+                  display="flex"
+                  ms="4px"
+                  fontSize="sm"
+                  fontWeight="500"
+                  mb="8px"
+                >
+                  New Password
+                </FormLabel>
+                <InputGroup>
+                  <Input
+                    type="text"
+                    fontSize="sm"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    name="password"
+                    fontWeight="500"
+                    placeholder="New Password"
+                    borderRadius="16px"
+                  />
+                </InputGroup>
+              </GridItem>
+            ))}
           </Grid>
         </ModalBody>
         <ModalFooter>
