@@ -462,7 +462,7 @@ export default function UserReports() {
             leadView?.update ||
             leadView?.delete ||
             leadView?.view) && (
-            <Grid templateColumns="repeat(12, 1fr)" gap={2}>
+            <Grid templateColumns="repeat(12, 1fr)" overflowY={"scroll"} height={300} gap={2}>
               <GridItem colSpan={{ base: 12, md: 6 }}>
                 <Box
                   borderRadius={"10px"}
@@ -632,6 +632,372 @@ export default function UserReports() {
                   </Text>
                 </Box>
               </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Waiting{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "waiting"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Follow Up{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "follow_up"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Meeting{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "meeting"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Follow Up After Meeting{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "follow_up_after_meeting"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Deal{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "deal"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Junk{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "junk"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+    <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Whatsapp Send{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "whatsapp_send"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Whatsapp Rec{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "whatsapp_rec"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Deal Out{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "deal_out"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Shift Project{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "shift_project"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Wrong Number{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "wrong_number"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Broker{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "broker"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Voice mail{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "voice_mail"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+                  <GridItem colSpan={{ base: 12, md: 6 }}>
+                <Box
+                  backgroundColor={"whitesmoke"}
+                  borderRadius={"10px"}
+                  p={2}
+                  m={1}
+                  textAlign={"center"}
+                >
+                  <Heading color={"black"} size="sm" pb={3}>
+                    Request{" "}
+                  </Heading>
+                  <Text fontWeight={600} color={"brand.500"}>
+                    <CountUpComponent
+                      targetNumber={
+                        (leadData &&
+                          leadData.length > 0 &&
+                          leadData?.filter(
+                            (lead) => lead?.leadStatus === "request"
+                          )?.length) ||
+                        0
+                      }
+                    />
+                  </Text>
+                </Box>
+              </GridItem>
+
+              
             </Grid>
           )}
           <Flex mt={5} justifyContent={"center"}>

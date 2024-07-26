@@ -74,6 +74,95 @@ const LeadsSummary = ({ user, dateTime }) => {
         primary: "#ffeeeb",
         secondary: "#d6401d",
       },
+        "Waiting": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "waiting")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+        "Follow Up": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "follow_up")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+        "Meeting": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "meeting")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+
+        "Follow Up After Meeting": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "follow_up_after_meeting")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+        "Deal": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "deal")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+        "Junk": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "junk")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+
+        "Whatsapp Send": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "whatsapp_send")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+        "Whataspp Rec": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "whatsapp_rec")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+        "Deal Out": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "deal_out")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+        "Shift Project": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "shift_project")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+        "Wrong Number": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "wrong_number")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+
+        "Broker": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "broker")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+
+        "Voice mail": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "voice_mail")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
+
+        "Request": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "request")?.length || 0,
+        primary: "#ebf5ff",
+        secondary: "#1f7eeb",
+      },
     });
 
     setLoading(false);

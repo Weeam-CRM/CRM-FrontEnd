@@ -29,6 +29,62 @@ const ApexChart = (props) => {
     leadData && leadData?.length && leadData?.length > 0
       ? leadData?.filter((lead) => lead?.leadStatus === "unreachable")?.length
       : 0;
+  let waitingLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "waiting")?.length
+      : 0;
+        let followUpLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "follow_up")?.length
+      : 0;
+        let meetingLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "meeting")?.length
+      : 0;
+        let followUpAfterMeetingLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "follow_up_after_meeting")?.length
+      : 0;
+        let dealLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "deal")?.length
+      : 0;
+        let junkLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "junk")?.length
+      : 0;
+        let whatsappSendLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "whatsapp_send")?.length
+      : 0;
+        let whatsappRecLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "whatsapp_rec")?.length
+      : 0;
+        let dealOutLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "deal_out")?.length
+      : 0;
+        let shiftProjectLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "shift_project")?.length
+      : 0;
+        let wrongNumberLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "wrong_number")?.length
+      : 0;
+        let brokerLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "broker")?.length
+      : 0;
+        let voiceMailLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "voice_mail")?.length
+      : 0;
+        let requestLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "request")?.length
+      : 0;
   const series = [
     newLength,
     activeLength,
@@ -36,6 +92,21 @@ const ApexChart = (props) => {
     soldLength,
     noAnswerLength,
     unreachableLength,
+
+    waitingLength, 
+    followUpLength, 
+    dealLength, 
+    junkLength, 
+    voiceMailLength, 
+    brokerLength, 
+    requestLength, 
+    dealOutLength, 
+    whatsappSendLength, 
+    whatsappRecLength, 
+    meetingLength, 
+    followUpAfterMeetingLength, 
+    wrongNumberLength, 
+    shiftProjectLength
   ];
   const scaledSeries = series.map((value) =>
     leadData?.length ? (value * 100) / leadData?.length : 0
@@ -62,6 +133,20 @@ const ApexChart = (props) => {
       "Sold",
       "No Answer",
       "Unreachable",
+      "Waiting", 
+      "Follow Up", 
+      "Deal", 
+      "Junk", 
+      "Voice mail", 
+      "Broker", 
+      "Request", 
+      "Deal Out", 
+      "Whatsapp Send", 
+      "Whatsapp Rec", 
+      "Meeting", 
+      "Follow Up after Meeting", 
+      "Wrong Number", 
+      "Shift Project"
     ],
   };
 
