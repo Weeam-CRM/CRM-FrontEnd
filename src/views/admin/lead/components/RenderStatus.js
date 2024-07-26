@@ -69,7 +69,6 @@ const RenderStatus = ({ id, cellValue, setUpdatedStatuses }) => {
                   <option value="whatsapp_send">Whatsapp Send</option>
                   <option value="whatsapp_rec">Whatsapp Rec</option>
                   <option value="deal_out">Deal Out</option>
-                  <option value="deal_out">Deal Out</option>
                   <option value="shift_project">Shift Project</option>
                   <option value="wrong_number">Wrong Number</option>
                   <option value="broker">Broker</option>
