@@ -424,7 +424,7 @@ const View = () => {
                             Lead Creation Date{" "}
                           </Text>
                           <Text>
-                            {moment(data?.leadCreationDate).format("L")}
+                            {moment(data?.createdDate).format("L")}
                           </Text>
                         </GridItem>
                         <GridItem colSpan={{ base: 12, md: 6 }}>
@@ -502,7 +502,7 @@ const View = () => {
                             fontWeight="bold"
                           >
                             {" "}
-                            Lead Source Details{" "}
+                            Lead Source Content{" "}
                           </Text>
                           <Text>
                             {data?.leadSourceDetails
@@ -553,33 +553,19 @@ const View = () => {
                               : "N/A"}
                           </Text>
                         </GridItem>
-                        <GridItem colSpan={{ base: 12, md: 6 }}>
+                       
+                        <GridItem colSpan={{ base: 12 }}>
                           <Text
                             color={"blackAlpha.900"}
                             fontSize="sm"
                             fontWeight="bold"
                           >
                             {" "}
-                            Lead Source Campaign{" "}
+                            Adset{" "}
                           </Text>
                           <Text>
-                            {data?.leadSourceCampaign
-                              ? data?.leadSourceCampaign
-                              : "N/A"}
-                          </Text>
-                        </GridItem>
-                        <GridItem colSpan={{ base: 12, md: 6 }}>
-                          <Text
-                            color={"blackAlpha.900"}
-                            fontSize="sm"
-                            fontWeight="bold"
-                          >
-                            {" "}
-                            Lead Source Referral{" "}
-                          </Text>
-                          <Text>
-                            {data?.leadSourceReferral
-                              ? data?.leadSourceReferral
+                            {data?.adset
+                              ? data?.adset
                               : "N/A"}
                           </Text>
                         </GridItem>
@@ -655,114 +641,6 @@ const View = () => {
                               {data?.pageUrl ? data?.pageUrl : "N/A"}
                             </a>
                             : "N/A" }
-                          </Text>
-                        </GridItem>
-                      </Grid>
-                    </Card>
-                  </GridItem>
-                    <GridItem colSpan={{ base: 12, md: 12, lg: 4 }}>
-                    <Card>
-                      <Grid templateColumns="repeat(12, 1fr)" gap={4}>
-                        <GridItem colSpan={12}>
-                          <Box>
-                            <Heading size="md" mb={3}>
-                              UTM Parameters 
-                            </Heading>
-                            <HSeparator />
-                          </Box>
-                        </GridItem>
-                        <GridItem colSpan={{ base: 12, md: 6 }}>
-                          <Text
-                            color={"blackAlpha.900"}
-                            fontSize="sm"
-                            fontWeight="bold"
-                          >
-                            {" "}
-                            UTM Source
-                          </Text>
-                          <Text>
-                            {data?.utm_source
-                              ? data?.utm_source
-                              : "N/A"}
-                          </Text>
-                        </GridItem>
-                        <GridItem colSpan={{ base: 12, md: 6 }}>
-                          <Text
-                            color={"blackAlpha.900"}
-                            fontSize="sm"
-                            fontWeight="bold"
-                          >
-                            {" "}
-                            UTM Medium
-                          </Text>
-                          <Text>
-                            {data?.utm_medium
-                              ? data?.utm_medium
-                              : "N/A"}
-                          </Text>
-                        </GridItem>
-                        <GridItem colSpan={{ base: 12 }}>
-                          <Text
-                            color={"blackAlpha.900"}
-                            fontSize="sm"
-                            fontWeight="bold"
-                          >
-                            {" "}
-                            UTM Campaign
-                          </Text>
-
-                          <Text>
-                            {data?.utm_campaign
-                              ? data?.utm_campaign
-                              : "N/A"}
-                          </Text>
-                        </GridItem>
-                         <GridItem colSpan={{ base: 12 }}>
-                          <Text
-                            color={"blackAlpha.900"}
-                            fontSize="sm"
-                            fontWeight="bold"
-                          >
-                            {" "}
-                            UTM Content
-                          </Text>
-
-                          <Text>
-                            {data?.utm_content
-                              ? data?.utm_content
-                              : "N/A"}
-                          </Text>
-                        </GridItem>
-                         <GridItem colSpan={{ base: 12, md: 6 }}>
-                          <Text
-                            color={"blackAlpha.900"}
-                            fontSize="sm"
-                            fontWeight="bold"
-                          >
-                            {" "}
-                            UTM Adset
-                          </Text>
-
-                          <Text>
-                            {data?.utm_adset
-                              ? data?.utm_adset
-                              : "N/A"}
-                          </Text>
-                        </GridItem>
-                         <GridItem colSpan={{ base: 12 }}>
-                          <Text
-                            color={"blackAlpha.900"}
-                            fontSize="sm"
-                            fontWeight="bold"
-                          >
-                            {" "}
-                            FBclid
-                          </Text>
-
-                          <Text>
-                            {data?.utm_fbclid
-                              ? data?.utm_fbclid
-                              : "N/A"}
                           </Text>
                         </GridItem>
                       </Grid>

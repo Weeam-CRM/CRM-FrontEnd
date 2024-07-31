@@ -140,6 +140,7 @@ export default function CheckTable(props) {
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Whatsapp Number", accessor: "leadWhatsappNumber" },
     { Header: "Phone Number", accessor: "leadPhoneNumber" },
+    { Header: "Date And Time", accessor: "createdDate" },
     { Header: "Timetocall", accessor: "timetocall" },
   ];
 
@@ -962,7 +963,26 @@ export default function CheckTable(props) {
                               {cell?.value || "-"}
                             </Text>
                           );
-                        } else if (cell?.column.Header === "Action") {
+                        }
+                        else if (cell?.column.Header === "Date And Time") {
+                          data = (
+                            <Text
+                              color={
+                                cell?.value < 40
+                                  ? "red.600"
+                                  : cell?.value < 80
+                                  ? "yellow.400"
+                                  : "green.600"
+                              }
+                              fontSize="md"
+                              fontWeight="900"
+                              textAlign={"center"}
+                            >
+                              {new Date(cell?.value).toLocaleString() || "-"}
+                            </Text>
+                          );
+                        }
+                         else if (cell?.column.Header === "Action") {
                           data = (
                             <Text
                               fontSize="md"
