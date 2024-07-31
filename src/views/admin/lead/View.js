@@ -492,7 +492,7 @@ const View = () => {
                           <Text textTransform={"capitalize"}>
                             {data?.leadStatus
                               ? toCamelCase(data?.leadStatus)
-                              : "N/A"}
+                              : "New"}
                           </Text>
                         </GridItem>
                         <GridItem colSpan={{ base: 12, md: 6 }}>
