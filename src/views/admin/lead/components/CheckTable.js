@@ -177,12 +177,8 @@ export default function CheckTable(props) {
     leadStatus: "",
     leadEmail: "",
     leadPhoneNumber: "",
-    leadAddress: "",
-    leadOwner: "",
     managerAssigned: "",
     agentAssigned: "",
-    fromLeadScore: "",
-    toLeadScore: "",
   };
   const validationSchema = yup.object({
     leadName: yup.string(),
@@ -203,6 +199,7 @@ export default function CheckTable(props) {
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
+      console.log(allData, values);
       const searchResult = allData?.filter(
         (item) =>
           (!values?.leadName ||
@@ -224,36 +221,35 @@ export default function CheckTable(props) {
           (!values?.agentAssigned ||
             (item?.agentAssigned &&
               item?.agentAssigned
-                ?.toLowerCase()
-                ?.includes(values?.agentAssigned?.toLowerCase()))) &&
+               === values?.agentAssigned)) &&
+          (!values?.managerAssigned ||
+            (item?.managerAssigned &&
+              item?.managerAssigned === values?.managerAssigned)) &&
           (!values?.leadPhoneNumber ||
             (item?.leadPhoneNumber &&
               item?.leadPhoneNumber
                 ?.toString()
-                ?.includes(values?.leadPhoneNumber))) &&
-          (!values?.leadOwner ||
-            (item?.leadOwner &&
-              item?.leadOwner
-                ?.toLowerCase()
-                ?.includes(values?.leadOwner?.toLowerCase()))) &&
-          ([null, undefined, ""].includes(values?.fromLeadScore) ||
-            [null, undefined, ""].includes(values?.toLeadScore) ||
-            ((item?.leadScore || item?.leadScore === 0) &&
-              (parseInt(item?.leadScore, 10) >=
-                parseInt(values.fromLeadScore, 10) ||
-                0) &&
-              (parseInt(item?.leadScore, 10) <=
-                parseInt(values.toLeadScore, 10) ||
-                0)))
+                ?.includes(values?.leadPhoneNumber)))
       );
 
       let agent = null;
-      if (values?.agentAssigned) {
+      if (values?.agentAssigned && user?.roles[0]?.roleName === "Manager") {
         agent = tree["agents"]["manager-" + user?._id?.toString()]?.find(
+          (user) => user?._id?.toString() === values?.agentAssigned
+        );
+      } else if(values?.agentAssigned && values?.managerAssigned) {
+        agent = tree["agents"]["manager-" + values.managerAssigned]?.find(
           (user) => user?._id?.toString() === values?.agentAssigned
         );
       }
 
+
+      let manager = null;
+      if (values?.managerAssigned) {
+        manager = tree["managers"]?.find(
+          (user) => user?._id?.toString() === values?.managerAssigned
+        );
+      }
       let getValue = [
         values.leadName,
         values.leadStatus === "active"
@@ -262,6 +258,7 @@ export default function CheckTable(props) {
           ? "not-interested"
           : values.leadStatus,
         values?.leadEmail,
+        (manager && manager?.firstName + " " + manager?.lastName) || "",
         (agent && agent?.firstName + " " + agent?.lastName) || "",
         values?.leadPhoneNumber,
         values?.leadOwner,
@@ -963,19 +960,17 @@ export default function CheckTable(props) {
                               {cell?.value || "-"}
                             </Text>
                           );
-                        }
-                        else if (cell?.column.Header === "Date And Time") {
+                        } else if (cell?.column.Header === "Date And Time") {
                           data = (
                             <Text
-                            fontSize={"sm"}
+                              fontSize={"sm"}
                               fontWeight="900"
                               textAlign={"center"}
                             >
                               {new Date(cell?.value).toLocaleString() || "-"}
                             </Text>
                           );
-                        }
-                         else if (cell?.column.Header === "Action") {
+                        } else if (cell?.column.Header === "Action") {
                           data = (
                             <Text
                               fontSize="md"
@@ -1234,6 +1229,7 @@ export default function CheckTable(props) {
       </Card>
       {/* Advance filter */}
       <Modal
+        size="2xl"
         onClose={() => {
           setAdvaceSearch(false);
           resetForm();
@@ -1305,10 +1301,12 @@ export default function CheckTable(props) {
                   <option value="no_answer">No answer</option>
                   <option value="unreachable">Unreachable</option>
 
-                    <option value="waiting">Waiting</option>
+                  <option value="waiting">Waiting</option>
                   <option value="follow_up">Follow Up</option>
                   <option value="meeting">Meeting</option>
-                  <option value="follow_up_after_meeting">Follow Up After Meeting</option>
+                  <option value="follow_up_after_meeting">
+                    Follow Up After Meeting
+                  </option>
                   <option value="deal">Deal</option>
                   <option value="junk">Junk</option>
                   <option value="whatsapp_send">Whatsapp Send</option>
@@ -1381,21 +1379,100 @@ export default function CheckTable(props) {
                 </Text>
               </GridItem>
 
-              {/* <GridItem colSpan={{ base: 12, md: 6 }}>
-                <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='600' color={"#000"} mb="0" mt={2}>
-                  Owner
-                </FormLabel>
-                <Input
-                  fontSize='sm'
-                  onChange={handleChange} onBlur={handleBlur}
-                  value={values?.leadOwner}
-                  name="leadOwner"
-                  placeholder='Enter Lead Owner'
-                  fontWeight='500'
-                />
-                <Text mb='10px' color={'red'}> {errors.leadOwner && touched.leadOwner && errors.leadOwner}</Text>
+              {user?.role === "superAdmin" && (
+                <GridItem colSpan={{ base: 12, md: 6 }}>
+                  <FormLabel
+                    display="flex"
+                    ms="4px"
+                    fontSize="sm"
+                    fontWeight="600"
+                    color={"#000"}
+                    mb="0"
+                    mt={2}
+                  >
+                    Manager
+                  </FormLabel>
+                  <Box>
+                    <Select
+                      name="managerAssigned"
+                      onChange={handleChange}
+                      value={values["managerAssigned"]}
+                    >
+                      <option selected value={""}>
+                        Select manager
+                      </option>
+                      {tree &&
+                        tree["managers"] &&
+                        tree["managers"]?.map((user) => {
+                          return (
+                            <option
+                              key={user?._id?.toString()}
+                              value={user?._id?.toString()}
+                            >
+                              {user?.firstName + " " + user?.lastName}
+                            </option>
+                          );
+                        })}
+                    </Select>
+                  </Box>
 
-              </GridItem> */}
+                  <Text mb="10px" color={"red"}>
+                    {" "}
+                    {errors.fromLeadScore &&
+                      touched.fromLeadScore &&
+                      errors.fromLeadScore}
+                  </Text>
+                </GridItem>
+              )}
+
+              {(user?.role === "superAdmin" && values.managerAssigned) &&
+                   <GridItem colSpan={{ base: 12, md: 6 }}>
+                  <FormLabel
+                    display="flex"
+                    ms="4px"
+                    fontSize="sm"
+                    fontWeight="600"
+                    color={"#000"}
+                    mb="0"
+                    mt={2}
+                  >
+                    Agent
+                  </FormLabel>
+                  <Box>
+                    <Select
+                      name="agentAssigned"
+                      onChange={handleChange}
+                      value={values["agentAssigned"]}
+                    >
+                      <option selected value={""}>
+                        Select agent
+                      </option>
+                      {tree &&
+                        tree["managers"] &&
+                        tree["agents"]["manager-" + values.managerAssigned]?.map(
+                          (user) => {
+                            return (
+                              <option
+                                key={user?._id?.toString()}
+                                value={user?._id?.toString()}
+                              >
+                                {user?.firstName + " " + user?.lastName}
+                              </option>
+                            );
+                          }
+                        )}
+                    </Select>
+                  </Box>
+
+                  <Text mb="10px" color={"red"}>
+                    {" "}
+                    {errors.fromLeadScore &&
+                      touched.fromLeadScore &&
+                      errors.fromLeadScore}
+                  </Text>
+                </GridItem>
+              } 
+
               {user?.roles[0]?.roleName === "Manager" && (
                 <GridItem colSpan={{ base: 12, md: 6 }}>
                   <FormLabel
