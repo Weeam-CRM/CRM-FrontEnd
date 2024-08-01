@@ -35,7 +35,7 @@ const Index = () => {
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Whatsapp Number", accessor: "leadWhatsappNumber" },
     { Header: "Phone Number", accessor: "leadPhoneNumber" },
-    { Header: "Date And Time", accessor: "createdDate" },
+    { Header: "Date And Time", accessor: "createdDate", width: 40 },
     { Header: "Timetocall", accessor: "timetocall" },
     { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },

@@ -967,14 +967,7 @@ export default function CheckTable(props) {
                         else if (cell?.column.Header === "Date And Time") {
                           data = (
                             <Text
-                              color={
-                                cell?.value < 40
-                                  ? "red.600"
-                                  : cell?.value < 80
-                                  ? "yellow.400"
-                                  : "green.600"
-                              }
-                              fontSize="md"
+                            fontSize={"sm"}
                               fontWeight="900"
                               textAlign={"center"}
                             >
