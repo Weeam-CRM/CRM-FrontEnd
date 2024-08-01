@@ -216,7 +216,7 @@ function LeadImport() {
           notes: item[values.notes || "notes"] || "",
           ip: item[values.ip || "ip"] || "",
           pageUrl: item[values.pageUrl || "pageUrl"] || "",
-          leadStatus: statuses[item[values.leadStatus || "leadStatus"]] || "",
+          leadStatus: statuses[item[values.leadStatus || "leadStatus"]] || "new",
           leadSourceChannel:
             item[values.leadSourceChannel || "leadSourceChannel"] || "",
           leadConversionDate: leadConversionDate.isValid()
