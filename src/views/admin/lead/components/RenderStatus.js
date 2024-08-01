@@ -17,6 +17,7 @@ const RenderStatus = ({ id, cellValue, setUpdatedStatuses }) => {
         setUpdatedStatuses((prev) => [...prev, {
             id, status: data?.leadStatus || "new"
         }])
+        toast.success("Lead Status Updated!")
       }
     } catch (e) {
       console.log(e);
