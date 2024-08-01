@@ -53,6 +53,7 @@ import { HasAccess } from "../../../redux/accessUtils";
 import DataNotFound from "components/notFoundData";
 import LeadNotes from "./components/LeadNotes";
 import { FaPlus } from "react-icons/fa";
+import NewNoteModal from "./components/NewNoteModal";
 
 const View = () => {
   const param = useParams();
@@ -70,14 +71,14 @@ const View = () => {
   const [isLoding, setIsLoding] = useState(false);
   const [taskModel, setTaskModel] = useState(false);
   const [addMeeting, setMeeting] = useState(false);
-  const [noteValue, setNoteValue] = useState(""); 
   const [showEmail, setShowEmail] = useState(false);
   const [showCall, setShowCall] = useState(false);
   const [showTasks, setShowTasks] = useState(false);
   const [showMeetings, setShowMeetings] = useState(false);
+  const [newNoteModal, setNewNoteModal] = useState(false); 
   const [action, setAction] = useState(false);
   const [leadData, setLeadData] = useState([]);
-  const [noteAdded, setNoteAdded] = useState(0); 
+  const [noteAdded, setNoteAdded] = useState(0);
   const size = "lg";
 
   const [addEmailHistory, setAddEmailHistory] = useState(false);
@@ -152,22 +153,6 @@ const View = () => {
     if (fetchCustomData) fetchCustomData();
   }, [action]);
 
-  const handleAddNote = async () => {
-    if(noteValue.trim()) {
-      try {
-        await postApi("api/leadnote", {
-          leadID: param.id, 
-          note: noteValue
-        })
-        toast.success("Note added successfuly"); 
-        setNoteAdded((noteAdded) => noteAdded === 0 ? 1 : 0); 
-        setNoteValue(""); 
-      } catch (error) {
-        console.log(error); 
-        toast.error("Something went wrong!");  
-      }
-    }
-  }
 
   return (
     <>
@@ -423,9 +408,7 @@ const View = () => {
                             {" "}
                             Lead Creation Date{" "}
                           </Text>
-                          <Text>
-                            {moment(data?.createdDate).format("L")}
-                          </Text>
+                          <Text>{moment(data?.createdDate).format("L")}</Text>
                         </GridItem>
                         <GridItem colSpan={{ base: 12, md: 6 }}>
                           <Text
@@ -553,7 +536,7 @@ const View = () => {
                               : "N/A"}
                           </Text>
                         </GridItem>
-                       
+
                         <GridItem colSpan={{ base: 12 }}>
                           <Text
                             color={"blackAlpha.900"}
@@ -563,11 +546,7 @@ const View = () => {
                             {" "}
                             Adset{" "}
                           </Text>
-                          <Text>
-                            {data?.adset
-                              ? data?.adset
-                              : "N/A"}
-                          </Text>
+                          <Text>{data?.adset ? data?.adset : "N/A"}</Text>
                         </GridItem>
                         <GridItem colSpan={{ base: 12, md: 6 }}>
                           <Text
@@ -623,9 +602,7 @@ const View = () => {
                           >
                             IP Address
                           </Text>
-                          <Text>
-                            {data?.ip ? data?.ip : "N/A"}
-                          </Text>
+                          <Text>{data?.ip ? data?.ip : "N/A"}</Text>
                         </GridItem>
                         <GridItem colSpan={{ base: 12, md: 6 }}>
                           <Text
@@ -636,11 +613,17 @@ const View = () => {
                             Page URL
                           </Text>
                           <Text color="blue">
-                          {data?.pageUrl ? 
-                            <a href={data?.pageUrl || "#"} target="_blank" rel="noreferrer">
-                              {data?.pageUrl ? data?.pageUrl : "N/A"}
-                            </a>
-                            : "N/A" }
+                            {data?.pageUrl ? (
+                              <a
+                                href={data?.pageUrl || "#"}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {data?.pageUrl ? data?.pageUrl : "N/A"}
+                              </a>
+                            ) : (
+                              "N/A"
+                            )}
                           </Text>
                         </GridItem>
                       </Grid>
@@ -1084,18 +1067,21 @@ const View = () => {
                       justifyContent={"space-between"}
                       alignItems={"center"}
                     >
-                      <Heading flex={2} size="md">Lead Notes/Comments</Heading>
-                      <Flex flex={1} alignItems={"center"}>
-                        <Input value={noteValue} onInput={(e) => setNoteValue(e.target.value)} mr={3} type={"text"} placeholder="Type here" />
-                        <Button onClick={handleAddNote} style={{
+                      <Heading flex={2} size="md">
+                        Lead Notes/Comments
+                      </Heading>
+                       
+                       <Flex flex={1} justifyContent={"flex-end"} alignItems={"center"}>
+                        <Button onClick={() => setNewNoteModal(true)} style={{
                           padding: "0 20px"
                         }} leftIcon={<FaPlus />} size="sm" variant="brand">
-                          Add Note
+                          Add New Note
                         </Button>
                       </Flex>
                     </Flex>
                     <HSeparator />
-                  <LeadNotes noteAdded={noteAdded} lid={param.id} />
+                     
+                    <LeadNotes noteAdded={noteAdded} lid={param.id} />
                   </Card>
                 </GridItem>
               </TabPanel>
@@ -1141,7 +1127,16 @@ const View = () => {
             </Card>
           )}
         </>
+
+        
       )}
+
+       <NewNoteModal
+        isOpen={newNoteModal}
+        onClose={() => setNewNoteModal(false)}
+        paramId={param.id}
+        setNoteAdded={setNoteAdded}
+      />
     </>
   );
 };

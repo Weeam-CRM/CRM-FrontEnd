@@ -6,7 +6,9 @@ import {
   Tr,
   Th,
   Tbody,
+  Grid,
   Thead,
+  GridItem,
   Td,
   Text,
   VStack,
@@ -66,22 +68,25 @@ const LeadNotes = ({ lid, noteAdded }) => {
             </Text>
           )}
           {allNotes.length > 0 && (
-            <TableContainer>
-              <Table variant="simple">
-                <Thead>
-                  <Tr>
-                    <Th>Created at</Th>
-                    <Th>Note</Th>
-                    <Th>Added by</Th>
-                    {/* <Th>Actions</Th> */}
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {allNotes.map((note) => {
-                    return (
-                      <Tr> 
-                      <Td>
-                          <small>
+              <Grid width={"100%"} templateColumns="repeat(12, 1fr)" gap={4} mb={2}>
+                {allNotes.map((note) => {
+                  return (
+                    <GridItem colSpan={{ base: 12, md: 6, lg: 6 }}>
+                      <Box
+                        backgroundColor={"whitesmoke"}
+                        borderRadius={"10px"}
+                        width={"100%"}
+                        p={4}
+                        m={1}
+                        height={"100%"}
+                      >
+                        <Box width={"100%"} display={"flex"} justifyContent={"space-between"} alignItems={"center"}>
+                          <Text fontStyle={"italic"}>
+                            {note.addedBy?.firstName +
+                              " " +
+                              note.addedBy?.lastName}
+                          </Text>
+                          <Text fontSize={13}>
                             {new Date(note.createdAt).toLocaleString("en-GB", {
                               year: "numeric",
                               month: "2-digit",
@@ -91,21 +96,15 @@ const LeadNotes = ({ lid, noteAdded }) => {
                               second: "2-digit",
                               hour12: false,
                             })}
-                          </small>
-                        </Td>
-                        <Td color={"brand.800"}>{note.note}</Td>
-                        <Td>
-                          {note.addedBy?.firstName +
-                            " " +
-                            note.addedBy?.lastName}
-                        </Td>
-                       
-                      </Tr>
-                    );
-                  })}
-                </Tbody>
-              </Table>
-            </TableContainer>
+                          </Text>
+                        </Box>
+
+                        <Text fontWeight={"bold"} mt={3}><pre>{note.note}</pre></Text>
+                      </Box>
+                    </GridItem>
+                  );
+                })}
+              </Grid>
           )}
         </VStack>
       )}

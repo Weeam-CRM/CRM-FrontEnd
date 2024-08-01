@@ -32,7 +32,6 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex }) => {
   };
 
   useEffect(() => {
-    console.log("effectvalue::", value);
     setManagerSelected(value);
   }, []);
 
