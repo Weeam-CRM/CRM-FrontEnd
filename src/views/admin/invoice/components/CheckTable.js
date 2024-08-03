@@ -445,7 +445,7 @@ export default function CheckTable(props) {
         }}
         className="date-range-selector"
       >
-        <Flex alignItems={"center"}>
+        {/* <Flex alignItems={"center"}>
           <p>From:</p>
           <div style={{ width: 10 }}></div>
           <input
@@ -460,7 +460,7 @@ export default function CheckTable(props) {
             style={{ color: "#422afb" }}
             type="datetime-local"
           />
-        </Flex>
+        </Flex> */}
         {dateTime?.from && (
           <div>
             <Flex ms={2} alignItems={"center"}>
@@ -807,36 +807,16 @@ export default function CheckTable(props) {
                               </Text>
                             </Flex>
                           );
-                        } else if (cell?.column.Header === "Name") {
-                          data = access?.view ? (
-                            <Link to={`/leadView/${cell?.row?.values._id}`}>
+                        } else if (cell?.column.Header === "Date") {
+                          data = 
                               <Text
                                 me="10px"
-                                sx={{
-                                  "&:hover": {
-                                    color: "blue.500",
-                                    textDecoration: "underline",
-                                  },
-                                }}
                                 color="brand.600"
                                 fontSize="sm"
-                                // fontWeight="500"
-                                fontWeight="700"
                               >
-                                {cell?.value}
-                              </Text>
-                            </Link>
-                          ) : (
-                            <Text
-                              me="10px"
-                              fontSize="sm"
-                              // fontWeight="500"
-                              fontWeight="700"
-                            >
-                              {cell?.value}
-                            </Text>
-                          );
-                        } else if (cell?.column.Header === "Whatsapp Number") {
+                              {new Date(cell?.value).toLocaleString() || "-"}
+                              </Text>; 
+                        } else if (cell?.column.Header === "Developer") {
                           data = (
                             <Text
                               me="10px"
@@ -847,39 +827,16 @@ export default function CheckTable(props) {
                               {cell?.value || "-"}
                             </Text>
                           );
-                        } else if (cell?.column.Header === "Phone Number") {
-                          data = callAccess?.create ? (
+                        } else if (cell?.column.Header === "Bank Account") {
+                          data = 
                             <Text
                               me="10px"
                               fontSize="sm"
                               // fontWeight="500"
-                              fontWeight="700"
-                              color="brand.600"
-                              sx={{
-                                "&:hover": {
-                                  color: "blue.500",
-                                  textDecoration: "underline",
-                                  cursor: "pointer",
-                                },
-                              }}
-                              onClick={() => {
-                                setAddPhoneCall(true);
-                                setCallSelectedId(cell?.row?.values._id);
-                              }}
-                            >
-                              {cell?.value}
-                            </Text>
-                          ) : (
-                            <Text
-                              me="10px"
-                              fontSize="sm"
-                              // fontWeight="500"
-                              fontWeight="700"
-                            >
-                              {cell?.value}
-                            </Text>
-                          );
-                        } else if (cell?.column.Header === "Address") {
+                              >
+                              {cell?.value || "-"}
+                            </Text>; 
+                        } else if (cell?.column.Header === "Total Amount") {
                           data = (
                             <Text
                               color={textColor}
@@ -887,43 +844,10 @@ export default function CheckTable(props) {
                               // fontWeight="500"
                               fontWeight="700"
                             >
-                              {cell?.value}
+                              {cell?.value || 0} AED
                             </Text>
                           );
-                        } else if (cell?.column.Header === "Status") {
-                          data = (
-                            <div className="selectOpt">
-                             
-                            </div>
-                          );
-                        } else if (cell?.column.Header === "Manager") {
-                          data = (
-                            <></> 
-                          );
-                        } else if (cell?.column.Header === "Agent") {
-                          data = (
-                            <>
-                             
-                            </>
-                          );
-                        } else if (cell?.column.Header === "Nationality") {
-                          data = (
-                            <Text
-                              color={
-                                cell?.value < 40
-                                  ? "red.600"
-                                  : cell?.value < 80
-                                  ? "yellow.400"
-                                  : "green.600"
-                              }
-                              fontSize="md"
-                              fontWeight="900"
-                              textAlign={"center"}
-                            >
-                              {cell?.value || "-"}
-                            </Text>
-                          );
-                        } else if (cell?.column.Header === "Timetocall") {
+                
                           data = (
                             <Text
                               color={
@@ -955,7 +879,6 @@ export default function CheckTable(props) {
                                   minW={"fit-content"}
                                   transform={"translate(1520px, 173px);"}
                                 >
-                                  {access?.update && (
                                     <MenuItem
                                       py={2.5}
                                       onClick={() => {
@@ -965,120 +888,8 @@ export default function CheckTable(props) {
                                       icon={<EditIcon fontSize={15} mb={1} />}
                                     >
                                       Edit
-                                    </MenuItem>
-                                  )}
-                                  {callAccess?.create && (
-                                    <MenuItem
-                                      py={2.5}
-                                      width={"165px"}
-                                      onClick={() => {
-                                        setAddPhoneCall(true);
-                                        setCallSelectedId(
-                                          cell?.row?.values._id
-                                        );
-                                      }}
-                                      icon={<PhoneIcon fontSize={15} mb={1} />}
-                                    >
-                                      Create Call
-                                    </MenuItem>
-                                  )}
-                                  {emailAccess?.create && (
-                                    <MenuItem
-                                      py={2.5}
-                                      width={"165px"}
-                                      onClick={() => {
-                                        setAddEmailHistory(true);
-                                        setSelectedId(cell?.row?.values._id);
-                                      }}
-                                      icon={<EmailIcon fontSize={15} mb={1} />}
-                                    >
-                                      Send Email
-                                    </MenuItem>
-                                  )}
-                                  <MenuItem
-                                    py={2.5}
-                                    width={"max-content"}
-                                    onClick={() => {
-                                      navigate(
-                                        "/leadCycle/" + cell?.row?.values?._id
-                                      );
-                                    }}
-                                    icon={<FaHistory fontSize={15} mb={1} />}
-                                  >
-                                    View Lead cycle
-                                  </MenuItem>
-                                  <MenuItem
-                                    py={2.5}
-                                    width={"max-content"}
-                                    onClick={() => {
-                                      navigate(
-                                        "/leadHistory/" + cell?.row?.values?._id
-                                      );
-                                    }}
-                                    icon={<FaHistory fontSize={15} mb={1} />}
-                                  >
-                                    View Call history
-                                  </MenuItem>
-
-                                  <MenuItem
-                                    display={{ sm: "block", xl: "none" }}
-                                    py={2.5}
-                                    width={"195px"}
-                                    onClick={() => {
-                                      const contact = parseInt(
-                                        cell?.row?.values?.leadPhoneNumber
-                                      );
-                                      if (contact)
-                                        document.location.href = `tel:+92${contact}`;
-                                    }}
-                                    icon={<PhoneIcon fontSize={15} mb={1} />}
-                                  >
-                                    Open in Dialpad
-                                  </MenuItem>
-
-                                  <MenuItem
-                                    py={2.5}
-                                    width={"210px"}
-                                    onClick={() => {
-                                      const contact = parseInt(
-                                        cell?.row?.values?.leadPhoneNumber
-                                      );
-                                      if (contact)
-                                        window.open(
-                                          `https://api.whatsapp.com/send/?phone=${contact}`
-                                        );
-                                    }}
-                                    icon={<BsWhatsapp fontSize={15} mb={1} />}
-                                  >
-                                    Open in Whatsapp
-                                  </MenuItem>
-                                  {user?.roles[0]?.roleName === "Agent" && (
-                                    <MenuItem
-                                      py={2.5}
-                                      width={"210px"}
-                                      onClick={() => {
-                                        onTaskOpen();
-                                      }}
-                                      icon={<MdTask fontSize={15} mb={1} />}
-                                    >
-                                      Create Follow Up
-                                    </MenuItem>
-                                  )}
-                                  {access?.view && (
-                                    <MenuItem
-                                      py={2.5}
-                                      color={"green"}
-                                      onClick={() =>
-                                        navigate(
-                                          `/leadView/${cell?.row?.original._id}`
-                                        )
-                                      }
-                                      icon={<ViewIcon fontSize={15} mb={1} />}
-                                    >
-                                      View
-                                    </MenuItem>
-                                  )}
-                                  {access?.delete && (
+                                    </MenuItem>                                 
+                       
                                     <MenuItem
                                       py={2.5}
                                       color={"red"}
@@ -1092,7 +903,6 @@ export default function CheckTable(props) {
                                     >
                                       Delete
                                     </MenuItem>
-                                  )}
                                 </MenuList>
                               </Menu>
                             </Text>

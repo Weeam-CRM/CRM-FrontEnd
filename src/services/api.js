@@ -2,9 +2,9 @@ import axios from "axios"
 import { constant } from "constant"
 
 
-export const postApi = async (path, data, login) => {
+export const postApi = async (path, data, login, server="baseUrl") => {
     try {
-        let result = await axios.post(constant.baseUrl + path, data, {
+        let result = await axios.post(constant[server] + path, data, {
             headers: {
                 Authorization: localStorage.getItem("token") || sessionStorage.getItem("token")
             }
@@ -23,9 +23,9 @@ export const postApi = async (path, data, login) => {
         return e
     }
 }
-export const putApi = async (path, data, id) => {
+export const putApi = async (path, data, server = "baseUrl") => {
     try {
-        let result = await axios.put(constant.baseUrl + path, data, {
+        let result = await axios.put(constant[server] + path, data, {
             headers: {
                 Authorization: localStorage.getItem("token") || sessionStorage.getItem("token")
             }
@@ -37,26 +37,9 @@ export const putApi = async (path, data, id) => {
     }
 }
 
-export const deleteApi = async (path, id) => {
+export const deleteApi = async (path, id, server="baseUrl") => {
     try {
-        let result = await axios.delete(constant.baseUrl + path + id, {
-            headers: {
-                Authorization: localStorage.getItem("token") || sessionStorage.getItem("token")
-            }
-        })
-        if (result.data?.token && result.data?.token !== null) {
-            localStorage.setItem('token', result.data?.token)
-        }
-        return result
-    } catch (e) {
-        console.error(e)
-        return e
-    }
-}
-
-export const deleteManyApi = async (path, data) => {
-    try {
-        let result = await axios.post(constant.baseUrl + path, data, {
+        let result = await axios.delete(constant[server] + path + id, {
             headers: {
                 Authorization: localStorage.getItem("token") || sessionStorage.getItem("token")
             }
@@ -71,10 +54,27 @@ export const deleteManyApi = async (path, data) => {
     }
 }
 
-export const getApi = async (path, id) => {
+export const deleteManyApi = async (path, data, server="baseUrl") => {
+    try {
+        let result = await axios.post(constant[server] + path, data, {
+            headers: {
+                Authorization: localStorage.getItem("token") || sessionStorage.getItem("token")
+            }
+        })
+        if (result.data?.token && result.data?.token !== null) {
+            localStorage.setItem('token', result.data?.token)
+        }
+        return result
+    } catch (e) {
+        console.error(e)
+        return e
+    }
+}
+
+export const getApi = async (path, id, server="baseUrl") => {
     try {
         if (id) {
-            let result = await axios.get(constant.baseUrl + path + id, {
+            let result = await axios.get(constant[server] + path + id, {
                 headers: {
                     Authorization: localStorage.getItem("token") || sessionStorage.getItem("token")
                 }
@@ -82,7 +82,7 @@ export const getApi = async (path, id) => {
             return result
         }
         else {
-            let result = await axios.get(constant.baseUrl + path, {
+            let result = await axios.get(constant[server] + path, {
                 headers: {
                     Authorization: localStorage.getItem("token") || sessionStorage.getItem("token")
                 }
