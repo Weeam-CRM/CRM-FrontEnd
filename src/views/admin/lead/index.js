@@ -156,6 +156,7 @@ const Index = () => {
             action={action}
             setSearchedData={setSearchedData}
             allData={data}
+            setData={setData}
             displaySearchData={displaySearchData}
             tableData={displaySearchData ? searchedData : data}
             fetchData={fetchData}

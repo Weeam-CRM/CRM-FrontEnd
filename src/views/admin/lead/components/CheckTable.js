@@ -98,6 +98,7 @@ export default function CheckTable(props) {
     action,
     dateTime,
     setDateTime,
+    setData
   } = props;
   const textColor = useColorModeValue("gray.500", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
@@ -911,6 +912,7 @@ export default function CheckTable(props) {
                             <RenderManager
                               fetchData={fetchData}
                               pageIndex={pageIndex}
+                              setData={setData}
                               leadID={row?.original?._id?.toString()}
                               value={cell?.value}
                             />
@@ -919,6 +921,7 @@ export default function CheckTable(props) {
                           data = (
                             <>
                               <RenderAgent
+                              setData={setData}
                                 fetchData={fetchData}
                                 leadID={row?.original?._id?.toString()}
                                 managerAssigned={row?.original?.managerAssigned}

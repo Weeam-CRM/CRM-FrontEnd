@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { putApi } from "services/api";
 
-const RenderAgent = ({ value, managerAssigned, leadID, fetchData }) => {
+const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
   const [AgentSelected, setAgentSelected] = useState("");
   const [agents, setAgents] = useState([]);
   const tree = useSelector((state) => state.user.tree);
@@ -24,14 +24,26 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData }) => {
         agentAssigned: e.target.value,
       };
 
+      setLoading(true); 
+
       await putApi(`api/lead/edit/${leadID}`, data);
       toast.success("Agent updated successfuly");
-      setAgentSelected(data.agentAssigned || "");
+      // setAgentSelected(data.agentAssigned || "");
+         setData(prevData => {
+        const newData = [...prevData]; 
+
+        const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
+        if(updateIdx !== -1) {
+          newData[updateIdx].agentAssigned = data.agentAssigned; 
+        }
+        return newData; 
+      })
       // fetchData();
     } catch (error) {
       console.log(error);
       toast.error("Failed to update the agent");
     }
+      setLoading(false); 
   };
 
   if (agents?.length) {

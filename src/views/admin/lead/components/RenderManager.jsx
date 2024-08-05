@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { putApi } from "services/api";
 
-const RenderManager = ({ value, leadID, fetchData, pageIndex }) => {
+const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
   const [ManagerSelected, setManagerSelected] = useState("");
   const tree = useSelector((state) => state.user.tree);
   const [loading, setLoading] = useState(false);
@@ -22,8 +22,17 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex }) => {
 
       await putApi(`api/lead/edit/${leadID}`, dataObj);
       toast.success("Manager updated successfuly");
-      setManagerSelected(dataObj.managerAssigned || "");
-      // fetchData();
+      // setManagerSelected(dataObj.managerAssigned || "");
+      setData(prevData => {
+        const newData = [...prevData]; 
+
+        const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
+        if(updateIdx !== -1) {
+          newData[updateIdx].managerAssigned = dataObj.managerAssigned; 
+          newData[updateIdx].agentAssigned = ""; 
+        }
+        return newData; 
+      })
     } catch (error) {
       console.log(error);
       toast.error("Failed to update the manager");
@@ -33,7 +42,7 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex }) => {
 
   useEffect(() => {
     setManagerSelected(value);
-  }, []);
+  }, [value]);
 
   return loading ? (
     <Box border={"1px solid #eee"} borderRadius={"4px"} padding={"3"} display={"flex"} alignItems={"center"}>
