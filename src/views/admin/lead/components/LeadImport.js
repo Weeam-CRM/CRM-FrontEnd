@@ -70,6 +70,14 @@ function LeadImport() {
       accessor: "leadScore",
     },
     {
+      Header: "Manager",
+      accessor: "managerAssigned",
+    },
+    {
+      Header: "Agent",
+      accessor: "agentAssigned",
+    },
+    {
       Header: "Nationality",
       accessor: "nationality",
     },
@@ -156,6 +164,8 @@ function LeadImport() {
     nationality: null,
     timetocall: null,
     interest: null,
+    managerAssigned: "", 
+    agentAssigned: "",
     leadWhatsappNumber: null,
     r_u_in_uae: null,
     notes: null,
@@ -206,6 +216,8 @@ function LeadImport() {
             item[values.leadPhoneNumber || "leadPhoneNumber"] || "",
           leadAddress: item[values.leadAddress || "leadAddress"] || "",
           leadScore: parseInt(leadScore, 10) || null,
+          managerAssigned: item[values.managerAssigned || "managerAssigned"]?.trim() || "", 
+          agentAssigned: item[values.agentAssigned || "agentAssigned"]?.trim() || "", 
           leadSource: item[values.leadSource || "leadSource"] || "",
           nationality: item[values.nationality || "nationality"] || "",
           timetocall: item[values.timetocall || "timetocall"] || "",
@@ -246,13 +258,14 @@ function LeadImport() {
           createdDate: new Date(),
         };
 
-        if (user?.roles[0]?.roleName === "Manager") {
-          obj["managerAssigned"] = user?._id?.toString();
-        } else if (user?.roles[0]?.roleName === "Agent") {
-          obj["agentAssigned"] = user?._id?.toString();
-          obj["managerAssigned"] = user?.parent?.toString();
+        if(user?.role !== "superAdmin") {
+          if (user?.roles[0]?.roleName === "Manager") {
+            obj["managerAssigned"] = user?._id?.toString();
+          } else if (user?.roles[0]?.roleName === "Agent") {
+            obj["agentAssigned"] = user?._id?.toString();
+            obj["managerAssigned"] = user?.parent?.toString();
+          }
         }
-
         return obj;
       });
 
