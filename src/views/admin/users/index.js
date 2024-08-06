@@ -11,6 +11,7 @@ const Index = () => {
       isSortable: false,
       width: 10,
     },
+    { Header: "ID", accessor: "", isSortable: false },
     { Header: "email Id", accessor: "username" },
     { Header: "first Name", accessor: "firstName" },
     { Header: "last Name", accessor: "lastName" },

@@ -8,11 +8,8 @@ import {
   GridItem,
   HStack,
   Input,
-  InputGroup,
-  InputLeftElement,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
   Modal,
@@ -22,7 +19,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   Table,
   Tag,
   TagLabel,
@@ -67,6 +63,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import Edit from "../Edit";
 import DataNotFound from "components/notFoundData";
 import CustomSearchInput from "components/search/search";
+import CopyID from "./CopyID";
 
 export default function CheckTable(props) {
   // const { columnsData, action, setAction } = props;
@@ -519,7 +516,15 @@ export default function CheckTable(props) {
                               </Text>
                             </Flex>
                           );
-                        } else if (cell?.column.Header === "email Id") {
+                        }
+                         else if (cell?.column.Header === "ID") {
+                          data = (
+                              <Box widt="max-content">
+                                <CopyID value={row?.original?._id || ""}/>
+                              </Box>
+                          );
+                        }
+                         else if (cell?.column.Header === "email Id") {
                           data = (
                             <Link to={`/userView/${cell?.row?.values._id}`}>
                               <Text
