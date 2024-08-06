@@ -98,7 +98,7 @@ export default function CheckTable(props) {
     action,
     dateTime,
     setDateTime,
-    setData
+    setData,
   } = props;
   const textColor = useColorModeValue("gray.500", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
@@ -120,6 +120,7 @@ export default function CheckTable(props) {
   const [callSelectedId, setCallSelectedId] = useState();
   const navigate = useNavigate();
   const data = useMemo(() => tableData, [tableData]);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isTaskOpen,
@@ -221,8 +222,7 @@ export default function CheckTable(props) {
                 ?.includes(values?.leadEmail?.toLowerCase()))) &&
           (!values?.agentAssigned ||
             (item?.agentAssigned &&
-              item?.agentAssigned
-               === values?.agentAssigned)) &&
+              item?.agentAssigned === values?.agentAssigned)) &&
           (!values?.managerAssigned ||
             (item?.managerAssigned &&
               item?.managerAssigned === values?.managerAssigned)) &&
@@ -238,12 +238,11 @@ export default function CheckTable(props) {
         agent = tree["agents"]["manager-" + user?._id?.toString()]?.find(
           (user) => user?._id?.toString() === values?.agentAssigned
         );
-      } else if(values?.agentAssigned && values?.managerAssigned) {
+      } else if (values?.agentAssigned && values?.managerAssigned) {
         agent = tree["agents"]["manager-" + values.managerAssigned]?.find(
           (user) => user?._id?.toString() === values?.agentAssigned
         );
       }
-
 
       let manager = null;
       if (values?.managerAssigned) {
@@ -721,6 +720,23 @@ export default function CheckTable(props) {
                         fontSize={{ sm: "14px", lg: "16px" }}
                         color="secondaryGray.900"
                       >
+                        {column.Header === "#" && (
+                          <Checkbox
+                            colorScheme="brandScheme"
+                            value={"true"}
+                            isChecked={selectAllChecked}
+                            onChange={(event) => {
+                              setSelectAllChecked(!selectAllChecked);
+                              if (event.target.checked) {
+                                const ids = page?.map((l) => l?.original?._id); 
+                                setSelectedValues(() => [...ids]);
+                              } else {
+                                setSelectedValues([]);
+                              }
+                            }}
+                            me="10px"
+                          />
+                        )}
                         <span
                           style={{
                             textTransform: "capitalize",
@@ -921,7 +937,7 @@ export default function CheckTable(props) {
                           data = (
                             <>
                               <RenderAgent
-                              setData={setData}
+                                setData={setData}
                                 fetchData={fetchData}
                                 leadID={row?.original?._id?.toString()}
                                 managerAssigned={row?.original?.managerAssigned}
@@ -1428,8 +1444,8 @@ export default function CheckTable(props) {
                 </GridItem>
               )}
 
-              {(user?.role === "superAdmin" && values.managerAssigned) &&
-                   <GridItem colSpan={{ base: 12, md: 6 }}>
+              {user?.role === "superAdmin" && values.managerAssigned && (
+                <GridItem colSpan={{ base: 12, md: 6 }}>
                   <FormLabel
                     display="flex"
                     ms="4px"
@@ -1452,18 +1468,18 @@ export default function CheckTable(props) {
                       </option>
                       {tree &&
                         tree["managers"] &&
-                        tree["agents"]["manager-" + values.managerAssigned]?.map(
-                          (user) => {
-                            return (
-                              <option
-                                key={user?._id?.toString()}
-                                value={user?._id?.toString()}
-                              >
-                                {user?.firstName + " " + user?.lastName}
-                              </option>
-                            );
-                          }
-                        )}
+                        tree["agents"][
+                          "manager-" + values.managerAssigned
+                        ]?.map((user) => {
+                          return (
+                            <option
+                              key={user?._id?.toString()}
+                              value={user?._id?.toString()}
+                            >
+                              {user?.firstName + " " + user?.lastName}
+                            </option>
+                          );
+                        })}
                     </Select>
                   </Box>
 
@@ -1474,7 +1490,7 @@ export default function CheckTable(props) {
                       errors.fromLeadScore}
                   </Text>
                 </GridItem>
-              } 
+              )}
 
               {user?.roles[0]?.roleName === "Manager" && (
                 <GridItem colSpan={{ base: 12, md: 6 }}>
