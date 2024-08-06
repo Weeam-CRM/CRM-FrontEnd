@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Select } from "@chakra-ui/react";
+import { Box, CircularProgress, Select, useColorModeValue } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -10,6 +10,9 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
   const tree = useSelector((state) => state.user.tree);
   const [loading, setLoading] = useState(false);
 
+      const textColor = useColorModeValue("black", "white");
+
+
   useEffect(() => {
     if (tree && tree["managers"]) {
       const agentsList = tree?.agents["manager-" + managerAssigned];
@@ -17,6 +20,7 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
       setAgentSelected(value);
     }
   }, [managerAssigned, value, tree]);
+
 
   const handleChangeAgent = async (e) => {
     try {
@@ -64,7 +68,7 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
         onInput={handleChangeAgent}
         value={AgentSelected === null ? "" : AgentSelected}
         style={{
-          color: !AgentSelected ? "grey" : "black",
+          color: !AgentSelected ? "grey" : textColor,
         }}
       >
         {agents?.map((agent) => (

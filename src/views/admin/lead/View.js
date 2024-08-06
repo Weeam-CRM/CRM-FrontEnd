@@ -1072,8 +1072,10 @@ const View = () => {
                       </Heading>
                        
                        <Flex flex={1} justifyContent={"flex-end"} alignItems={"center"}>
-                        <Button onClick={() => setNewNoteModal(true)} style={{
-                          padding: "0 20px"
+                       
+                        <Button color="white" onClick={() => setNewNoteModal(true)} style={{
+                          padding: "0 20px", 
+                          color: "white",
                         }} leftIcon={<FaPlus />} size="sm" variant="brand">
                           Add New Note
                         </Button>

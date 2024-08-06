@@ -1,19 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Box,
-  Table,
-  TableContainer,
-  Tr,
-  Th,
-  Tbody,
-  Grid,
-  Thead,
-  GridItem,
-  Td,
-  Text,
-  VStack,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Grid, GridItem, Text, VStack, useColorModeValue } from "@chakra-ui/react";
 import Spinner from "components/spinner/Spinner";
 import { getApi } from "services/api";
 import { toast } from "react-toastify";
@@ -86,6 +72,7 @@ const LeadNotes = ({ lid, noteAdded }) => {
                       height={"100%"}
                     >
                       <Box
+                      color={"black"}
                         width={"100%"}
                         display={"flex"}
                         justifyContent={"space-between"}
@@ -109,7 +96,7 @@ const LeadNotes = ({ lid, noteAdded }) => {
                         </Text>
                       </Box>
 
-                      <Text fontWeight={"bold"} mt={3}>
+                      <Text color={"black"} fontWeight={"bold"} mt={3}>
                         <pre>{note.note}</pre>
                       </Text>
                     </Box>

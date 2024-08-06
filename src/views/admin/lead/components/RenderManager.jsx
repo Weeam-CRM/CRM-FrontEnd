@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Select } from "@chakra-ui/react";
+import { Box, CircularProgress, Select, useColorModeValue } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -44,6 +44,9 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
     setManagerSelected(value);
   }, [value]);
 
+    const textColor = useColorModeValue("black", "white");
+
+
   return loading ? (
     <Box border={"1px solid #eee"} borderRadius={"4px"} padding={"3"} display={"flex"} alignItems={"center"}>
       <p style={{ marginRight: 8 }}>Updating</p>{" "}
@@ -52,7 +55,7 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
   ) : (
     <Select
       style={{
-        color: !ManagerSelected ? "grey" : "black",
+        color: !ManagerSelected ? "grey" : textColor,
       }}
       value={ManagerSelected || ""}
       onChange={handleChangeManager}

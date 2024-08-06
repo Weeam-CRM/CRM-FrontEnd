@@ -26,9 +26,9 @@ const Delete = (props) => {
                 setIsLoding(true)
                 let response = await deleteManyApi(props.url, props.data)
                 if (response.status === 200) {
-                    props.setSelectedValues([])
                     props.onClose(false)
                     props.setAction((pre) => !pre)
+                    props.setSelectedValues([]); 
                 }
             } catch (error) {
                 console.log(error)
