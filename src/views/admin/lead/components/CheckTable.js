@@ -643,10 +643,12 @@ export default function CheckTable(props) {
                   {" "}
                   Manage Columns
                 </MenuItem>
+                {user?.role === "superAdmin" &&
                 <MenuItem width={"165px"} onClick={() => setIsImportLead(true)}>
                   {" "}
                   Import Leads
                 </MenuItem>
+                }
                 <MenuDivider />
                 <MenuItem
                   width={"165px"}
