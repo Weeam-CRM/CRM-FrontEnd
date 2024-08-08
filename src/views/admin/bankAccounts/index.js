@@ -11,11 +11,12 @@ const Index = () => {
       isSortable: false,
       width: 10,
     },
-    { Header: "", accessor: "", isSortable: false },
-    { Header: "email Id", accessor: "username" },
-    { Header: "first Name", accessor: "firstName" },
-    { Header: "last Name", accessor: "lastName" },
-    { Header: "role", accessor: "roles[0].roleName" },
+    { Header: "Account Name", accessor: "account_holder_name" },
+    { Header: "Account Number", accessor: "account_number" },
+    { Header: "IBAN", accessor: "iban", isSortable: false },
+    { Header: "Swift Code", accessor: "swift_code" },
+    { Header: "Bank Name", accessor: "bank_name" },
+    { Header: "Bank Address", accessor: "branch_address" },
     { Header: "Action", isSortable: false, center: true },
   ];
   const [action, setAction] = useState(false);
@@ -31,12 +32,8 @@ const Index = () => {
 
   const fetchData = async () => {
     setIsLoding(true);
-    let result = await getApi(
-      user?.roles[0]?.roleName === "Manager"
-        ? `api/user/?parent=${user?._id?.toString()}`
-        : "api/user/"
-    );
-    setData(result.data?.user);
+    let result = await getApi(`api/bank_accounts`, null, "server2");
+    setData(result.data || []);
     setIsLoding(false);
   };
 

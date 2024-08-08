@@ -96,6 +96,7 @@ export default function CheckTable(props) {
     emailAccess,
     setAction,
     action,
+    setIsLoding,
     dateTime,
     setDateTime,
     setData,
@@ -115,11 +116,11 @@ export default function CheckTable(props) {
   const [addEmailHistory, setAddEmailHistory] = useState(false);
   const [addPhoneCall, setAddPhoneCall] = useState(false);
   const [advaceSearch, setAdvaceSearch] = useState(false);
-  const [setSearchClear] = useState(false);
+  const [searchClear, setSearchClear] = useState(false);
   const [selectedId, setSelectedId] = useState();
   const [callSelectedId, setCallSelectedId] = useState();
   const navigate = useNavigate();
-  const data = useMemo(() => tableData, [tableData]);
+  let data = useMemo(() => tableData, [tableData]);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -201,7 +202,7 @@ export default function CheckTable(props) {
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log(allData, values);
+      setIsLoding(true); 
       const searchResult = allData?.filter(
         (item) =>
           (!values?.leadName ||
@@ -267,10 +268,12 @@ export default function CheckTable(props) {
           undefined,
       ].filter((value) => value);
       setGetTagValues(getValue);
+      setUpdatedPage(0); 
       setSearchedData(searchResult);
       setDisplaySearchData(true);
       setAdvaceSearch(false);
       setSearchClear(true);
+      setIsLoding(false); 
       resetForm();
     },
   });
@@ -281,6 +284,8 @@ export default function CheckTable(props) {
   useEffect(() => {
     setSearchedData && setSearchedData(data);
   }, []);
+
+
   const {
     errors,
     touched,
@@ -292,6 +297,7 @@ export default function CheckTable(props) {
     resetForm,
     dirty,
   } = formik;
+
   const tableInstance = useTable(
     {
       columns,
@@ -436,7 +442,6 @@ export default function CheckTable(props) {
   };
 
   useEffect(() => {
-    console.log("page changed::", pageIndex);
     setUpdatedPage(pageIndex);
   }, [pageIndex]);
 
@@ -806,6 +811,7 @@ export default function CheckTable(props) {
                       ).value = status?.status;
                     }
                   });
+
                   return (
                     <Tr {...row?.getRowProps()} key={i} className="leadRow">
                       {row?.cells?.map((cell, index) => {

@@ -99,7 +99,7 @@ const Index = () => {
             user.roles[0]?.roleName
           }&dateTime=${dateTime?.from + "|" + dateTime?.to}`
     );
-    setData(result.data);
+    setData(result.data || []);
     setIsLoding(false);
   };
 
@@ -155,7 +155,7 @@ const Index = () => {
             dataColumn={dataColumn}
             action={action}
             setSearchedData={setSearchedData}
-            allData={data}
+            allData={displaySearchData ? searchedData : data}
             setData={setData}
             displaySearchData={displaySearchData}
             tableData={displaySearchData ? searchedData : data}

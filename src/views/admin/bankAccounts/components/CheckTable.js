@@ -273,7 +273,7 @@ export default function CheckTable(props) {
                 fontWeight="700"
                 lineHeight="100%"
               >
-                Users (
+                Bank Accounts (
                 <CountUpComponent
                   key={data?.length}
                   targetNumber={data?.length}
@@ -517,65 +517,39 @@ export default function CheckTable(props) {
                             </Flex>
                           );
                         }
-                         else if (cell?.column.Header === "ID") {
+                         else if (cell?.column.Header === "Account Name") {
                           data = (
-                              <Box widt="max-content">
-                                <CopyID value={row?.original?._id || ""}/>
-                              </Box>
+                              <Text>{cell?.value || "-"}</Text>
                           );
                         }
-                         else if (cell?.column.Header === "email Id") {
+                        else if (cell?.column.Header === "Account Number") {
                           data = (
-                            <Link to={`/userView/${cell?.row?.values._id}`}>
                               <Text
-                                me="10px"
-                                sx={{
-                                  "&:hover": {
-                                    color: "blue.500",
-                                    textDecoration: "underline",
-                                  },
-                                }}
                                 color="brand.600"
-                                fontSize="sm"
-                                fontWeight="700"
-                              >
-                                {cell?.value}
-                              </Text>
-                            </Link>
+                              >{cell?.value || "-"}</Text>
                           );
-                        } else if (cell?.column.Header === "first Name") {
+                        } 
+                        else if (cell?.column.Header === "IBAN") {
                           data = (
-                            <Text
-                              me="10px"
-                              color={textColor}
-                              fontSize="sm"
-                              fontWeight="700"
-                            >
-                              {cell?.value ? cell?.value : " - "}
-                            </Text>
+                              <Text>{cell?.value || "-"}</Text>
                           );
-                        } else if (cell?.column.Header === "last Name") {
+                        } 
+                        else if (cell?.column.Header === "Swift Code") {
                           data = (
-                            <Text
-                              me="10px"
-                              color={textColor}
-                              fontSize="sm"
-                              fontWeight="700"
-                            >
-                              {cell?.value ? cell?.value : " - "}
-                            </Text>
+                              <Text>{cell?.value || "-"}</Text>
                           );
-                        } else if (cell?.column.Header === "role") {
+                        } 
+                        else if (cell?.column.Header === "Bank Name") {
                           data = (
-                            <Text
-                              color={textColor}
-                              fontSize="sm"
-                              fontWeight="700"
-                            >
-                              {cell?.value}
-                            </Text>
+                              <Text>{cell?.value || "-"}</Text>
                           );
-                        } else if (cell?.column.Header === "Action") {
+                        } 
+                        else if (cell?.column.Header === "Bank Address") {
+                          data = (
+                              <Text>{cell?.value || "-"}</Text>
+                          );
+                        } 
+                         else if (cell?.column.Header === "Action") {
                           data = (
                             <Text
                               fontSize="md"
@@ -601,18 +575,7 @@ export default function CheckTable(props) {
                                   >
                                     Edit
                                   </MenuItem>
-                                  <MenuItem
-                                    py={2.5}
-                                    color={"green"}
-                                    onClick={() =>
-                                      navigate(
-                                        `/userView/${cell?.row?.values._id}`
-                                      )
-                                    }
-                                    icon={<ViewIcon mb={1} fontSize={15} />}
-                                  >
-                                    View
-                                  </MenuItem>
+                                  
                                   {cell?.row?.original?.role ===
                                   "superAdmin" ? (
                                     ""
