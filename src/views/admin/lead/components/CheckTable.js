@@ -720,11 +720,10 @@ export default function CheckTable(props) {
                         align="center"
                         justifyContent={column.center ? "center" : "start"}
                         fontSize={{ sm: "14px", lg: "16px" }}
-                        color="secondaryGray.900"
                       >
                         {column.Header === "#" && (
                           <Checkbox
-                            colorScheme="brandScheme"
+                          borderColor={"brand.600"}
                             value={"true"}
                             isChecked={selectAllChecked}
                             onChange={(event) => {
@@ -740,6 +739,7 @@ export default function CheckTable(props) {
                           />
                         )}
                         <span
+                        color="secondaryGray.900"
                           style={{
                             textTransform: "capitalize",
                             marginRight: "8px",
@@ -1634,6 +1634,7 @@ export default function CheckTable(props) {
         data={selectedValues}
         method="many"
         setAction={setAction}
+        setSelectAllChecked={setSelectAllChecked}
       />
     </>
   );

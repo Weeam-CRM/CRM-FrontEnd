@@ -7,6 +7,9 @@ import { TbExchange } from "react-icons/tb";
 import { useNavigate } from 'react-router-dom';
 import { GrValidate } from "react-icons/gr";
 import { TbTableColumn } from "react-icons/tb";
+import { MdAccountBalanceWallet, MdConstruction, MdDeveloperMode } from 'react-icons/md';
+import { LuConstruction } from 'react-icons/lu';
+import { AuBankAccountElement } from '@stripe/react-stripe-js';
 
 const Index = () => {
     const navigate = useNavigate();
@@ -100,6 +103,32 @@ const Index = () => {
                         />
                     }
                     name="Table Fields"
+                />
+                 <MiniStatistics
+                    fontsize="md"
+                    onClick={() => navigate("/developers")}
+                    startContent={
+                        <IconBox
+                            w="56px"
+                            h="56px"
+                            bg="linear-gradient(90deg, #4481EB 0%, #04BEFE 100%)"
+                            icon={<Icon w="28px" h="28px" as={MdConstruction} color="white" />}
+                        />
+                    }
+                    name="Developers"
+                />
+                  <MiniStatistics
+                    fontsize="md"
+                    onClick={() => navigate("/bank-accounts")}
+                    startContent={
+                        <IconBox
+                            w="56px"
+                            h="56px"
+                            bg="linear-gradient(90deg, #4481EB 0%, #04BEFE 100%)"
+                            icon={<Icon w="28px" h="28px" as={MdAccountBalanceWallet} color="white" />}
+                        />
+                    }
+                    name="Bank Accounts"
                 />
             </SimpleGrid>
         </div>

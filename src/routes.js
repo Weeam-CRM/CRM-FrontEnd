@@ -21,7 +21,6 @@ import ChangeImage from "views/admin/image";
 import Validation from "views/admin/validation";
 import CustomField from "views/admin/customField";
 import TableField from "views/admin/tableField";
-import { BiHistory } from "react-icons/bi";
 
 // Admin Imports
 const MainDashboard = React.lazy(() => import("views/admin/default"));
@@ -47,6 +46,8 @@ const InvoiceView = React.lazy(() => import("views/admin/invoice"));
 
 
 const Task = React.lazy(() => import("views/admin/task"));
+const Developers = React.lazy(() => import("views/admin/developers"));
+const BankAccounts = React.lazy(() => import("views/admin/bankAccounts"));
 const DailyReport = React.lazy(() => import("views/admin/dailyReport"));  
 const TaskView = React.lazy(() => import("views/admin/task/components/taskView"));
 const Calender = React.lazy(() => import("views/admin/calender"));
@@ -390,6 +391,21 @@ const routes = [
     under: "user",
     path: "/userView/:id",
     component: UserView,
+  },
+    {
+    name: "Developers",
+    layout: [ROLE_PATH.superAdmin, ROLE_PATH.user],
+    path: "/developers",
+    under: "developers",
+    component: Developers,
+  },
+
+   {
+    name: "Bank Accounts",
+    layout: [ROLE_PATH.superAdmin, ROLE_PATH.user],
+    path: "/bank-accounts",
+    under: "bank-accounts",
+    component: BankAccounts,
   },
   // ========================== User layout ==========================
 
