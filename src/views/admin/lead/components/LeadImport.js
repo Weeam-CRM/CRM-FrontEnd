@@ -332,7 +332,7 @@ function LeadImport() {
         const jsonData = [];
 
         // Iterate over rows and cells
-        worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
+        worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
           const rowData = {};
           row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
             rowData[worksheet.getCell(1, colNumber).value] = cell.value;

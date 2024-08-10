@@ -66,6 +66,7 @@ const AddUser = (props) => {
       }
     } catch (e) {
       console.log(e);
+        toast.error("Something went wrong!");
     } finally {
       setIsLoding(false);
     }
