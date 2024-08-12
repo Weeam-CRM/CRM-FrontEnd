@@ -43,6 +43,7 @@ const LeadCycle = React.lazy(() => import("views/admin/leadCycle"));
 const LeadView = React.lazy(() => import("views/admin/lead/View"));
 const LeadImport = React.lazy(() => import("views/admin/lead/components/LeadImport"));
 const InvoiceView = React.lazy(() => import("views/admin/invoice"));
+const SingleInvoice = React.lazy(() => import("views/admin/invoice/View"));
 
 
 const Task = React.lazy(() => import("views/admin/task"));
@@ -182,6 +183,13 @@ const routes = [
     icon: <Icon as={FaFile} width='20px' height='20px' color='inherit' />,
     path: "/invoice",
     component: InvoiceView,
+  },
+  {
+    name: "Invoice",
+    layout: [ROLE_PATH.superAdmin, ROLE_PATH.user],
+    under: 'invoice',
+    path: "/invoiceView/:id",
+    component: SingleInvoice,
   },
   // -----------------------------Admin setting-------------------------------------
   {

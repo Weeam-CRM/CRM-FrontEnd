@@ -1158,6 +1158,10 @@ export default function CheckTable(props) {
                         }
                         return (
                           <Td
+                           paddingTop={"0.35rem"}
+                           paddingBottom={"0.35rem"}
+                           paddingLeft={"5px"}
+                           paddingRight={"5px"}
                             {...cell?.getCellProps()}
                             key={index}
                             style={

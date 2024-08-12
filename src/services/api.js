@@ -5,8 +5,8 @@ import { constant } from "constant"
 export const postApi = async (path, data, login, server="baseUrl") => {
     try {
         let result = await axios.post(constant[server] + path, data, {
-            headers: {
-                Authorization: localStorage.getItem("token") || sessionStorage.getItem("token")
+            headers: server === "server2" ? {} : {
+                Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
             }
         })
         if (result.data?.token && result.data?.token !== null) {
@@ -26,8 +26,8 @@ export const postApi = async (path, data, login, server="baseUrl") => {
 export const putApi = async (path, data, server = "baseUrl") => {
     try {
         let result = await axios.put(constant[server] + path, data, {
-            headers: {
-                Authorization: localStorage.getItem("token") || sessionStorage.getItem("token")
+            headers: server === "server2" ? {} : {
+                Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
             }
         })
         return result

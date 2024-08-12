@@ -866,46 +866,48 @@ export default function CheckTable(props) {
                           );
                         } else if (cell?.column.Header === "Action") {
                           data = (
-                            <Text
-                              fontSize="md"
-                              fontWeight="900"
-                              textAlign={"center"}
-                            >
-                              <Menu isLazy>
-                                <MenuButton>
-                                  <CiMenuKebab />
-                                </MenuButton>
-                                <MenuList
-                                  minW={"fit-content"}
-                                  transform={"translate(1520px, 173px);"}
-                                >
-                                    <MenuItem
-                                      py={2.5}
-                                      onClick={() => {
-                                        setEdit(true);
-                                        setSelectedId(cell?.row?.original._id);
-                                      }}
-                                      icon={<EditIcon fontSize={15} mb={1} />}
-                                    >
-                                      Edit
-                                    </MenuItem>                                 
-                       
-                                    <MenuItem
-                                      py={2.5}
-                                      color={"red"}
-                                      onClick={() => {
-                                        setSelectedValues([
-                                          cell?.row?.original._id,
-                                        ]);
-                                        setDelete(true);
-                                      }}
-                                      icon={<DeleteIcon fontSize={15} mb={1} />}
-                                    >
-                                      Delete
-                                    </MenuItem>
-                                </MenuList>
-                              </Menu>
-                            </Text>
+                            <Flex alignItems={"center"}>
+                            <Link state={row.original} to={`/invoiceView/${row.original?.id}`}><Button size="sm" colorScheme="brand" marginRight={5}>View Invoice</Button></Link>
+                              <Text
+                                fontSize="md"
+                                fontWeight="900"
+                                textAlign={"center"}
+                              >
+                                <Menu isLazy>
+                                  <MenuButton>
+                                    <CiMenuKebab />
+                                  </MenuButton>
+                                  <MenuList
+                                    minW={"fit-content"}
+                                    transform={"translate(1520px, 173px);"}
+                                  >
+                                      <MenuItem
+                                        py={2.5}
+                                        onClick={() => {
+                                          setEdit(true);
+                                          setSelectedId(cell?.row?.original._id);
+                                        }}
+                                        icon={<EditIcon fontSize={15} mb={1} />}
+                                      >
+                                        Edit
+                                      </MenuItem>
+                                      <MenuItem
+                                        py={2.5}
+                                        color={"red"}
+                                        onClick={() => {
+                                          setSelectedValues([
+                                            cell?.row?.original._id,
+                                          ]);
+                                          setDelete(true);
+                                        }}
+                                        icon={<DeleteIcon fontSize={15} mb={1} />}
+                                      >
+                                        Delete
+                                      </MenuItem>
+                                  </MenuList>
+                                </Menu>
+                              </Text>
+                            </Flex>
                           );
                         }
                         return (
@@ -951,13 +953,9 @@ export default function CheckTable(props) {
           />
         )}
 
-  
-
-   
-
         {isOpen && (
           <Add
-            isOpen={isOpen}
+          isOpen={isOpen}
             size={size}
             setLeadData={setLeadData}
             leadData={leadData[0]}
@@ -967,7 +965,7 @@ export default function CheckTable(props) {
             action={action}
           />
         )}
-        <Edit
+        {/* <Edit
           isOpen={edit}
           size={size}
           setLeadData={setLeadData}
@@ -977,7 +975,7 @@ export default function CheckTable(props) {
           onClose={setEdit}
           setAction={setAction}
           moduleId={leadData?.[0]?._id}
-        />
+        /> */}
       
       </Card>
       {/* Advance filter */}
@@ -1277,7 +1275,7 @@ export default function CheckTable(props) {
         </ModalContent>
       </Modal>
       {/* Delete model */}
-      <Delete
+      {/* <Delete
         isOpen={deleteModel}
         onClose={setDelete}
         setSelectedValues={setSelectedValues}
@@ -1285,7 +1283,7 @@ export default function CheckTable(props) {
         data={selectedValues}
         method="many"
         setAction={setAction}
-      />
+      /> */}
     </>
   );
 }

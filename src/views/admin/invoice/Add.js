@@ -7,6 +7,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
+  FormLabel,
   Grid,
   GridItem,
   IconButton,
@@ -15,13 +16,18 @@ import {
 } from "@chakra-ui/react";
 import Spinner from "components/spinner/Spinner";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getApi } from "services/api";
 import { postApi } from "services/api";
 import { generateValidationSchema } from "utils";
 import * as yup from "yup";
 
 const Add = (props) => {
   const [isLoding, setIsLoding] = useState(false);
+  const [developersData, setDevelopersData] = useState([]); 
+  const [bankAccountsData, setBankAccountsData] = useState([]); 
+  const [developersLoading, setDevelopersLoading] = useState([]); 
+  const [bankAccountsLoading, setBankAccountsLoading] = useState([]); 
   const initialFieldValues = Object.fromEntries(
     (props?.leadData?.fields || []).map((field) => [field?.name, ""])
   );
@@ -90,6 +96,27 @@ const Add = (props) => {
     props.onClose();
   };
 
+  const fetchDevelopers = async () => {
+    setDevelopersLoading(true);
+    let result = await getApi(
+         `api/developers`, null, "server2"
+    );
+    setDevelopersData(result.data || []);
+    setDevelopersLoading(false);
+  };
+
+  const fetchBankAccounts = async () => {
+    setBankAccountsLoading(true);
+    let result = await getApi(`api/bank_accounts`, null, "server2");
+    setBankAccountsData(result.data || []);
+    setBankAccountsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchDevelopers();
+    fetchBankAccounts();
+  }, []); 
+
   return (
     <div>
       <Drawer isOpen={props.isOpen} size={props.size}>
@@ -103,9 +130,10 @@ const Add = (props) => {
          
             <Grid templateColumns="repeat(12, 1fr)" gap={3}>
               <GridItem colSpan={{ base: 12, md: 6 }}>
+              <FormLabel>Unit No</FormLabel>
                 <Input
                   fontSize="sm"
-                  type={"text"}
+                  type={"number"}
                   name={"unitNo"}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -118,22 +146,7 @@ const Add = (props) => {
                 />
               </GridItem>
               <GridItem colSpan={{ base: 12, md: 6 }}>
-                <Select
-                  fontSize="sm"
-                  name={"developer"}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="Select developer"
-                  value={values["developer"] || null}
-                  fontWeight="500"
-                  borderColor={
-                    errors?.["developer"] && touched?.["developer"]
-                      ? "red.300"
-                      : null
-                  }
-                ></Select>
-              </GridItem>
-              <GridItem colSpan={{ base: 12, md: 6 }}>
+              <FormLabel>Total Price</FormLabel>
                 <Input
                   fontSize="sm"
                   type={"number"}
@@ -148,6 +161,55 @@ const Add = (props) => {
                   }
                 />
               </GridItem>
+              <GridItem colSpan={{ base: 12, md: 6 }}>
+              <FormLabel>Developer</FormLabel>
+                  
+                <Select
+                  fontSize="sm"
+                  name={"developer"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Select developer"
+                  value={values["developer"] || null}
+                  fontWeight="500"
+                  disabled={developersLoading}
+                  borderColor={
+                    errors?.["developer"] && touched?.["developer"]
+                      ? "red.300"
+                      : null
+                  }
+                >
+                  {developersData.map((developer) => {
+                    return <option value={developer.id}>{developer.developer_name}</option>
+                  })}
+                </Select>
+              </GridItem>
+              <GridItem colSpan={{ base: 12, md: 6 }}>
+              
+              <FormLabel>Bank Account</FormLabel>
+                <Select
+                  fontSize="sm"
+                  name={"bankAccount"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  disabled={bankAccountsLoading}
+                  placeholder="Select bank account"
+                  value={values["bankAccount"] || null}
+                  fontWeight="500"
+                  borderColor={
+                    errors?.["bankAccount"] && touched?.["bankAccount"]
+                      ? "red.300"
+                      : null
+                  }
+                >
+
+                  {bankAccountsData.map((bankAccount) => {
+                    return <option value={bankAccount.id}>{bankAccount.account_holder_name}</option>
+                  })}
+
+                </Select>
+              </GridItem>
+              
             </Grid>
           </DrawerBody>
           <DrawerFooter>

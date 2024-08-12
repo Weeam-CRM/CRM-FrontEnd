@@ -384,7 +384,7 @@ export default function CheckTable(props) {
           </HStack>
         </Grid>
         {/* Delete model */}
-        <Delete
+        {/* <Delete
           isOpen={deleteModel}
           onClose={setDelete}
           setAction={setAction}
@@ -392,7 +392,7 @@ export default function CheckTable(props) {
           url="api/user/deleteMany"
           data={selectedValues}
           method="many"
-        />
+        /> */}
 
         <Box overflowY={"auto"} className="table-fix-container">
           <Table
@@ -628,7 +628,7 @@ export default function CheckTable(props) {
         setAction={setAction}
         onClose={onClose}
       />
-      <Edit
+      {/* <Edit
         isOpen={edit}
         size={"sm"}
         setAction={setAction}
@@ -637,7 +637,7 @@ export default function CheckTable(props) {
         data={editData}
         setEdit={setEdit}
         selectedId={selectedId}
-      />
+      /> */}
       {/* Advance filter */}
       <Modal
         onClose={() => {
