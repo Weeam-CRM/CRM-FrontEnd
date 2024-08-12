@@ -17,6 +17,7 @@ import {
 import Spinner from "components/spinner/Spinner";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { getApi } from "services/api";
 import { postApi } from "services/api";
 import { generateValidationSchema } from "utils";
@@ -28,27 +29,22 @@ const Add = (props) => {
   const [bankAccountsData, setBankAccountsData] = useState([]); 
   const [developersLoading, setDevelopersLoading] = useState([]); 
   const [bankAccountsLoading, setBankAccountsLoading] = useState([]); 
-  const initialFieldValues = Object.fromEntries(
-    (props?.leadData?.fields || []).map((field) => [field?.name, ""])
-  );
+ 
 
   const initialValues = {
-    ...initialFieldValues,
-    createBy: JSON.parse(localStorage.getItem("user"))._id,
+    unit_no: null, 
+    invoice_number: null, 
+    total_amount: 0, 
+    developer_id: null, 
+    bank_account_id: null
   };
 
   const formik = useFormik({
     initialValues: initialValues,
-    // validationSchema: validationSchema,
-    validationSchema: yup
-      .object()
-      .shape(generateValidationSchema(props?.leadData?.fields)),
     onSubmit: (values, { resetForm }) => {
-      AddData();
+      resetForm(); 
     },
   });
-
-  const user = JSON.parse(localStorage.getItem("user"));
 
   const {
     errors,
@@ -60,36 +56,30 @@ const Add = (props) => {
     setFieldValue,
   } = formik;
 
+  
   const AddData = async () => {
     try {
       setIsLoding(true);
-
       const formValues = { ...values };
-      if (user?.roles[0]?.roleName === "Manager") {
-        formValues["managerAssigned"] = user?._id?.toString();
-      }
 
-      if (user?.roles[0]?.roleName === "Agent") {
-        formValues["agentAssigned"] = user?._id?.toString();
-      }
-      // let response = await postApi('api/lead/add', values)
-      formValues["leadStatus"] = "new";
-      let response = await postApi("api/form/add", {
-        ...formValues,
-        moduleId: props?.leadData?._id,
-      });
-      if (response.status === 200) {
+      let response = await postApi(
+        "api/invoices",
+        formValues,
+        false,
+        "server2"
+      );
+      if (response && response.status === 200) {
         props.onClose();
-        formik.resetForm();
-        props.fetchData();
-        props.setAction((pre) => !pre);
+      } else {
+        toast.error(response.response.data?.message);
       }
     } catch (e) {
       console.log(e);
+        toast.error("Something went wrong!");
     } finally {
       setIsLoding(false);
     }
-  };
+  }
 
   const handleCancel = () => {
     formik.resetForm();
@@ -134,14 +124,30 @@ const Add = (props) => {
                 <Input
                   fontSize="sm"
                   type={"number"}
-                  name={"unitNo"}
+                  name={"unit_no"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values["unitNo"]}
+                  value={values["unit_no"]}
                   fontWeight="500"
                   placeholder={`Enter Unit No`}
                   borderColor={
-                    errors?.["unitNo"] && touched?.["unitNo"] ? "red.300" : null
+                    errors?.["unit_no"] && touched?.["unit_no"] ? "red.300" : null
+                  }
+                />
+              </GridItem>
+               <GridItem colSpan={{ base: 12, md: 6 }}>
+              <FormLabel>Unit No</FormLabel>
+                <Input
+                  fontSize="sm"
+                  type={"text"}
+                  name={"invoice_number"}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values["invoice_number"]}
+                  fontWeight="500"
+                  placeholder={`Enter Invoice Number`}
+                  borderColor={
+                    errors?.["invoice_number"] && touched?.["invoice_number"] ? "red.300" : null
                   }
                 />
               </GridItem>
@@ -150,14 +156,14 @@ const Add = (props) => {
                 <Input
                   fontSize="sm"
                   type={"number"}
-                  name={"totalPrice"}
+                  name={"total_amount"}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values["totalPrice"]}
+                  value={values["total_amount"]}
                   fontWeight="500"
-                  placeholder={`Enter Total Price`}
+                  placeholder={`Enter Total Amount`}
                   borderColor={
-                    errors?.["totalPrice"] && touched?.["totalPrice"] ? "red.300" : null
+                    errors?.["total_amount"] && touched?.["total_amount"] ? "red.300" : null
                   }
                 />
               </GridItem>
@@ -166,15 +172,15 @@ const Add = (props) => {
                   
                 <Select
                   fontSize="sm"
-                  name={"developer"}
+                  name={"developer_id"}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   placeholder="Select developer"
-                  value={values["developer"] || null}
+                  value={values["developer_id"] || null}
                   fontWeight="500"
                   disabled={developersLoading}
                   borderColor={
-                    errors?.["developer"] && touched?.["developer"]
+                    errors?.["developer_id"] && touched?.["developer_id"]
                       ? "red.300"
                       : null
                   }
@@ -189,15 +195,15 @@ const Add = (props) => {
               <FormLabel>Bank Account</FormLabel>
                 <Select
                   fontSize="sm"
-                  name={"bankAccount"}
+                  name={"bank_account_id"}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   disabled={bankAccountsLoading}
                   placeholder="Select bank account"
-                  value={values["bankAccount"] || null}
+                  value={values["bank_account_id"] || null}
                   fontWeight="500"
                   borderColor={
-                    errors?.["bankAccount"] && touched?.["bankAccount"]
+                    errors?.["bank_account_id"] && touched?.["bank_account_id"]
                       ? "red.300"
                       : null
                   }
@@ -219,7 +225,7 @@ const Add = (props) => {
               disabled={isLoding ? true : false}
               variant="brand"
               type="submit"
-              onClick={handleSubmit}
+              onClick={AddData}
             >
               {isLoding ? <Spinner /> : "Save"}
             </Button>
