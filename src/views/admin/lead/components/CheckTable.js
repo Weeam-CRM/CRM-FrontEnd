@@ -100,6 +100,7 @@ export default function CheckTable(props) {
     dateTime,
     setDateTime,
     pages,
+    totalLeads,
     setData,
   } = props;
   const textColor = useColorModeValue("gray.500", "white");
@@ -530,7 +531,7 @@ export default function CheckTable(props) {
                 Leads (
                 <CountUpComponent
                   key={data?.length}
-                  targetNumber={data?.length}
+                  targetNumber={totalLeads}
                 />
                 )
               </Text>

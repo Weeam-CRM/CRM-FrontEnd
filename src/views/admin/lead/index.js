@@ -20,6 +20,7 @@ const Index = () => {
   const [displaySearchData, setDisplaySearchData] = useState(false);
   const [searchedData, setSearchedData] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
+  const [totalLeads, setTotalLeads] = useState(0); 
   const [pages, setPages] = useState(0); 
   const tree = useSelector((state) => state.user.tree);
 
@@ -102,6 +103,7 @@ const Index = () => {
     );
     setData(result.data?.result || []);
     setPages(result.data?.totalPages || 0); 
+    setTotalLeads(result.data?.totalLeads || 0); 
     setIsLoding(false);
   };
 
@@ -149,6 +151,7 @@ const Index = () => {
           <CheckTable
             dateTime={dateTime}
             setDateTime={setDateTime}
+            totalLeads={totalLeads}
             isLoding={isLoding}
             setIsLoding={setIsLoding}
             pages={pages}
