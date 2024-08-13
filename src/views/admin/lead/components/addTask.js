@@ -77,10 +77,11 @@ const AddTask = (props) => {
             let result
             if (values.category === "Contact") {
                 result = await getApi(user.role === 'superAdmin' ? 'api/contact/' : `api/contact/?createBy=${user._id}`)
+            setAssignmentToData(result?.data || [])
             } else if (values.category === "Lead") {
                 result = await getApi(user.role === 'superAdmin' ? 'api/lead/' : `api/lead/?createBy=${user._id}`);
+            setAssignmentToData(result?.data?.result || [])
             }
-            setAssignmentToData(result?.data)
         }
         catch (e) {
             console.log(e);

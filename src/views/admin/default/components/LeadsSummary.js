@@ -27,7 +27,7 @@ const LeadsSummary = ({ user, dateTime }) => {
       );
     }
 
-    const leadData = lead.data;
+    const leadData = lead.data?.result || [];
     setData({
       "Total Leads": {
         count: leadData?.length || 0,

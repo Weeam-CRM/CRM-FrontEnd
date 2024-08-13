@@ -29,7 +29,7 @@ const ContactModel = (props) => {
         setIsLoding(true)
         let result = await getApi(user.role === 'superAdmin' ? 'api/lead/' : `api/lead/?createBy=${user._id}`);
         if (result && result.status == 200) {
-            setData(result?.data);
+            setData(result?.data?.result || []);
         }
         setIsLoding(false)
     }

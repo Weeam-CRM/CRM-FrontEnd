@@ -451,7 +451,7 @@ export default function CheckTable(props) {
   }, [pageIndex]);
 
   useEffect(() => {
-    setUpdatedPage(1);
+    setUpdatedPage(0);
     fetchData(1, pageSize); 
   }, [pageSize]);
   return (

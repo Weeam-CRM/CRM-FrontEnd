@@ -67,10 +67,11 @@ const AddMeeting = (props) => {
         let result
         if (values.related === "Contact") {
             result = await getApi(user.role === 'superAdmin' ? 'api/contact/' : `api/contact/?createBy=${user._id}`)
+        setData(result?.data || []);
         } else if (values.related === "Lead") {
             result = await getApi(user.role === 'superAdmin' ? 'api/lead/' : `api/lead/?createBy=${user._id}`);
+        setData(result?.data?.result || []);
         }
-        setData(result?.data);
     }
 
     useEffect(() => {

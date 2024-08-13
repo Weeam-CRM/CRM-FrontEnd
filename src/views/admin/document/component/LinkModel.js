@@ -63,7 +63,7 @@ const Link = (props) => {
             values.createBy = result?._id;
             setData(prevData => [
                 // ...prevData,
-                ...(result?.data?.map(item => ({ label: item.leadName, value: item._id })) || [])
+                ...(result?.data?.result?.map(item => ({ label: item.leadName, value: item._id })) || [])
             ]);
         }
     }
