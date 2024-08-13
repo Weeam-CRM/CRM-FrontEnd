@@ -99,6 +99,7 @@ export default function CheckTable(props) {
     setIsLoding,
     dateTime,
     setDateTime,
+    pages,
     setData,
   } = props;
   const textColor = useColorModeValue("gray.500", "white");
@@ -302,7 +303,9 @@ export default function CheckTable(props) {
     {
       columns,
       data,
-      initialState: { pageIndex: updatedPage },
+      manualPagination: true,
+      initialState: { pageIndex: updatedPage},
+      pageCount: pages
     },
     useGlobalFilter,
     useSortBy,
@@ -443,6 +446,7 @@ export default function CheckTable(props) {
 
   useEffect(() => {
     setUpdatedPage(pageIndex);
+    fetchData(pageIndex + 1, pageSize); 
   }, [pageIndex]);
 
   return (

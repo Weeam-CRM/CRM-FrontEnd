@@ -20,6 +20,7 @@ const Index = () => {
   const [displaySearchData, setDisplaySearchData] = useState(false);
   const [searchedData, setSearchedData] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
+  const [pages, setPages] = useState(0); 
   const tree = useSelector((state) => state.user.tree);
 
   const [permission, emailAccess, callAccess] = HasAccess([
@@ -90,16 +91,17 @@ const Index = () => {
     selectedColumns?.find((colum) => colum?.Header === item.Header)
   );
 
-  const fetchData = async () => {
+  const fetchData = async (pageNo = 1, pageSize = 10) => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
-        ? "api/lead/" + "?dateTime=" + dateTime?.from + "|" + dateTime?.to
+        ? "api/lead/" + "?dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + pageSize
         : `api/lead/?user=${user._id}&role=${
             user.roles[0]?.roleName
-          }&dateTime=${dateTime?.from + "|" + dateTime?.to}`
+          }&dateTime=${dateTime?.from + "|" + dateTime?.to}&page=${pageNo}&pageSize=${pageSize}`
     );
-    setData(result.data || []);
+    setData(result.data?.result || []);
+    setPages(result.data?.totalPages || 0); 
     setIsLoding(false);
   };
 
@@ -149,6 +151,7 @@ const Index = () => {
             setDateTime={setDateTime}
             isLoding={isLoding}
             setIsLoding={setIsLoding}
+            pages={pages}
             columnsData={roleColumns[role] || tableColumns}
             isOpen={isOpen}
             setAction={setAction}
