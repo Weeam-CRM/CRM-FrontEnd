@@ -30,7 +30,7 @@ const Index = () => {
     "Call",
   ]);
   const tableColumns = [
-    { Header: "#", accessor: "_id", isSortable: false, width: 10 },
+    { Header: "#", accessor: "intID", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
     { Header: "Manager", accessor: "managerAssigned" },
     { Header: "Agent", accessor: "agentAssigned" },
@@ -43,7 +43,7 @@ const Index = () => {
     { Header: "Action", isSortable: false, center: true },
   ];
   const tableColumnsManager = [
-    { Header: "#", accessor: "_id", isSortable: false, width: 10 },
+    { Header: "#", accessor: "intID", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
     { Header: "Agent", accessor: "agentAssigned" },
     { Header: "Status", accessor: "leadStatus" },
@@ -55,7 +55,7 @@ const Index = () => {
     { Header: "Action", isSortable: false, center: true },
   ];
   const tableColumnsAgent = [
-    { Header: "#", accessor: "_id", isSortable: false, width: 10 },
+    { Header: "#", accessor: "intID", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Whatsapp Number", accessor: "leadWhatsappNumber" },

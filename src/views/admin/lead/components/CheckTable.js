@@ -839,7 +839,7 @@ export default function CheckTable(props) {
                                 // fontWeight="500"
                                 fontWeight="700"
                               >
-                                {cell?.row?.index + 1}
+                                {cell?.value || "-"}
                               </Text>
                             </Flex>
                           );
