@@ -831,9 +831,9 @@ export default function CheckTable(props) {
                               <Checkbox
                                 colorScheme="brandScheme"
                                 value={selectedValues}
-                                isChecked={selectedValues.includes(cell?.value)}
+                                isChecked={selectedValues.includes(row.original?._id)}
                                 onChange={(event) =>
-                                  handleCheckboxChange(event, cell?.value)
+                                  handleCheckboxChange(event, row.original?._id)
                                 }
                                 me="10px"
                               />
