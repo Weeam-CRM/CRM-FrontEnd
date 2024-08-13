@@ -109,7 +109,7 @@ export default function CheckTable(props) {
   const columns = useMemo(() => dataColumn, [dataColumn]);
   const [selectedValues, setSelectedValues] = useState([]);
   const [getTagValues, setGetTagValues] = useState([]);
-  const [gopageValue, setGopageValue] = useState();
+  const [gopageValue, setGopageValue] = useState(1);
 
   const user = JSON.parse(localStorage.getItem("user"));
   const tree = useSelector((state) => state.user.tree);
@@ -450,6 +450,10 @@ export default function CheckTable(props) {
     fetchData(pageIndex + 1, pageSize); 
   }, [pageIndex]);
 
+  useEffect(() => {
+    setUpdatedPage(1);
+    fetchData(1, pageSize); 
+  }, [pageSize]);
   return (
     <>
       <Flex
