@@ -899,7 +899,7 @@ export default function CheckTable(props) {
                                 // fontWeight="500"
                                 fontWeight="700"
                               >
-                                {cell?.value}
+                                {cell?.value?.text || cell?.value}
                               </Text>
                             </Link>
                           ) : (
@@ -940,10 +940,10 @@ export default function CheckTable(props) {
                               }}
                               onClick={() => {
                                 setAddPhoneCall(true);
-                                setCallSelectedId(cell?.row?.values._id);
+                                setCallSelectedId(row?.original?._id);
                               }}
                             >
-                              {cell?.value}
+                              {cell?.value?.formula || cell?.value}
                             </Text>
                           ) : (
                             <Text
@@ -952,7 +952,7 @@ export default function CheckTable(props) {
                               // fontWeight="500"
                               fontWeight="700"
                             >
-                              {cell?.value}
+                              {cell?.value?.formula || cell?.value}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Address") {
