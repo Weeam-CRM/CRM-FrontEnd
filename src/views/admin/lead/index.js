@@ -107,6 +107,22 @@ const Index = () => {
     setIsLoding(false);
   };
 
+   const fetchSearchedData = async (term="",pageNo = 1, pageSize = 10) => {
+    setIsLoding(true);
+    let result = await getApi(
+      user.role === "superAdmin"
+        ? "api/lead/search" + "?term=" +term + "&dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + pageSize
+        : `api/lead/search?term=${term}&user=${user._id}&role=${
+            user.roles[0]?.roleName
+          }&dateTime=${dateTime?.from + "|" + dateTime?.to}&page=${pageNo}&pageSize=${pageSize}`
+    );
+    setDisplaySearchData(true);
+    setSearchedData(result.data?.result || []); 
+    setPages(result.data?.totalPages || 0); 
+    setTotalLeads(result.data?.totalLeads || 0); 
+    setIsLoding(false);
+  };
+
   const autoAssign = async () => {
     try {
       setAutoAssignLoading(true);
@@ -160,6 +176,7 @@ const Index = () => {
             setAction={setAction}
             dataColumn={dataColumn}
             action={action}
+            fetchSearchedData={fetchSearchedData}
             setSearchedData={setSearchedData}
             allData={displaySearchData ? searchedData : data}
             setData={setData}

@@ -33,7 +33,7 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useGlobalFilter,
   usePagination,
@@ -101,6 +101,7 @@ export default function CheckTable(props) {
     setDateTime,
     pages,
     totalLeads,
+    fetchSearchedData,
     setData,
   } = props;
   const textColor = useColorModeValue("gray.500", "white");
@@ -133,7 +134,7 @@ export default function CheckTable(props) {
   const [edit, setEdit] = useState(false);
   const [updatedPage, setUpdatedPage] = useState(0);
   const [isImportLead, setIsImportLead] = useState(false);
-  const [searchbox, setSearchbox] = useState("");
+  const searchbox = useRef();
   const [column, setColumn] = useState("");
   const [updatedStatuses, setUpdatedStatuses] = useState([]);
   const [manageColumns, setManageColumns] = useState(false);
@@ -204,7 +205,7 @@ export default function CheckTable(props) {
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
-      setIsLoding(true); 
+      setIsLoding(true);
       const searchResult = allData?.filter(
         (item) =>
           (!values?.leadName ||
@@ -270,23 +271,24 @@ export default function CheckTable(props) {
           undefined,
       ].filter((value) => value);
       setGetTagValues(getValue);
-      setUpdatedPage(0); 
+      setUpdatedPage(0);
       setSearchedData(searchResult);
       setDisplaySearchData(true);
       setAdvaceSearch(false);
       setSearchClear(true);
-      setIsLoding(false); 
+      setIsLoding(false);
       resetForm();
     },
   });
   const handleClear = () => {
+    searchbox.current.value = "";
     setDisplaySearchData(false);
+    setSearchedData([]);
+    setUpdatedPage(0);
+    fetchData(1, pageSize);
+    setGopageValue(1);
+    setUpdatedPage(0); 
   };
-
-  useEffect(() => {
-    setSearchedData && setSearchedData(data);
-  }, []);
-
 
   const {
     errors,
@@ -305,8 +307,8 @@ export default function CheckTable(props) {
       columns,
       data,
       manualPagination: true,
-      initialState: { pageIndex: updatedPage},
-      pageCount: pages
+      initialState: { pageIndex: updatedPage },
+      pageCount: pages,
     },
     useGlobalFilter,
     useSortBy,
@@ -437,23 +439,54 @@ export default function CheckTable(props) {
     setSelectedValues([]);
   };
 
-  useEffect(() => {
-    if (fetchData) fetchData();
-  }, [action, dateTime]);
+  const fetchSearch = () => {
+    if(searchbox.current?.value?.trim()) {
+      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize); 
+      setUpdatedPage(0); 
+      setGopageValue(1); 
+    }
+  }
 
-  const handleSearch = (results) => {
-    setSearchedData(results);
-  };
+  useEffect(() => {
+    setGopageValue(1); 
+    setUpdatedPage(0); 
+    if(displaySearchData) {
+      fetchSearchedData(searchbox.current?.value?.trim()); 
+    } else {
+      fetchData(); 
+    }
+
+  }, [action]);
+
+  useEffect(() => {
+    setGopageValue(1); 
+    setUpdatedPage(0); 
+    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData) fetchData();
+  }, [dateTime]);
 
   useEffect(() => {
     setUpdatedPage(pageIndex);
-    fetchData(pageIndex + 1, pageSize); 
+    if (displaySearchData) {
+      fetchSearchedData(
+        searchbox.current?.value?.trim() || "",
+        pageIndex + 1,
+        pageSize
+      );
+    } else {
+      fetchData(pageIndex + 1, pageSize);
+    }
   }, [pageIndex]);
 
   useEffect(() => {
     setUpdatedPage(0);
-    fetchData(1, pageSize); 
+    setGopageValue(1); 
+    if (displaySearchData) {
+      fetchSearchedData(searchbox.current?.value?.trim() || "", 1, pageSize);
+    } else {
+      fetchData(1, pageSize);
+    }
   }, [pageSize]);
+
   return (
     <>
       <Flex
@@ -540,12 +573,10 @@ export default function CheckTable(props) {
                 )
               </Text>
               <CustomSearchInput
-                setSearchbox={setSearchbox}
-                setDisplaySearchData={setDisplaySearchData}
                 searchbox={searchbox}
-                allData={allData}
                 dataColumn={dataColumn}
-                onSearch={handleSearch}
+                pageSize={pageSize}
+                fetchSearch={fetchSearch}
               />
               <Button
                 variant="outline"
@@ -565,7 +596,7 @@ export default function CheckTable(props) {
                   ms={2}
                   onClick={() => {
                     handleClear();
-                    setSearchbox("");
+
                     setGetTagValues([]);
                   }}
                 >
@@ -657,12 +688,15 @@ export default function CheckTable(props) {
                   {" "}
                   Manage Columns
                 </MenuItem>
-                {user?.role === "superAdmin" &&
-                <MenuItem width={"165px"} onClick={() => setIsImportLead(true)}>
-                  {" "}
-                  Import Leads
-                </MenuItem>
-                }
+                {user?.role === "superAdmin" && (
+                  <MenuItem
+                    width={"165px"}
+                    onClick={() => setIsImportLead(true)}
+                  >
+                    {" "}
+                    Import Leads
+                  </MenuItem>
+                )}
                 <MenuDivider />
                 <MenuItem
                   width={"165px"}
@@ -737,13 +771,13 @@ export default function CheckTable(props) {
                       >
                         {column.Header === "#" && (
                           <Checkbox
-                          borderColor={"brand.600"}
+                            borderColor={"brand.600"}
                             value={"true"}
                             isChecked={selectAllChecked}
                             onChange={(event) => {
                               setSelectAllChecked(!selectAllChecked);
                               if (event.target.checked) {
-                                const ids = page?.map((l) => l?.original?._id); 
+                                const ids = page?.map((l) => l?.original?._id);
                                 setSelectedValues(() => [...ids]);
                               } else {
                                 setSelectedValues([]);
@@ -753,7 +787,7 @@ export default function CheckTable(props) {
                           />
                         )}
                         <span
-                        color="secondaryGray.900"
+                          color="secondaryGray.900"
                           style={{
                             textTransform: "capitalize",
                             marginRight: "8px",
@@ -831,7 +865,9 @@ export default function CheckTable(props) {
                               <Checkbox
                                 colorScheme="brandScheme"
                                 value={selectedValues}
-                                isChecked={selectedValues.includes(row.original?._id)}
+                                isChecked={selectedValues.includes(
+                                  row.original?._id
+                                )}
                                 onChange={(event) =>
                                   handleCheckboxChange(event, row.original?._id)
                                 }
@@ -1167,10 +1203,10 @@ export default function CheckTable(props) {
                         }
                         return (
                           <Td
-                           paddingTop={"0.35rem"}
-                           paddingBottom={"0.35rem"}
-                           paddingLeft={"5px"}
-                           paddingRight={"5px"}
+                            paddingTop={"0.35rem"}
+                            paddingBottom={"0.35rem"}
+                            paddingLeft={"5px"}
+                            paddingRight={"5px"}
                             {...cell?.getCellProps()}
                             key={index}
                             style={
