@@ -1195,7 +1195,7 @@ export default function CheckTable(props) {
             </Tbody>
           </Table>
         </Box>
-        {data?.length > 5 && (
+        {data?.length > 0 && (
           <Pagination
             gotoPage={gotoPage}
             gopageValue={gopageValue}
