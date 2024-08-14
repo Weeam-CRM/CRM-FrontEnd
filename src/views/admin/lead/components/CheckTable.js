@@ -849,7 +849,7 @@ export default function CheckTable(props) {
                           );
                         } else if (cell?.column.Header === "Name") {
                           data = access?.view ? (
-                            <Link to={`/leadView/${cell?.row?.values._id}`}>
+                            <Link to={`/leadView/${row?.original?._id}`}>
                               <Text
                                 me="10px"
                                 sx={{

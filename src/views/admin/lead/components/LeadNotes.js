@@ -27,7 +27,7 @@ const LeadNotes = ({ lid, noteAdded }) => {
     if (lid) {
       fetchLeadNotes(lid);
     }
-  }, [lid, noteAdded]);
+  }, [noteAdded]);
 
   return (
     <div>

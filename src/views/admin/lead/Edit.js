@@ -112,8 +112,11 @@ const Edit = (props) => {
     }
 
     useEffect(() => {
-        fetchData()
-    }, [props?.selectedId])
+        console.log("data::", props.selectedId) 
+        if(props.isOpen) {
+            fetchData()
+        }
+    }, [props.isOpen])
 
     return (
         <div>

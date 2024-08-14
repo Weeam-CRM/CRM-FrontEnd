@@ -75,8 +75,10 @@ const AddMeeting = (props) => {
     }
 
     useEffect(() => {
-        fetchAllData()
-    }, [props.id, values.related])
+        if(isOpen) {
+            fetchAllData()
+        }
+    }, [props.id, values.related, isOpen])
 
     const extractLabels = (selectedItems) => {
         return selectedItems.map((item) => item._id);

@@ -60,7 +60,6 @@ const View = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  const buttonbg = useColorModeValue("gray.200", "white");
   const textColor = useColorModeValue("gray.500", "white");
 
   const [data, setData] = useState();
@@ -90,13 +89,6 @@ const View = () => {
   const columnsDataColumns = [
     { Header: "sender", accessor: "senderName" },
     { Header: "recipient", accessor: "createByName" },
-    { Header: "time stamp", accessor: "timestamp" },
-    { Header: "Created", accessor: "createBy" },
-  ];
-
-  const textColumnsDataColumns = [
-    { Header: "sender", accessor: "senderName" },
-    { Header: "recipient", accessor: "to" },
     { Header: "time stamp", accessor: "timestamp" },
     { Header: "Created", accessor: "createBy" },
   ];
@@ -138,6 +130,7 @@ const View = () => {
   useEffect(() => {
     fetchData();
   }, [action]);
+  
   // }, [edit, addEmailHistory, addPhoneCall])
 
   function toCamelCase(text) {

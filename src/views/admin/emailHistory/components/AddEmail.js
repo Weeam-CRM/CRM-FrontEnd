@@ -70,8 +70,10 @@ const AddEmailHistory = (props) => {
     }
 
     useEffect(() => {
-        fetchRecipientData()
-    }, [props.id])
+        if(isOpen) {
+            fetchRecipientData()
+        }
+    }, [props.id, isOpen])
 
     return (
         <Modal onClose={onClose} isOpen={isOpen} isCentered>

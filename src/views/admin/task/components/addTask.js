@@ -65,7 +65,7 @@ const AddTask = (props) => {
         }
     };
 
-    useEffect(async () => {
+    const fetchD = async () => {
         values.start = props?.date
         try {
             let result = {}; 
@@ -80,7 +80,13 @@ const AddTask = (props) => {
         catch (e) {
             console.log(e);
         }
-    }, [props, values.category])
+    }; 
+
+    useEffect(() => {
+        if(isOpen) {
+            fetchD(); 
+        }
+    }, [props, values.category, isOpen])
 
     return (
         <Modal isOpen={isOpen} size={'xl'} >

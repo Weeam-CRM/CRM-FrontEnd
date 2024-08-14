@@ -55,7 +55,8 @@ const AddPhoneCall = (props) => {
             setIsLoding(false)
         }
     };
-    useEffect(async () => {
+
+    const fetchData = async () => {
         values.start = props?.date
         try {
             let result
@@ -70,7 +71,11 @@ const AddPhoneCall = (props) => {
         catch (e) {
             console.log(e);
         }
-    }, [props, values.category])
+    }; 
+
+    useEffect(() => {
+        fetchData(); 
+    }, [values.category])
 
     const fetchRecipientData = async () => {
         if (values.createBy) {

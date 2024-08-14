@@ -71,7 +71,7 @@ const AddTask = (props) => {
             setIsLoding(false)
     };
 
-    useEffect(async () => {
+const getData = async () => {
         values.start = props?.date
         try {
             let result
@@ -85,6 +85,13 @@ const AddTask = (props) => {
         }
         catch (e) {
             console.log(e);
+        }
+    }
+    
+
+    useEffect(() => {
+        if(props.isOpen) {
+            getData(); 
         }
     }, [props, values.category])
 

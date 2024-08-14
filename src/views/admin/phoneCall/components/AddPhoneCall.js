@@ -69,8 +69,10 @@ const AddPhoneCall = (props) => {
     }
 
     useEffect(() => {
-        fetchDataR()
-    }, [props.id])
+        if(isOpen) {
+            fetchDataR()
+        }
+    }, [props.id, isOpen])
 
 
     return (
