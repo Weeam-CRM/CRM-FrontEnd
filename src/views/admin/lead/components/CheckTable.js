@@ -909,7 +909,7 @@ export default function CheckTable(props) {
                               // fontWeight="500"
                               fontWeight="700"
                             >
-                              {cell?.value}
+                              {cell?.value?.text || cell?.value}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Whatsapp Number") {
@@ -920,7 +920,7 @@ export default function CheckTable(props) {
                               // fontWeight="500"
                               fontWeight="700"
                             >
-                              {cell?.value || "-"}
+                              {cell?.value?.text || cell?.value || "-"}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Phone Number") {
@@ -943,7 +943,7 @@ export default function CheckTable(props) {
                                 setCallSelectedId(row?.original?._id);
                               }}
                             >
-                              {cell?.value?.formula || cell?.value}
+                              {cell?.value?.formula || cell?.value || "-"}
                             </Text>
                           ) : (
                             <Text
@@ -952,7 +952,7 @@ export default function CheckTable(props) {
                               // fontWeight="500"
                               fontWeight="700"
                             >
-                              {cell?.value?.formula || cell?.value}
+                              {cell?.value?.formula || cell?.value || "-"}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Address") {
@@ -963,7 +963,7 @@ export default function CheckTable(props) {
                               // fontWeight="500"
                               fontWeight="700"
                             >
-                              {cell?.value}
+                              {cell?.value?.text || cell?.value || ""}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Status") {
@@ -1012,7 +1012,7 @@ export default function CheckTable(props) {
                               fontWeight="900"
                               textAlign={"center"}
                             >
-                              {cell?.value || "-"}
+                              {cell?.value?.text || cell?.value || "-"}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Timetocall") {
@@ -1029,7 +1029,7 @@ export default function CheckTable(props) {
                               fontWeight="900"
                               textAlign={"center"}
                             >
-                              {cell?.value || "-"}
+                              {cell?.value?.text || cell?.value || "-"}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Date And Time") {
@@ -1039,7 +1039,7 @@ export default function CheckTable(props) {
                               fontWeight="900"
                               textAlign={"center"}
                             >
-                              {new Date(cell?.value).toLocaleString() || "-"}
+                              {new Date(cell?.value?.text || cell?.value).toLocaleString() || "-"}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Action") {
