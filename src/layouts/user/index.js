@@ -22,7 +22,9 @@ import {
   MdHome,
   MdInsertChartOutlined,
   MdLock,
+  MdPeopleOutline,
 } from "react-icons/md";
+import { FaUserCircle} from "react-icons/fa";
 import Spinner from "components/spinner/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchImage } from "../../redux/imageSlice";
@@ -33,6 +35,8 @@ import DailyReport from "views/admin/dailyReport";
 const MainDashboard = React.lazy(() => import("views/admin/default"));
 const SignInCentered = React.lazy(() => import("views/auth/signIn"));
 const UserPage = React.lazy(() => import("views/admin/users"));
+const LeadPool = React.lazy(() => import("views/admin/leadpool"));
+const HRModule = React.lazy(() => import("views/admin/hrModule"));
 
 // Custom Chakra theme
 export default function User(props) {
@@ -88,6 +92,20 @@ export default function User(props) {
       path: "/default",
       icon: <Icon as={MdHome} width="20px" height="20px" color="inherit" />,
       component: MainDashboard,
+    },
+    {
+      name: "HR Module",
+      layout: [ROLE_PATH.superAdmin, ROLE_PATH.user],
+      path: "/hrmodule",
+      icon: <Icon as={FaUserCircle} width='20px' height='20px' color='inherit' />,
+      component: HRModule,
+    },
+    {
+      name: "Leads Pool",
+      layout: [ROLE_PATH.superAdmin, ROLE_PATH.user],
+      path: "/pool",
+      icon: <Icon as={MdPeopleOutline} width='20px' height='20px' color='inherit' />,
+      component: LeadPool,
     },
 
     {
