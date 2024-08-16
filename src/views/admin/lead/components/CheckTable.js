@@ -102,6 +102,7 @@ export default function CheckTable(props) {
     pages,
     totalLeads,
     fetchSearchedData,
+    fetchAdvancedSearch,
     setData,
   } = props;
   const textColor = useColorModeValue("gray.500", "white");
@@ -205,37 +206,28 @@ export default function CheckTable(props) {
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
-      setIsLoding(true);
-      const searchResult = allData?.filter(
-        (item) =>
-          (!values?.leadName ||
-            (item?.leadName &&
-              item?.leadName
-                ?.toLowerCase()
-                ?.includes(values?.leadName?.toLowerCase()))) &&
-          (!values?.leadStatus ||
-            (values?.leadStatus === "new"
-              ? item?.leadStatus === "" || item?.leadStatus === "new"
-              : item?.leadStatus
-                  ?.toLowerCase()
-                  ?.includes(values?.leadStatus?.toLowerCase()))) &&
-          (!values?.leadEmail ||
-            (item?.leadEmail &&
-              item?.leadEmail
-                ?.toLowerCase()
-                ?.includes(values?.leadEmail?.toLowerCase()))) &&
-          (!values?.agentAssigned ||
-            (item?.agentAssigned &&
-              item?.agentAssigned === values?.agentAssigned)) &&
-          (!values?.managerAssigned ||
-            (item?.managerAssigned &&
-              item?.managerAssigned === values?.managerAssigned)) &&
-          (!values?.leadPhoneNumber ||
-            (item?.leadPhoneNumber &&
-              item?.leadPhoneNumber
-                ?.toString()
-                ?.includes(values?.leadPhoneNumber)))
-      );
+      const data = {};
+      if (values.leadName) {
+        data["leadName"] = values.leadName;
+      }
+      if (values.leadEmail) {
+        data["leadEmail"] = values.leadEmail;
+      }
+      if (values.leadStatus) {
+        data["leadStatus"] = values.leadStatus;
+      }
+      if (values.leadPhoneNumber) {
+        data["leadPhoneNumber"] = values.leadPhoneNumber;
+      }
+      if (values.managerAssigned) {
+        data["managerAssigned"] = values.managerAssigned;
+      }
+      if (values.agentAssigned) {
+        data["agentAssigned"] = values.agentAssigned;
+      }
+      fetchAdvancedSearch(data, 1, pageSize);
+      setUpdatedPage(0);
+      setGopageValue(1);
 
       let agent = null;
       if (values?.agentAssigned && user?.roles[0]?.roleName === "Manager") {
@@ -271,12 +263,8 @@ export default function CheckTable(props) {
           undefined,
       ].filter((value) => value);
       setGetTagValues(getValue);
-      setUpdatedPage(0);
-      setSearchedData(searchResult);
-      setDisplaySearchData(true);
       setAdvaceSearch(false);
       setSearchClear(true);
-      setIsLoding(false);
       resetForm();
     },
   });
@@ -287,7 +275,7 @@ export default function CheckTable(props) {
     setUpdatedPage(0);
     fetchData(1, pageSize);
     setGopageValue(1);
-    setUpdatedPage(0); 
+    setUpdatedPage(0);
   };
 
   const {
@@ -440,28 +428,33 @@ export default function CheckTable(props) {
   };
 
   const fetchSearch = () => {
-    if(searchbox.current?.value?.trim()) {
-      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize); 
-      setUpdatedPage(0); 
-      setGopageValue(1); 
+    if (searchbox.current?.value?.trim()) {
+      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize);
+      setUpdatedPage(0);
+      setGopageValue(1);
     }
-  }
+  };
 
   useEffect(() => {
-    setGopageValue(1); 
-    setUpdatedPage(0); 
-    if(displaySearchData) {
-      fetchSearchedData(searchbox.current?.value?.trim()); 
+    setGopageValue(1);
+    setUpdatedPage(0);
+    if (displaySearchData) {
+      fetchSearchedData(searchbox.current?.value?.trim());
     } else {
-      fetchData(); 
+      fetchData();
     }
-
   }, [action]);
 
   useEffect(() => {
-    setGopageValue(1); 
-    setUpdatedPage(0); 
-    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData) fetchData();
+    setGopageValue(1);
+    setUpdatedPage(0);
+    if (
+      fetchData &&
+      (dateTime.from || dateTime.to) &&
+      !displaySearchData &&
+      !advaceSearch
+    )
+      fetchData();
   }, [dateTime]);
 
   useEffect(() => {
@@ -479,7 +472,7 @@ export default function CheckTable(props) {
 
   useEffect(() => {
     setUpdatedPage(0);
-    setGopageValue(1); 
+    setGopageValue(1);
     if (displaySearchData) {
       fetchSearchedData(searchbox.current?.value?.trim() || "", 1, pageSize);
     } else {
@@ -1039,7 +1032,9 @@ export default function CheckTable(props) {
                               fontWeight="900"
                               textAlign={"center"}
                             >
-                              {new Date(cell?.value?.text || cell?.value).toLocaleString() || "-"}
+                              {new Date(
+                                cell?.value?.text || cell?.value
+                              ).toLocaleString() || "-"}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Action") {

@@ -20,8 +20,8 @@ const Index = () => {
   const [displaySearchData, setDisplaySearchData] = useState(false);
   const [searchedData, setSearchedData] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
-  const [totalLeads, setTotalLeads] = useState(0); 
-  const [pages, setPages] = useState(0); 
+  const [totalLeads, setTotalLeads] = useState(0);
+  const [pages, setPages] = useState(0);
   const tree = useSelector((state) => state.user.tree);
 
   const [permission, emailAccess, callAccess] = HasAccess([
@@ -96,31 +96,81 @@ const Index = () => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
-        ? "api/lead/" + "?dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + pageSize
+        ? "api/lead/" +
+            "?dateTime=" +
+            dateTime?.from +
+            "|" +
+            dateTime?.to +
+            "&page=" +
+            pageNo +
+            "&pageSize=" +
+            pageSize
         : `api/lead/?user=${user._id}&role=${
             user.roles[0]?.roleName
-          }&dateTime=${dateTime?.from + "|" + dateTime?.to}&page=${pageNo}&pageSize=${pageSize}`
+          }&dateTime=${
+            dateTime?.from + "|" + dateTime?.to
+          }&page=${pageNo}&pageSize=${pageSize}`
     );
     setData(result.data?.result || []);
-    setPages(result.data?.totalPages || 0); 
-    setTotalLeads(result.data?.totalLeads || 0); 
+    setPages(result.data?.totalPages || 0);
+    setTotalLeads(result.data?.totalLeads || 0);
     setIsLoding(false);
   };
 
-   const fetchSearchedData = async (term="",pageNo = 1, pageSize = 10) => {
+  const fetchSearchedData = async (term = "", pageNo = 1, pageSize = 10) => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
-        ? "api/lead/search" + "?term=" +term + "&dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + pageSize
+        ? "api/lead/search" +
+            "?term=" +
+            term +
+            "&dateTime=" +
+            dateTime?.from +
+            "|" +
+            dateTime?.to +
+            "&page=" +
+            pageNo +
+            "&pageSize=" +
+            pageSize
         : `api/lead/search?term=${term}&user=${user._id}&role=${
             user.roles[0]?.roleName
-          }&dateTime=${dateTime?.from + "|" + dateTime?.to}&page=${pageNo}&pageSize=${pageSize}`
+          }&dateTime=${
+            dateTime?.from + "|" + dateTime?.to
+          }&page=${pageNo}&pageSize=${pageSize}`
     );
     setDisplaySearchData(true);
-    setSearchedData(result.data?.result || []); 
-    setPages(result.data?.totalPages || 0); 
-    setTotalLeads(result.data?.totalLeads || 0); 
+    setSearchedData(result.data?.result || []);
+    setPages(result.data?.totalPages || 0);
+    setTotalLeads(result.data?.totalLeads || 0);
     setIsLoding(false);
+  };
+
+  const fetchAdvancedSearch = async (data = {}, pageNo = 1, pageSize = 10) => {
+    setIsLoding(true);
+    let result = await getApi(
+      user.role === "superAdmin"
+        ? "api/lead/advanced-search" +
+            "?data=" +
+            JSON.stringify(data) +
+            "&dateTime=" +
+            dateTime?.from +
+            "|" +
+            dateTime?.to +
+            "&page=" +
+            pageNo +
+            "&pageSize=" +
+            pageSize
+        : `api/lead/advanced-search?data=${JSON.stringify(data)}&user=${user._id}&role=${
+            user.roles[0]?.roleName
+          }&dateTime=${
+            dateTime?.from + "|" + dateTime?.to
+          }&page=${pageNo}&pageSize=${pageSize}`
+    );
+      setDisplaySearchData(true);
+    setIsLoding(false);
+    setSearchedData(result.data?.result || []);
+    setPages(result.data?.totalPages || 0);
+    setTotalLeads(result.data?.totalLeads || 0);
   };
 
   const autoAssign = async () => {
@@ -145,13 +195,11 @@ const Index = () => {
     setColumns(tableColumns);
   }, [action]);
 
-
-
   return (
     <div>
       <Grid templateColumns="repeat(6, 1fr)" mb={3} gap={4}>
         <GridItem colSpan={6}>
-        {role === "Manager" && 
+          {role === "Manager" && (
             <Flex justifyContent={"flex-end"} mb={4}>
               <Button
                 onClick={autoAssign}
@@ -163,7 +211,7 @@ const Index = () => {
                 {autoAssignLoading ? "Assigning.." : "Auto Assign"}
               </Button>
             </Flex>
-        }
+          )}
           <CheckTable
             dateTime={dateTime}
             setDateTime={setDateTime}
@@ -184,6 +232,7 @@ const Index = () => {
             tableData={displaySearchData ? searchedData : data}
             fetchData={fetchData}
             setDisplaySearchData={setDisplaySearchData}
+            fetchAdvancedSearch={fetchAdvancedSearch}
             setDynamicColumns={setDynamicColumns}
             dynamicColumns={dynamicColumns}
             selectedColumns={selectedColumns}
