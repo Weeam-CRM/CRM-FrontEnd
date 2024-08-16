@@ -20,6 +20,8 @@ const Index = () => {
   const [displaySearchData, setDisplaySearchData] = useState(false);
   const [searchedData, setSearchedData] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
+  const [totalLeads, setTotalLeads] = useState(0); 
+  const [pages, setPages] = useState(0); 
   const tree = useSelector((state) => state.user.tree);
 
   const [permission, emailAccess, callAccess] = HasAccess([
@@ -107,9 +109,25 @@ const Index = () => {
     );
     console.log(result?.data,"table data")
     setData(result.data?.result || []);
+    setPages(result.data?.totalPages || 0); 
+    setTotalLeads(result.data?.totalLeads || 0); 
     setIsLoding(false);
   };
-
+  const fetchSearchedData = async (term="",pageNo = 1, pageSize = 10) => {
+    setIsLoding(true);
+    let result = await getApi(
+      user.role === "superAdmin"
+        ? "api/lead/search" + "?term=" +term + "&dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + pageSize
+        : `api/lead/search?term=${term}&user=${user._id}&role=${
+            user.roles[0]?.roleName
+          }&dateTime=${dateTime?.from + "|" + dateTime?.to}&page=${pageNo}&pageSize=${pageSize}`
+    );
+    setDisplaySearchData(true);
+    setSearchedData(result.data?.result || []); 
+    setPages(result.data?.totalPages || 0); 
+    setTotalLeads(result.data?.totalLeads || 0); 
+    setIsLoding(false);
+  };
   const autoAssign = async () => {
     try {
       setAutoAssignLoading(true);
@@ -151,7 +169,7 @@ const Index = () => {
               </Button>
             </Flex>
         }
-          <CheckTable
+          {/* <CheckTable
             dateTime={dateTime}
             setDateTime={setDateTime}
             isLoding={isLoding}
@@ -171,6 +189,34 @@ const Index = () => {
             displaySearchData={displaySearchData}
              tableData={displaySearchData ? searchedData : data}
             // tableData= {[]}
+            fetchData={fetchData}
+            setDisplaySearchData={setDisplaySearchData}
+            setDynamicColumns={setDynamicColumns}
+            dynamicColumns={dynamicColumns}
+            selectedColumns={selectedColumns}
+            access={permission}
+            setSelectedColumns={setSelectedColumns}
+            emailAccess={emailAccess}
+            callAccess={callAccess}
+          /> */}
+          <CheckTable
+            dateTime={dateTime}
+            setDateTime={setDateTime}
+            totalLeads={totalLeads}
+            isLoding={isLoding}
+            setIsLoding={setIsLoding}
+            pages={pages}
+            columnsData={roleColumns[role] || tableColumns}
+            isOpen={isOpen}
+            setAction={setAction}
+            dataColumn={dataColumn}
+            action={action}
+            fetchSearchedData={fetchSearchedData}
+            setSearchedData={setSearchedData}
+            allData={displaySearchData ? searchedData : data}
+            setData={setData}
+            displaySearchData={displaySearchData}
+            tableData={displaySearchData ? searchedData : data}
             fetchData={fetchData}
             setDisplaySearchData={setDisplaySearchData}
             setDynamicColumns={setDynamicColumns}

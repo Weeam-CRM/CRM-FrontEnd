@@ -767,7 +767,7 @@ export default function CheckTable(props) {
                       <Flex
                         align="center"
                         justifyContent={column.center ? "center" : "start"}
-                        fontSize={{ sm: "14px", lg: "16px" }}
+                        fontSize={{ sm: "10px", lg: "12px" }}
                       >
                         {column.Header === "#" && (
                           <Checkbox
