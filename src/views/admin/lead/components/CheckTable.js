@@ -568,7 +568,7 @@ export default function CheckTable(props) {
               <CustomSearchInput
                 searchbox={searchbox}
                 dataColumn={dataColumn}
-                pageSize={pageSize}
+                isPaginated={true}                
                 fetchSearch={fetchSearch}
               />
               <Button
