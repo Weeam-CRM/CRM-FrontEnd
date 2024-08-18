@@ -3,7 +3,7 @@ import { Button, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFo
 import React, { useEffect, useState } from 'react'
 import ContactTable from './Contact.js'
 import { getApi } from 'services/api'
-import { postApi } from 'services/api'
+import {  } from 'services/api'
 import Spinner from 'components/spinner/Spinner'
 import { GiClick } from "react-icons/gi";
 

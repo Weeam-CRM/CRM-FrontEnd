@@ -2,19 +2,43 @@ import { Box, CircularProgress, Select, useColorModeValue } from "@chakra-ui/rea
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { postApi } from "services/api";
 import { putApi } from "services/api";
+import axios from "axios";
 
-const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
+const RenderManager = ({ value, leadID, fetchData, pageIndex, setData ,checkApproval}) => {
   const [ManagerSelected, setManagerSelected] = useState("");
   const tree = useSelector((state) => state.user.tree);
   const [loading, setLoading] = useState(false);
 
   const handleChangeManager = async (e) => {
+    const user = JSON.parse(localStorage.getItem('user'))
+    console.log(user?._id,e?.target?.value,"ids ")
+    if(user._id == e.target.value){
+      // alert("The manager is wroking")
+    //  const res= await postApi("api/adminApproval/add", {leadId: leadID, managerId: e.target.value,},true);
+    //    console.log(res.data)
+
+
+    try{
+      const res = await axios.post("http://localhost:5000/api/adminApproval/add",{
+        leadId: leadID, managerId: e.target.value
+      },{
+        headers:{
+          Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
+        }
+      })
+      console.log(res.data)
+
+    }catch(error){
+      console.log(error,"error")
+    }
+    } else{
     try {
       setLoading(true);
       const dataObj = {
         managerAssigned: e.target.value,
-      };
+      }; 
 
       if (e.target.value === "") {
         dataObj["agentAssigned"] = "";
@@ -38,6 +62,7 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
       toast.error("Failed to update the manager");
     }
     setLoading(false);
+  }
   };
 
   useEffect(() => {
@@ -46,6 +71,11 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
 
     const textColor = useColorModeValue("black", "white");
 
+    const getManagerId = () =>{
+     const manager = tree?.managers?.find(manager=>manager?._id == checkApproval(leadID)?.managerId)
+     
+     return manager?._id;
+    }
 
   return loading ? (
     <Box border={"1px solid #eee"} borderRadius={"4px"} padding={"3"} display={"flex"} alignItems={"center"}>
@@ -57,9 +87,12 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
       style={{
         color: !ManagerSelected ? "grey" : textColor,
       }}
-      value={ManagerSelected || ""}
+      // value={ManagerSelected || ""}
+      value={getManagerId()}
+      disabled={true}
       onChange={handleChangeManager}
       placeholder="No Manager"
+
     >
       {tree &&
         tree?.managers?.map((manager) => (

@@ -45,6 +45,7 @@ const Index = () => {
   const tableColumnsManager = [
     { Header: "#", accessor: "intID", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
+    { Header: "Manager", accessor: "managerAssigned" },
     { Header: "Agent", accessor: "agentAssigned" },
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Whatsapp Number", accessor: "leadWhatsappNumber" },
@@ -95,7 +96,8 @@ const Index = () => {
   const fetchData = async (pageNo = 1, pageSize = 10) => {
     setIsLoding(true);
     let result = await getApi(
-      user.role === "superAdmin"
+      // user.role === "superAdmin"
+      true
         ? "api/lead/" + "?dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + pageSize
         : `api/lead/?user=${user._id}&role=${
             user.roles[0]?.roleName
