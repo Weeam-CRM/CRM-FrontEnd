@@ -60,8 +60,8 @@ const Index = () => {
   const tableColumnsAgent = [
     { Header: "#", accessor: "_id", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
-    { Header: "Manager", accessor: "managerAssigned" },
-    { Header: "Agent", accessor: "agentAssigned" },
+    // { Header: "Manager", accessor: "managerAssigned" },
+    // { Header: "Agent", accessor: "agentAssigned" },
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Approval Status", accessor: "leadWhatsappNumber" },
     { Header: "Phone Number", accessor: "leadPhoneNumber" },

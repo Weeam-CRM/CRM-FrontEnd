@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { putApi } from "services/api";
+import axios from 'axios'
 
 const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
   const [AgentSelected, setAgentSelected] = useState("");
@@ -22,34 +23,80 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
   }, [managerAssigned, value, tree]);
 
 
+  // const handleChangeAgent = async (e) => {
+  //   try {
+  //     const data = {
+  //       agentAssigned: e.target.value,
+  //     };
+
+  //     setLoading(true); 
+
+  //     await putApi(`api/lead/edit/${leadID}`, data);
+  //     toast.success("Agent updated successfuly");
+  //     // setAgentSelected(data.agentAssigned || "");
+  //        setData(prevData => {
+  //       const newData = [...prevData]; 
+
+  //       const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
+  //       if(updateIdx !== -1) {
+  //         newData[updateIdx].agentAssigned = data.agentAssigned; 
+  //       }
+  //       return newData; 
+  //     })
+  //     // fetchData();
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Failed to update the agent");
+  //   }
+  //     setLoading(false); 
+  // };
+
   const handleChangeAgent = async (e) => {
-    try {
-      const data = {
-        agentAssigned: e.target.value,
-      };
-
-      setLoading(true); 
-
-      await putApi(`api/lead/edit/${leadID}`, data);
-      toast.success("Agent updated successfuly");
-      // setAgentSelected(data.agentAssigned || "");
-         setData(prevData => {
-        const newData = [...prevData]; 
-
-        const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
-        if(updateIdx !== -1) {
-          newData[updateIdx].agentAssigned = data.agentAssigned; 
+    const user = JSON.parse(localStorage.getItem('user'))
+    console.log(user?._id,e?.target?.value,"ids ")
+    if(user._id == e.target.value){
+    try{
+      const res = await axios.post("http://localhost:5000/api/adminApproval/add",{
+        leadId: leadID,managerId:managerAssigned, agentId: e.target.value
+      },{
+        headers:{
+          Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
         }
-        return newData; 
       })
-      // fetchData();
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to update the agent");
-    }
-      setLoading(false); 
-  };
+      console.log(res.data)
 
+    }catch(error){
+      console.log(error,"error")
+    }
+    }else{
+      try {
+        const data = {
+          agentAssigned: e.target.value,
+        };
+  
+        setLoading(true); 
+  
+        await putApi(`api/lead/edit/${leadID}`, data);
+        toast.success("Agent updated successfuly");
+        // setAgentSelected(data.agentAssigned || "");
+           setData(prevData => {
+          const newData = [...prevData]; 
+  
+          const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
+          if(updateIdx !== -1) {
+            newData[updateIdx].agentAssigned = data.agentAssigned; 
+          }
+          return newData; 
+        })
+        // fetchData();
+      } catch (error) {
+        console.log(error);
+        toast.error("Failed to update the agent");
+      }
+        setLoading(false); 
+    }
+
+  };
   if (agents?.length) {
     return loading ? (
       <Box

@@ -4,8 +4,8 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { postApi } from "services/api";
 import { putApi } from "services/api";
-
-const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
+import axios from "axios"
+const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData,checkApproval}) => {
   const [AgentSelected, setAgentSelected] = useState("");
   const [agents, setAgents] = useState([]);
   const tree = useSelector((state) => state.user.tree);
@@ -26,10 +26,21 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
 
   const handleChangeAgent = async (e) => {
     const user = JSON.parse(localStorage.getItem('user'))
-    if(true){
-     const res= await postApi("api/adminApproval/add",
-       {leadId: leadID, managerId: managerAssigned,agentId:e?.target?.value},true);
-       console.log(res.data)
+    console.log(user?._id,e?.target?.value,"ids ")
+    if(user._id == e.target.value){
+    try{
+      const res = await axios.post("http://localhost:5000/api/adminApproval/add",{
+        leadId: leadID,managerId:managerAssigned, agentId: e.target.value
+      },{
+        headers:{
+          Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
+        }
+      })
+      console.log(res.data)
+
+    }catch(error){
+      console.log(error,"error")
+    }
     }else{
       try {
         const data = {
@@ -55,10 +66,16 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
         console.log(error);
         toast.error("Failed to update the agent");
       }
-        setLoading(false); 
     }
 
   };
+
+  const getAgentId = () =>{
+    const agent = agents?.find(agent=>agent?._id == checkApproval(leadID)?.agentId)
+    
+    return agent?._id;
+   }
+  
 
   if (agents?.length) {
     return loading ? (
@@ -76,7 +93,9 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
       <Select
         placeholder="No Agent"
         onInput={handleChangeAgent}
-        value={AgentSelected === null ? "" : AgentSelected}
+        // value={AgentSelected === null ? "" : AgentSelected}
+        disabled
+        value={getAgentId()}
         style={{
           color: !AgentSelected ? "grey" : textColor,
         }}

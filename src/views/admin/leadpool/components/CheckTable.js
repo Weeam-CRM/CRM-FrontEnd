@@ -428,12 +428,14 @@ export default function CheckTable(props) {
   };
 
   const approveChangeHandler = async(e,leadId) =>{
+    const user = JSON.parse(localStorage.getItem('user'))
+    console.log(user?.role,"role")
     if(e?.target?.value == "none") return;
     try{
      const res = await axios.put("http://localhost:5000/api/adminApproval/update",{
       isApproved:e?.target?.value == "accept"?true:false,
       objectId:checkApproval(leadId)._id,
-      isManager:true
+      // isManager:
      },{
       headers:{
         Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
@@ -441,6 +443,7 @@ export default function CheckTable(props) {
      })
 
      if(res?.data?.status){
+      if(checkApproval(leadId).agentId?false:true){
         try {
           // setLoading(true);
           const dataObj = {
@@ -468,7 +471,25 @@ export default function CheckTable(props) {
           console.log(error);
           toast.error("Failed to update the manager");
         }
-        // setLoading(false);
+      }else{
+        try {
+          const data = {
+            agentAssigned: checkApproval(leadId)?.agentId,
+          };
+    
+          // setLoading(true); 
+    
+          await putApi(`api/lead/edit/${leadId}`, data);
+          toast.success("Agent updated successfuly");
+          
+          // fetchData();
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed to update the agent");
+        }
+      }
+       
+    
       
      }
 
@@ -1080,6 +1101,8 @@ export default function CheckTable(props) {
                           data = (
                             <>
                               <RenderAgent
+                              checkApproval={checkApproval}
+                                
                                 setData={setData}
                                 fetchData={fetchData}
                                 leadID={row?.original?._id?.toString()}
