@@ -96,7 +96,7 @@ const LeadNotes = ({ lid, noteAdded }) => {
                         </Text>
                       </Box>
 
-                      <Text color={"black"} fontWeight={"bold"} mt={3}>
+                      <Text overflowX={"scroll"} pb={3}  color={"black"} fontWeight={"bold"} mt={3}>
                         <pre>{note.note}</pre>
                       </Text>
                     </Box>
