@@ -1651,6 +1651,7 @@ export default function CheckTable(props) {
         </ModalContent>
       </Modal>
       <Modal
+      
         onClose={() => {
           setManageColumns(false);
         }}
@@ -1658,7 +1659,7 @@ export default function CheckTable(props) {
         isCentered
       >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent height={"90vh"} overflowY={"scroll"}>
           <ModalHeader>Manage Columns</ModalHeader>
           <ModalCloseButton
             onClick={() => {
