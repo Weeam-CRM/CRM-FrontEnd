@@ -40,6 +40,14 @@ const Index = () => {
     { Header: "Date And Time", accessor: "createdDate", width: 40 },
     { Header: "Timetocall", accessor: "timetocall" },
     { Header: "Nationality", accessor: "nationality" },
+    {Header: "Last Note", accessor: "lastNote"}, 
+    {Header: "IP", accessor: "ip"}, 
+    {Header: "Lead Address", accessor: "leadAddress"}, 
+    {Header: "Lead Campaign", accessor: "leadSourceCampaign"}, 
+    {Header: "Lead Email", accessor: "leadEmail"}, 
+    {Header: "Lead Medium", accessor: "leadSourceMedium"}, 
+    {Header: "Campaign Page URL", accessor: "pageUrl"}, 
+    {Header: "Are you in UAE?", accessor: "r_u_in_uae"}, 
     { Header: "Action", isSortable: false, center: true },
   ];
   const tableColumnsManager = [

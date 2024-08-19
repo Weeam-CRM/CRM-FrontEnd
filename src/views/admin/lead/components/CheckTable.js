@@ -295,7 +295,9 @@ export default function CheckTable(props) {
       columns,
       data,
       manualPagination: true,
-      initialState: { pageIndex: updatedPage },
+      initialState: {
+        pageIndex: updatedPage,
+      },
       pageCount: pages,
     },
     useGlobalFilter,
@@ -568,7 +570,7 @@ export default function CheckTable(props) {
               <CustomSearchInput
                 searchbox={searchbox}
                 dataColumn={dataColumn}
-                isPaginated={true}                
+                isPaginated={true}
                 fetchSearch={fetchSearch}
               />
               <Button
@@ -1036,6 +1038,40 @@ export default function CheckTable(props) {
                                 cell?.value?.text || cell?.value
                               ).toLocaleString() || "-"}
                             </Text>
+                          );
+                        } else if (cell?.column.Header === "Last Note") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "IP") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Address") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Campaign") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Email") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Medium") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (
+                          cell?.column.Header === "Campaign Page URL"
+                        ) {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Are you in UAE?") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
                           );
                         } else if (cell?.column.Header === "Action") {
                           data = (
