@@ -1074,8 +1074,8 @@ export default function CheckTable(props) {
                             style={{ fontSize: "14px" }}
                           >
                             <option value="none">None</option>
-                            <option value="accept">Accept</option>
-                            <option value="reject">Reject</option>
+                            <option style={{backgroundColor : "#4d8f3a" }} value="accept">Accept</option>
+        <option style={{backgroundColor : "#DB5436" }} value="reject">Reject</option>
                                   </Select>
                           );
                         }  else if(cell?.column.Header === "Approval Status"){

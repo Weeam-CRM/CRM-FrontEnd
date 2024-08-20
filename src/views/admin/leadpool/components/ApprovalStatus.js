@@ -53,8 +53,8 @@ const ApprovalStatus = ({ id, cellValue, setUpdatedStatuses }) => {
         value={value || ""}
         style={{ fontSize: "14px" }}
       >
-        <option value="accept">Accept</option>
-        <option value="reject">Reject</option>
+        <option style={{backgroundColor : "#4d8f3a" }} value="accept">Accept</option>
+        <option style={{backgroundColor : "#DB5436" }} value="reject">Reject</option>
               </Select>
     </>
   );
