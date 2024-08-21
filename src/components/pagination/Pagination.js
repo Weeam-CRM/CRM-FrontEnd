@@ -37,6 +37,7 @@ const Pagination = (props) => {
 
   useEffect(() => {
     setGopageValue(1);
+    console.log(pageSize, "Page Size")
   }, []);
 
   return (
@@ -108,6 +109,7 @@ const Pagination = (props) => {
           </>
         )}
         <Select
+          defaultValue={200}
           w={32}
           value={pageSize}
           onChange={(e) => {
@@ -115,6 +117,7 @@ const Pagination = (props) => {
           }}
         >
           {[5, 10, 20, 30, 40, 50, 100, 200].map((pageSize) => (
+            
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>

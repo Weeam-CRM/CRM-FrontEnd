@@ -108,7 +108,7 @@ export default function CheckTable(props) {
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
   const [leadData, setLeadData] = useState([]);
   const columns = useMemo(() => dataColumn, [dataColumn]);
-  const [selectedValues, setSelectedValues] = useState([]);
+  const [selectedValues, setSelectedValues] = useState([])
   const [getTagValues, setGetTagValues] = useState([]);
   const [gopageValue, setGopageValue] = useState(1);
 
