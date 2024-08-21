@@ -34,6 +34,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import axios from "axios";
 import {
   useGlobalFilter,
   usePagination,
@@ -75,8 +76,11 @@ import DataNotFound from "components/notFoundData";
 import RenderManager from "./RenderManager";
 import RenderAgent from "./RenderAgent";
 import RenderStatus from "./RenderStatus";
+import ApprovalStatus from "./ApprovalStatus";
 import { MdTask } from "react-icons/md";
 import AddTask from "./addTask";
+import { toast } from "react-toastify";
+import { putApi } from "services/api";
 
 export default function CheckTable(props) {
   const {
@@ -103,6 +107,7 @@ export default function CheckTable(props) {
     totalLeads,
     fetchSearchedData,
     setData,
+    checkApproval
   } = props;
   const textColor = useColorModeValue("gray.500", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
@@ -116,6 +121,7 @@ export default function CheckTable(props) {
   const tree = useSelector((state) => state.user.tree);
 
   const [deleteModel, setDelete] = useState(false);
+  const [approvalStatus, setApprovalStatus] = useState(false);
   const [addEmailHistory, setAddEmailHistory] = useState(false);
   const [addPhoneCall, setAddPhoneCall] = useState(false);
   const [advaceSearch, setAdvaceSearch] = useState(false);
@@ -140,6 +146,8 @@ export default function CheckTable(props) {
   const [manageColumns, setManageColumns] = useState(false);
   const [tempSelectedColumns, setTempSelectedColumns] = useState(dataColumn); // State to track changes
   const [taskInits, setTaskInits] = useState({});
+
+ 
 
   const csvColumns = [
     { Header: "Name", accessor: "leadName" },
@@ -418,6 +426,78 @@ export default function CheckTable(props) {
       console.error(e);
     }
   };
+
+  const approveChangeHandler = async(e,leadId) =>{
+    const user = JSON.parse(localStorage.getItem('user'))
+    console.log(user?.role,"role")
+    if(e?.target?.value == "none") return;
+    try{
+     const res = await axios.put("http://localhost:5000/api/adminApproval/update",{
+      isApproved:e?.target?.value == "accept"?true:false,
+      objectId:checkApproval(leadId)._id,
+      // isManager:
+     },{
+      headers:{
+        Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
+      }
+     })
+
+     if(res?.data?.status){
+      if(checkApproval(leadId).agentId?false:true){
+        try {
+          // setLoading(true);
+          const dataObj = {
+            managerAssigned:checkApproval(leadId)?.managerId ,
+          }; 
+    
+          if (e.target.value === "") {
+            dataObj["agentAssigned"] = "";
+          }
+    
+          await putApi(`api/lead/edit/${leadId}`, dataObj);
+          toast.success("Manager updated successfuly");
+          // setManagerSelected(dataObj.managerAssigned || "");
+          // setData(prevData => {
+          //   const newData = [...prevData]; 
+    
+          //   const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
+          //   if(updateIdx !== -1) {
+          //     newData[updateIdx].managerAssigned = dataObj.managerAssigned; 
+          //     newData[updateIdx].agentAssigned = ""; 
+          //   }
+          //   return newData; 
+          // })
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed to update the manager");
+        }
+      }else{
+        try {
+          const data = {
+            agentAssigned: checkApproval(leadId)?.agentId,
+          };
+    
+          // setLoading(true); 
+    
+          await putApi(`api/lead/edit/${leadId}`, data);
+          toast.success("Agent updated successfuly");
+          
+          // fetchData();
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed to update the agent");
+        }
+      }
+       
+    
+      
+     }
+
+     console.log(res,"response from update of lead request")
+    }catch(error){
+      console.log("error",error)
+    }
+  }
 
   const convertJsonToCsvOrExcel = (
     jsonArray,
@@ -976,6 +1056,36 @@ export default function CheckTable(props) {
                               />
                             </div>
                           );
+                        } else if (cell?.column.Header === "Lead Approval"){
+                          data = (
+                            // <div className="selectOpt">
+                            //   <ApprovalStatus
+                            //     setUpdatedStatuses={setUpdatedStatuses}
+                            //     id={cell?.row?.original?._id}
+                            //     cellValue={cell?.value}
+                            //   />
+                            // </div>
+                            checkApproval(row?.original?._id?.toString()).approvalStatus != "pending"?checkApproval(row?.original?._id?.toString()).approvalStatus :<Select
+                            defaultValue={"None"}
+                            // className={changeStatus(value)}
+                            onChange={(e)=>approveChangeHandler(e,row?.original?._id?.toString())}
+                            height={7}
+                            width={130}
+                            style={{ fontSize: "14px" }}
+                          >
+                            <option value="none">None</option>
+                            <option value="accept">Accept</option>
+                            <option value="reject">Reject</option>
+                                  </Select>
+                          );
+                        }  else if(cell?.column.Header === "Approval Status"){
+                            data=(
+                              <h1 style={{textAlign:"center"}}>
+                                { 
+                                checkApproval(row?.original?._id?.toString()).approvalStatus
+                            }
+                              </h1>
+                            )
                         } else if (cell?.column.Header === "Manager") {
                           data = (
                             <RenderManager
@@ -984,12 +1094,15 @@ export default function CheckTable(props) {
                               setData={setData}
                               leadID={row?.original?._id?.toString()}
                               value={cell?.value}
+                              checkApproval={checkApproval}
                             />
                           );
                         } else if (cell?.column.Header === "Agent") {
                           data = (
                             <>
                               <RenderAgent
+                              checkApproval={checkApproval}
+                                
                                 setData={setData}
                                 fetchData={fetchData}
                                 leadID={row?.original?._id?.toString()}

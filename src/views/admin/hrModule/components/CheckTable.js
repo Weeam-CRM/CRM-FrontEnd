@@ -33,7 +33,7 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   useGlobalFilter,
   usePagination,
@@ -60,8 +60,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getApi } from "services/api";
 import Delete from "../Delete";
-import AddEmailHistory from "views/admin/emailHistory/components/AddEmail";
-import AddPhoneCall from "views/admin/phoneCall/components/AddPhoneCall";
 import Add from "../Add";
 import { AddIcon } from "@chakra-ui/icons";
 import { CiMenuKebab } from "react-icons/ci";
@@ -69,14 +67,9 @@ import Edit from "../Edit";
 import { useFormik } from "formik";
 import { BsColumnsGap, BsWhatsapp } from "react-icons/bs";
 import * as yup from "yup";
-import ImportModal from "./ImportModal";
 import CustomSearchInput from "components/search/search";
 import DataNotFound from "components/notFoundData";
-import RenderManager from "./RenderManager";
-import RenderAgent from "./RenderAgent";
-import RenderStatus from "./RenderStatus";
 import { MdTask } from "react-icons/md";
-import AddTask from "./addTask";
 
 export default function CheckTable(props) {
   const {
@@ -96,13 +89,8 @@ export default function CheckTable(props) {
     emailAccess,
     setAction,
     action,
-    setIsLoding,
     dateTime,
     setDateTime,
-    pages,
-    totalLeads,
-    fetchSearchedData,
-    setData,
   } = props;
   const textColor = useColorModeValue("gray.500", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
@@ -110,7 +98,7 @@ export default function CheckTable(props) {
   const columns = useMemo(() => dataColumn, [dataColumn]);
   const [selectedValues, setSelectedValues] = useState([]);
   const [getTagValues, setGetTagValues] = useState([]);
-  const [gopageValue, setGopageValue] = useState(1);
+  const [gopageValue, setGopageValue] = useState();
 
   const user = JSON.parse(localStorage.getItem("user"));
   const tree = useSelector((state) => state.user.tree);
@@ -119,12 +107,11 @@ export default function CheckTable(props) {
   const [addEmailHistory, setAddEmailHistory] = useState(false);
   const [addPhoneCall, setAddPhoneCall] = useState(false);
   const [advaceSearch, setAdvaceSearch] = useState(false);
-  const [searchClear, setSearchClear] = useState(false);
+  const [setSearchClear] = useState(false);
   const [selectedId, setSelectedId] = useState();
   const [callSelectedId, setCallSelectedId] = useState();
   const navigate = useNavigate();
-  let data = useMemo(() => tableData, [tableData]);
-  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const data = useMemo(() => tableData, [tableData]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isTaskOpen,
@@ -134,19 +121,17 @@ export default function CheckTable(props) {
   const [edit, setEdit] = useState(false);
   const [updatedPage, setUpdatedPage] = useState(0);
   const [isImportLead, setIsImportLead] = useState(false);
-  const searchbox = useRef();
+  const [searchbox, setSearchbox] = useState("");
   const [column, setColumn] = useState("");
   const [updatedStatuses, setUpdatedStatuses] = useState([]);
   const [manageColumns, setManageColumns] = useState(false);
   const [tempSelectedColumns, setTempSelectedColumns] = useState(dataColumn); // State to track changes
-  const [taskInits, setTaskInits] = useState({});
 
   const csvColumns = [
     { Header: "Name", accessor: "leadName" },
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Whatsapp Number", accessor: "leadWhatsappNumber" },
     { Header: "Phone Number", accessor: "leadPhoneNumber" },
-    { Header: "Date And Time", accessor: "createdDate" },
     { Header: "Timetocall", accessor: "timetocall" },
   ];
 
@@ -183,8 +168,12 @@ export default function CheckTable(props) {
     leadStatus: "",
     leadEmail: "",
     leadPhoneNumber: "",
+    leadAddress: "",
+    leadOwner: "",
     managerAssigned: "",
     agentAssigned: "",
+    fromLeadScore: "",
+    toLeadScore: "",
   };
   const validationSchema = yup.object({
     leadName: yup.string(),
@@ -205,7 +194,6 @@ export default function CheckTable(props) {
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
-      setIsLoding(true);
       const searchResult = allData?.filter(
         (item) =>
           (!values?.leadName ||
@@ -226,34 +214,37 @@ export default function CheckTable(props) {
                 ?.includes(values?.leadEmail?.toLowerCase()))) &&
           (!values?.agentAssigned ||
             (item?.agentAssigned &&
-              item?.agentAssigned === values?.agentAssigned)) &&
-          (!values?.managerAssigned ||
-            (item?.managerAssigned &&
-              item?.managerAssigned === values?.managerAssigned)) &&
+              item?.agentAssigned
+                ?.toLowerCase()
+                ?.includes(values?.agentAssigned?.toLowerCase()))) &&
           (!values?.leadPhoneNumber ||
             (item?.leadPhoneNumber &&
               item?.leadPhoneNumber
                 ?.toString()
-                ?.includes(values?.leadPhoneNumber)))
+                ?.includes(values?.leadPhoneNumber))) &&
+          (!values?.leadOwner ||
+            (item?.leadOwner &&
+              item?.leadOwner
+                ?.toLowerCase()
+                ?.includes(values?.leadOwner?.toLowerCase()))) &&
+          ([null, undefined, ""].includes(values?.fromLeadScore) ||
+            [null, undefined, ""].includes(values?.toLeadScore) ||
+            ((item?.leadScore || item?.leadScore === 0) &&
+              (parseInt(item?.leadScore, 10) >=
+                parseInt(values.fromLeadScore, 10) ||
+                0) &&
+              (parseInt(item?.leadScore, 10) <=
+                parseInt(values.toLeadScore, 10) ||
+                0)))
       );
 
       let agent = null;
-      if (values?.agentAssigned && user?.roles[0]?.roleName === "Manager") {
+      if (values?.agentAssigned) {
         agent = tree["agents"]["manager-" + user?._id?.toString()]?.find(
-          (user) => user?._id?.toString() === values?.agentAssigned
-        );
-      } else if (values?.agentAssigned && values?.managerAssigned) {
-        agent = tree["agents"]["manager-" + values.managerAssigned]?.find(
           (user) => user?._id?.toString() === values?.agentAssigned
         );
       }
 
-      let manager = null;
-      if (values?.managerAssigned) {
-        manager = tree["managers"]?.find(
-          (user) => user?._id?.toString() === values?.managerAssigned
-        );
-      }
       let getValue = [
         values.leadName,
         values.leadStatus === "active"
@@ -262,7 +253,6 @@ export default function CheckTable(props) {
           ? "not-interested"
           : values.leadStatus,
         values?.leadEmail,
-        (manager && manager?.firstName + " " + manager?.lastName) || "",
         (agent && agent?.firstName + " " + agent?.lastName) || "",
         values?.leadPhoneNumber,
         values?.leadOwner,
@@ -271,25 +261,20 @@ export default function CheckTable(props) {
           undefined,
       ].filter((value) => value);
       setGetTagValues(getValue);
-      setUpdatedPage(0);
       setSearchedData(searchResult);
       setDisplaySearchData(true);
       setAdvaceSearch(false);
       setSearchClear(true);
-      setIsLoding(false);
       resetForm();
     },
   });
   const handleClear = () => {
-    searchbox.current.value = "";
     setDisplaySearchData(false);
-    setSearchedData([]);
-    setUpdatedPage(0);
-    fetchData(1, pageSize);
-    setGopageValue(1);
-    setUpdatedPage(0); 
   };
 
+  useEffect(() => {
+    setSearchedData && setSearchedData(data);
+  }, []);
   const {
     errors,
     touched,
@@ -301,14 +286,11 @@ export default function CheckTable(props) {
     resetForm,
     dirty,
   } = formik;
-
   const tableInstance = useTable(
     {
       columns,
       data,
-      manualPagination: true,
       initialState: { pageIndex: updatedPage },
-      pageCount: pages,
     },
     useGlobalFilter,
     useSortBy,
@@ -439,53 +421,18 @@ export default function CheckTable(props) {
     setSelectedValues([]);
   };
 
-  const fetchSearch = () => {
-    if(searchbox.current?.value?.trim()) {
-      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize); 
-      setUpdatedPage(0); 
-      setGopageValue(1); 
-    }
-  }
+  useEffect(() => {
+    if (fetchData) fetchData();
+  }, [action, dateTime]);
+
+  const handleSearch = (results) => {
+    setSearchedData(results);
+  };
 
   useEffect(() => {
-    setGopageValue(1); 
-    setUpdatedPage(0); 
-    if(displaySearchData) {
-      fetchSearchedData(searchbox.current?.value?.trim()); 
-    } else {
-      fetchData(); 
-    }
-
-  }, [action]);
-
-  useEffect(() => {
-    setGopageValue(1); 
-    setUpdatedPage(0); 
-    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData) fetchData();
-  }, [dateTime]);
-
-  useEffect(() => {
+    console.log("page changed::", pageIndex);
     setUpdatedPage(pageIndex);
-    if (displaySearchData) {
-      fetchSearchedData(
-        searchbox.current?.value?.trim() || "",
-        pageIndex + 1,
-        pageSize
-      );
-    } else {
-      fetchData(pageIndex + 1, pageSize);
-    }
   }, [pageIndex]);
-
-  useEffect(() => {
-    setUpdatedPage(0);
-    setGopageValue(1); 
-    if (displaySearchData) {
-      fetchSearchedData(searchbox.current?.value?.trim() || "", 1, pageSize);
-    } else {
-      fetchData(1, pageSize);
-    }
-  }, [pageSize]);
 
   return (
     <>
@@ -498,7 +445,7 @@ export default function CheckTable(props) {
         }}
         className="date-range-selector"
       >
-        <Flex alignItems={"center"}>
+        {/* <Flex alignItems={"center"}>
           <p>From:</p>
           <div style={{ width: 10 }}></div>
           <input
@@ -513,7 +460,7 @@ export default function CheckTable(props) {
             style={{ color: "#422afb" }}
             type="datetime-local"
           />
-        </Flex>
+        </Flex> */}
         {dateTime?.from && (
           <div>
             <Flex ms={2} alignItems={"center"}>
@@ -565,19 +512,9 @@ export default function CheckTable(props) {
                 fontSize="22px"
                 fontWeight="700"
               >
-                Leads (
-                <CountUpComponent
-                  key={data?.length}
-                  targetNumber={totalLeads}
-                />
-                )
+                Employee Managmnet 
               </Text>
-              <CustomSearchInput
-                searchbox={searchbox}
-                dataColumn={dataColumn}
-                pageSize={pageSize}
-                fetchSearch={fetchSearch}
-              />
+              
               <Button
                 variant="outline"
                 colorScheme="brand"
@@ -585,6 +522,7 @@ export default function CheckTable(props) {
                 onClick={() => setAdvaceSearch(true)}
                 mt={{ sm: "5px", md: "0" }}
                 size="sm"
+                ml="10"
               >
                 Advance Search
               </Button>
@@ -596,7 +534,7 @@ export default function CheckTable(props) {
                   ms={2}
                   onClick={() => {
                     handleClear();
-
+                    setSearchbox("");
                     setGetTagValues([]);
                   }}
                 >
@@ -666,6 +604,7 @@ export default function CheckTable(props) {
           </GridItem> */}
 
           <GridItem
+            
             colSpan={{ base: 4 }}
             display={"flex"}
             justifyContent={"end"}
@@ -688,15 +627,10 @@ export default function CheckTable(props) {
                   {" "}
                   Manage Columns
                 </MenuItem>
-                {user?.role === "superAdmin" && (
-                  <MenuItem
-                    width={"165px"}
-                    onClick={() => setIsImportLead(true)}
-                  >
-                    {" "}
-                    Import Leads
-                  </MenuItem>
-                )}
+                <MenuItem width={"165px"} onClick={() => setIsImportLead(true)}>
+                  {" "}
+                  Import Leads
+                </MenuItem>
                 <MenuDivider />
                 <MenuItem
                   width={"165px"}
@@ -717,20 +651,31 @@ export default function CheckTable(props) {
               </MenuList>
             </Menu>
             {access?.create && (
+              <>
               <Button
                 onClick={() => handleClick()}
                 size="sm"
+                mr="1"
                 variant="brand"
                 leftIcon={<AddIcon />}
               >
                 Add New
               </Button>
+              <Button
+                onClick={() => handleClick()}
+                size="sm"
+                variant="brand"
+                // leftIcon={<AddIcon />}
+              >
+                Back
+              </Button>
+              </>
             )}
           </GridItem>
-          <HStack spacing={4} mb={2}>
+          <HStack  spacing={4} mb={2}>
             {getTagValues &&
               getTagValues.map((item) => (
-                <Tag
+                <Tag 
                   size={"md"}
                   p={2}
                   key={item}
@@ -738,22 +683,22 @@ export default function CheckTable(props) {
                   variant="solid"
                   colorScheme="gray"
                 >
-                  <TagLabel>{item}</TagLabel>
+                  <TagLabel >{item}</TagLabel>
                 </Tag>
               ))}
           </HStack>
         </Grid>
 
-        <Box overflowY={"auto"} className="table-fix-container">
-          <Table
+        <Box  overflowY={"auto"} className="table-fix-container">
+          <Table 
             {...getTableProps()}
             variant="simple"
             color="gray.500"
             mb="24px"
           >
-            <Thead zIndex={1}>
+            <Thead  zIndex={1}>
               {headerGroups?.map((headerGroup, index) => (
-                <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
+                <Tr backgroundColor="#ebd3a6"  {...headerGroup.getHeaderGroupProps()} key={index}>
                   {headerGroup.headers?.map((column, index) => (
                     <Th
                       {...column.getHeaderProps(
@@ -768,26 +713,9 @@ export default function CheckTable(props) {
                         align="center"
                         justifyContent={column.center ? "center" : "start"}
                         fontSize={{ sm: "10px", lg: "12px" }}
+                        color="secondaryGray.900"
                       >
-                        {column.Header === "#" && (
-                          <Checkbox
-                            borderColor={"brand.600"}
-                            value={"true"}
-                            isChecked={selectAllChecked}
-                            onChange={(event) => {
-                              setSelectAllChecked(!selectAllChecked);
-                              if (event.target.checked) {
-                                const ids = page?.map((l) => l?.original?._id);
-                                setSelectedValues(() => [...ids]);
-                              } else {
-                                setSelectedValues([]);
-                              }
-                            }}
-                            me="10px"
-                          />
-                        )}
                         <span
-                          color="secondaryGray.900"
                           style={{
                             textTransform: "capitalize",
                             marginRight: "8px",
@@ -795,19 +723,7 @@ export default function CheckTable(props) {
                         >
                           {column.render("Header")}
                         </span>
-                        {column.isSortable !== false && (
-                          <span>
-                            {column.isSorted ? (
-                              column.isSortedDesc ? (
-                                <FaSortDown />
-                              ) : (
-                                <FaSortUp />
-                              )
-                            ) : (
-                              <FaSort />
-                            )}
-                          </span>
-                        )}
+
                       </Flex>
                     </Th>
                   ))}
@@ -854,7 +770,6 @@ export default function CheckTable(props) {
                       ).value = status?.status;
                     }
                   });
-
                   return (
                     <Tr {...row?.getRowProps()} key={i} className="leadRow">
                       {row?.cells?.map((cell, index) => {
@@ -865,11 +780,9 @@ export default function CheckTable(props) {
                               <Checkbox
                                 colorScheme="brandScheme"
                                 value={selectedValues}
-                                isChecked={selectedValues.includes(
-                                  row.original?._id
-                                )}
+                                isChecked={selectedValues.includes(cell?.value)}
                                 onChange={(event) =>
-                                  handleCheckboxChange(event, row.original?._id)
+                                  handleCheckboxChange(event, cell?.value)
                                 }
                                 me="10px"
                               />
@@ -879,40 +792,20 @@ export default function CheckTable(props) {
                                 // fontWeight="500"
                                 fontWeight="700"
                               >
-                                {cell?.value || "-"}
+                                {cell?.row?.index + 1}
                               </Text>
                             </Flex>
                           );
-                        } else if (cell?.column.Header === "Name") {
-                          data = access?.view ? (
-                            <Link to={`/leadView/${row?.original?._id}`}>
+                        } else if (cell?.column.Header === "Date") {
+                          data = 
                               <Text
                                 me="10px"
-                                sx={{
-                                  "&:hover": {
-                                    color: "blue.500",
-                                    textDecoration: "underline",
-                                  },
-                                }}
                                 color="brand.600"
                                 fontSize="sm"
-                                // fontWeight="500"
-                                fontWeight="700"
                               >
-                                {cell?.value?.text || cell?.value}
-                              </Text>
-                            </Link>
-                          ) : (
-                            <Text
-                              me="10px"
-                              fontSize="sm"
-                              // fontWeight="500"
-                              fontWeight="700"
-                            >
-                              {cell?.value?.text || cell?.value}
-                            </Text>
-                          );
-                        } else if (cell?.column.Header === "Whatsapp Number") {
+                              {new Date(cell?.value).toLocaleString() || "-"}
+                              </Text>; 
+                        } else if (cell?.column.Header === "Developer") {
                           data = (
                             <Text
                               me="10px"
@@ -920,42 +813,19 @@ export default function CheckTable(props) {
                               // fontWeight="500"
                               fontWeight="700"
                             >
-                              {cell?.value?.text || cell?.value || "-"}
+                              {cell?.value || "-"}
                             </Text>
                           );
-                        } else if (cell?.column.Header === "Phone Number") {
-                          data = callAccess?.create ? (
+                        } else if (cell?.column.Header === "Bank Account") {
+                          data = 
                             <Text
                               me="10px"
                               fontSize="sm"
                               // fontWeight="500"
-                              fontWeight="700"
-                              color="brand.600"
-                              sx={{
-                                "&:hover": {
-                                  color: "blue.500",
-                                  textDecoration: "underline",
-                                  cursor: "pointer",
-                                },
-                              }}
-                              onClick={() => {
-                                setAddPhoneCall(true);
-                                setCallSelectedId(row?.original?._id);
-                              }}
-                            >
-                              {cell?.value?.formula || cell?.value || "-"}
-                            </Text>
-                          ) : (
-                            <Text
-                              me="10px"
-                              fontSize="sm"
-                              // fontWeight="500"
-                              fontWeight="700"
-                            >
-                              {cell?.value?.formula || cell?.value || "-"}
-                            </Text>
-                          );
-                        } else if (cell?.column.Header === "Address") {
+                              >
+                              {cell?.value || "-"}
+                            </Text>; 
+                        } else if (cell?.column.Header === "Total Amount") {
                           data = (
                             <Text
                               color={textColor}
@@ -963,42 +833,10 @@ export default function CheckTable(props) {
                               // fontWeight="500"
                               fontWeight="700"
                             >
-                              {cell?.value?.text || cell?.value || ""}
+                              {cell?.value || 0} AED
                             </Text>
                           );
-                        } else if (cell?.column.Header === "Status") {
-                          data = (
-                            <div className="selectOpt">
-                              <RenderStatus
-                                setUpdatedStatuses={setUpdatedStatuses}
-                                id={cell?.row?.original?._id}
-                                cellValue={cell?.value}
-                              />
-                            </div>
-                          );
-                        } else if (cell?.column.Header === "Manager") {
-                          data = (
-                            <RenderManager
-                              fetchData={fetchData}
-                              pageIndex={pageIndex}
-                              setData={setData}
-                              leadID={row?.original?._id?.toString()}
-                              value={cell?.value}
-                            />
-                          );
-                        } else if (cell?.column.Header === "Agent") {
-                          data = (
-                            <>
-                              <RenderAgent
-                                setData={setData}
-                                fetchData={fetchData}
-                                leadID={row?.original?._id?.toString()}
-                                managerAssigned={row?.original?.managerAssigned}
-                                value={cell?.value}
-                              />
-                            </>
-                          );
-                        } else if (cell?.column.Header === "Nationality") {
+                
                           data = (
                             <Text
                               color={
@@ -1012,34 +850,7 @@ export default function CheckTable(props) {
                               fontWeight="900"
                               textAlign={"center"}
                             >
-                              {cell?.value?.text || cell?.value || "-"}
-                            </Text>
-                          );
-                        } else if (cell?.column.Header === "Timetocall") {
-                          data = (
-                            <Text
-                              color={
-                                cell?.value < 40
-                                  ? "red.600"
-                                  : cell?.value < 80
-                                  ? "yellow.400"
-                                  : "green.600"
-                              }
-                              fontSize="md"
-                              fontWeight="900"
-                              textAlign={"center"}
-                            >
-                              {cell?.value?.text || cell?.value || "-"}
-                            </Text>
-                          );
-                        } else if (cell?.column.Header === "Date And Time") {
-                          data = (
-                            <Text
-                              fontSize={"sm"}
-                              fontWeight="900"
-                              textAlign={"center"}
-                            >
-                              {new Date(cell?.value?.text || cell?.value).toLocaleString() || "-"}
+                              {cell?.value || "-"}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Action") {
@@ -1057,7 +868,6 @@ export default function CheckTable(props) {
                                   minW={"fit-content"}
                                   transform={"translate(1520px, 173px);"}
                                 >
-                                  {access?.update && (
                                     <MenuItem
                                       py={2.5}
                                       onClick={() => {
@@ -1067,121 +877,8 @@ export default function CheckTable(props) {
                                       icon={<EditIcon fontSize={15} mb={1} />}
                                     >
                                       Edit
-                                    </MenuItem>
-                                  )}
-                                  {callAccess?.create && (
-                                    <MenuItem
-                                      py={2.5}
-                                      width={"165px"}
-                                      onClick={() => {
-                                        setAddPhoneCall(true);
-                                        setCallSelectedId(
-                                          cell?.row?.values._id
-                                        );
-                                      }}
-                                      icon={<PhoneIcon fontSize={15} mb={1} />}
-                                    >
-                                      Create Call
-                                    </MenuItem>
-                                  )}
-                                  {emailAccess?.create && (
-                                    <MenuItem
-                                      py={2.5}
-                                      width={"165px"}
-                                      onClick={() => {
-                                        setAddEmailHistory(true);
-                                        setSelectedId(cell?.row?.values._id);
-                                      }}
-                                      icon={<EmailIcon fontSize={15} mb={1} />}
-                                    >
-                                      Send Email
-                                    </MenuItem>
-                                  )}
-                                  <MenuItem
-                                    py={2.5}
-                                    width={"max-content"}
-                                    onClick={() => {
-                                      navigate(
-                                        "/leadCycle/" + cell?.row?.values?._id
-                                      );
-                                    }}
-                                    icon={<FaHistory fontSize={15} mb={1} />}
-                                  >
-                                    View Lead cycle
-                                  </MenuItem>
-                                  <MenuItem
-                                    py={2.5}
-                                    width={"max-content"}
-                                    onClick={() => {
-                                      navigate(
-                                        "/leadHistory/" + cell?.row?.values?._id
-                                      );
-                                    }}
-                                    icon={<FaHistory fontSize={15} mb={1} />}
-                                  >
-                                    View Call history
-                                  </MenuItem>
-
-                                  <MenuItem
-                                    display={{ sm: "block", xl: "none" }}
-                                    py={2.5}
-                                    width={"195px"}
-                                    onClick={() => {
-                                      const contact = parseInt(
-                                        cell?.row?.values?.leadPhoneNumber
-                                      );
-                                      if (contact)
-                                        document.location.href = `tel:+92${contact}`;
-                                    }}
-                                    icon={<PhoneIcon fontSize={15} mb={1} />}
-                                  >
-                                    Open in Dialpad
-                                  </MenuItem>
-
-                                  <MenuItem
-                                    py={2.5}
-                                    width={"210px"}
-                                    onClick={() => {
-                                      const contact = parseInt(
-                                        cell?.row?.values?.leadPhoneNumber
-                                      );
-                                      if (contact)
-                                        window.open(
-                                          `https://api.whatsapp.com/send/?phone=${contact}`
-                                        );
-                                    }}
-                                    icon={<BsWhatsapp fontSize={15} mb={1} />}
-                                  >
-                                    Open in Whatsapp
-                                  </MenuItem>
-                                  {user?.roles[0]?.roleName === "Agent" && (
-                                    <MenuItem
-                                      py={2.5}
-                                      width={"210px"}
-                                      onClick={() => {
-                                        setTaskInits(row?.original);
-                                        onTaskOpen();
-                                      }}
-                                      icon={<MdTask fontSize={15} mb={1} />}
-                                    >
-                                      Create Follow Up
-                                    </MenuItem>
-                                  )}
-                                  {access?.view && (
-                                    <MenuItem
-                                      py={2.5}
-                                      color={"green"}
-                                      onClick={() =>
-                                        navigate(
-                                          `/leadView/${cell?.row?.original._id}`
-                                        )
-                                      }
-                                      icon={<ViewIcon fontSize={15} mb={1} />}
-                                    >
-                                      View
-                                    </MenuItem>
-                                  )}
-                                  {access?.delete && (
+                                    </MenuItem>                                 
+                       
                                     <MenuItem
                                       py={2.5}
                                       color={"red"}
@@ -1195,7 +892,6 @@ export default function CheckTable(props) {
                                     >
                                       Delete
                                     </MenuItem>
-                                  )}
                                 </MenuList>
                               </Menu>
                             </Text>
@@ -1203,10 +899,6 @@ export default function CheckTable(props) {
                         }
                         return (
                           <Td
-                            paddingTop={"0.35rem"}
-                            paddingBottom={"0.35rem"}
-                            paddingLeft={"5px"}
-                            paddingRight={"5px"}
                             {...cell?.getCellProps()}
                             key={index}
                             style={
@@ -1231,7 +923,7 @@ export default function CheckTable(props) {
             </Tbody>
           </Table>
         </Box>
-        {data?.length > 0 && (
+        {data?.length > 5 && (
           <Pagination
             gotoPage={gotoPage}
             gopageValue={gopageValue}
@@ -1248,30 +940,9 @@ export default function CheckTable(props) {
           />
         )}
 
-        <AddEmailHistory
-          fetchData={fetchData}
-          isOpen={addEmailHistory}
-          onClose={setAddEmailHistory}
-          data={data?.contact}
-          lead="true"
-          id={selectedId}
-        />
+  
 
-        <AddTask
-          leadData={taskInits}
-          fetchData={() => {}}
-          isOpen={isTaskOpen}
-          onClose={onTaskClose}
-        />
-
-        <AddPhoneCall
-          fetchData={fetchData}
-          isOpen={addPhoneCall}
-          onClose={setAddPhoneCall}
-          data={data?.contact}
-          id={callSelectedId}
-          lead="true"
-        />
+   
 
         {isOpen && (
           <Add
@@ -1296,16 +967,10 @@ export default function CheckTable(props) {
           setAction={setAction}
           moduleId={leadData?.[0]?._id}
         />
-        <ImportModal
-          text="Lead file"
-          fetchData={fetchData}
-          isOpen={isImportLead}
-          onClose={setIsImportLead}
-        />
+      
       </Card>
       {/* Advance filter */}
       <Modal
-        size="2xl"
         onClose={() => {
           setAdvaceSearch(false);
           resetForm();
@@ -1380,9 +1045,7 @@ export default function CheckTable(props) {
                   <option value="waiting">Waiting</option>
                   <option value="follow_up">Follow Up</option>
                   <option value="meeting">Meeting</option>
-                  <option value="follow_up_after_meeting">
-                    Follow Up After Meeting
-                  </option>
+                  <option value="follow_up_after_meeting">Follow Up After Meeting</option>
                   <option value="deal">Deal</option>
                   <option value="junk">Junk</option>
                   <option value="whatsapp_send">Whatsapp Send</option>
@@ -1393,6 +1056,7 @@ export default function CheckTable(props) {
                   <option value="broker">Broker</option>
                   <option value="voice_mail">Voice Mail</option>
                   <option value="request">Request</option>
+
                 </Select>
                 <Text mb="10px" color={"red"}>
                   {" "}
@@ -1455,100 +1119,21 @@ export default function CheckTable(props) {
                 </Text>
               </GridItem>
 
-              {user?.role === "superAdmin" && (
-                <GridItem colSpan={{ base: 12, md: 6 }}>
-                  <FormLabel
-                    display="flex"
-                    ms="4px"
-                    fontSize="sm"
-                    fontWeight="600"
-                    color={"#000"}
-                    mb="0"
-                    mt={2}
-                  >
-                    Manager
-                  </FormLabel>
-                  <Box>
-                    <Select
-                      name="managerAssigned"
-                      onChange={handleChange}
-                      value={values["managerAssigned"]}
-                    >
-                      <option selected value={""}>
-                        Select manager
-                      </option>
-                      {tree &&
-                        tree["managers"] &&
-                        tree["managers"]?.map((user) => {
-                          return (
-                            <option
-                              key={user?._id?.toString()}
-                              value={user?._id?.toString()}
-                            >
-                              {user?.firstName + " " + user?.lastName}
-                            </option>
-                          );
-                        })}
-                    </Select>
-                  </Box>
+              {/* <GridItem colSpan={{ base: 12, md: 6 }}>
+                <FormLabel display='flex' ms='4px' fontSize='sm' fontWeight='600' color={"#000"} mb="0" mt={2}>
+                  Owner
+                </FormLabel>
+                <Input
+                  fontSize='sm'
+                  onChange={handleChange} onBlur={handleBlur}
+                  value={values?.leadOwner}
+                  name="leadOwner"
+                  placeholder='Enter Lead Owner'
+                  fontWeight='500'
+                />
+                <Text mb='10px' color={'red'}> {errors.leadOwner && touched.leadOwner && errors.leadOwner}</Text>
 
-                  <Text mb="10px" color={"red"}>
-                    {" "}
-                    {errors.fromLeadScore &&
-                      touched.fromLeadScore &&
-                      errors.fromLeadScore}
-                  </Text>
-                </GridItem>
-              )}
-
-              {user?.role === "superAdmin" && values.managerAssigned && (
-                <GridItem colSpan={{ base: 12, md: 6 }}>
-                  <FormLabel
-                    display="flex"
-                    ms="4px"
-                    fontSize="sm"
-                    fontWeight="600"
-                    color={"#000"}
-                    mb="0"
-                    mt={2}
-                  >
-                    Agent
-                  </FormLabel>
-                  <Box>
-                    <Select
-                      name="agentAssigned"
-                      onChange={handleChange}
-                      value={values["agentAssigned"]}
-                    >
-                      <option selected value={""}>
-                        Select agent
-                      </option>
-                      {tree &&
-                        tree["managers"] &&
-                        tree["agents"][
-                          "manager-" + values.managerAssigned
-                        ]?.map((user) => {
-                          return (
-                            <option
-                              key={user?._id?.toString()}
-                              value={user?._id?.toString()}
-                            >
-                              {user?.firstName + " " + user?.lastName}
-                            </option>
-                          );
-                        })}
-                    </Select>
-                  </Box>
-
-                  <Text mb="10px" color={"red"}>
-                    {" "}
-                    {errors.fromLeadScore &&
-                      touched.fromLeadScore &&
-                      errors.fromLeadScore}
-                  </Text>
-                </GridItem>
-              )}
-
+              </GridItem> */}
               {user?.roles[0]?.roleName === "Manager" && (
                 <GridItem colSpan={{ base: 12, md: 6 }}>
                   <FormLabel
@@ -1689,7 +1274,6 @@ export default function CheckTable(props) {
         data={selectedValues}
         method="many"
         setAction={setAction}
-        setSelectAllChecked={setSelectAllChecked}
       />
     </>
   );
