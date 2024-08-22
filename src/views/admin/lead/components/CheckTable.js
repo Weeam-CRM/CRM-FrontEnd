@@ -100,7 +100,7 @@ export default function CheckTable(props) {
     dateTime,
     setDateTime,
     pages,
-        fetchAdvancedSearch,
+    fetchAdvancedSearch,
     totalLeads,
     fetchSearchedData,
     setData,
@@ -207,8 +207,8 @@ export default function CheckTable(props) {
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       setIsLoding(true);
-     
-           const data = {};
+
+      const data = {};
       if (values.leadName) {
         data["leadName"] = values.leadName;
       }
@@ -230,7 +230,6 @@ export default function CheckTable(props) {
       fetchAdvancedSearch(data, 1, pageSize);
       setUpdatedPage(0);
       setGopageValue(1);
-
 
       let agent = null;
       if (values?.agentAssigned && user?.roles[0]?.roleName === "Manager") {
@@ -278,7 +277,7 @@ export default function CheckTable(props) {
     setUpdatedPage(0);
     fetchData(1, pageSize);
     setGopageValue(1);
-    setUpdatedPage(0); 
+    setUpdatedPage(0);
   };
 
   const {
@@ -431,28 +430,28 @@ export default function CheckTable(props) {
   };
 
   const fetchSearch = () => {
-    if(searchbox.current?.value?.trim()) {
-      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize); 
-      setUpdatedPage(0); 
-      setGopageValue(1); 
+    if (searchbox.current?.value?.trim()) {
+      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize);
+      setUpdatedPage(0);
+      setGopageValue(1);
     }
-  }
+  };
 
   useEffect(() => {
-    setGopageValue(1); 
-    setUpdatedPage(0); 
-    if(displaySearchData) {
-      fetchSearchedData(searchbox.current?.value?.trim()); 
+    setGopageValue(1);
+    setUpdatedPage(0);
+    if (displaySearchData) {
+      fetchSearchedData(searchbox.current?.value?.trim());
     } else {
-      fetchData(); 
+      fetchData();
     }
-
   }, [action]);
 
   useEffect(() => {
-    setGopageValue(1); 
-    setUpdatedPage(0); 
-    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData) fetchData();
+    setGopageValue(1);
+    setUpdatedPage(0);
+    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData)
+      fetchData();
   }, [dateTime]);
 
   useEffect(() => {
@@ -470,7 +469,7 @@ export default function CheckTable(props) {
 
   useEffect(() => {
     setUpdatedPage(0);
-    setGopageValue(1); 
+    setGopageValue(1);
     if (displaySearchData) {
       fetchSearchedData(searchbox.current?.value?.trim() || "", 1, pageSize);
     } else {
@@ -566,7 +565,7 @@ export default function CheckTable(props) {
               <CustomSearchInput
                 searchbox={searchbox}
                 dataColumn={dataColumn}
-                pageSize={pageSize}
+                isPaginated={true}
                 fetchSearch={fetchSearch}
               />
               <Button
@@ -1030,7 +1029,9 @@ export default function CheckTable(props) {
                               fontWeight="900"
                               textAlign={"center"}
                             >
-                              {new Date(cell?.value?.text || cell?.value).toLocaleString() || "-"}
+                              {new Date(
+                                cell?.value?.text || cell?.value
+                              ).toLocaleString() || "-"}
                             </Text>
                           );
                         } else if (cell?.column.Header === "Action") {
