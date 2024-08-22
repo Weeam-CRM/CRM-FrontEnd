@@ -1034,7 +1034,42 @@ export default function CheckTable(props) {
                               ).toLocaleString() || "-"}
                             </Text>
                           );
-                        } else if (cell?.column.Header === "Action") {
+                        }  else if (cell?.column.Header === "Last Note") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "IP") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Address") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Campaign") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Email") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Medium") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (
+                          cell?.column.Header === "Campaign Page URL"
+                        ) {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Are you in UAE?") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        }
+                         else if (cell?.column.Header === "Action") {
                           data = (
                             <Text
                               fontSize="md"
@@ -1619,7 +1654,7 @@ export default function CheckTable(props) {
         isCentered
       >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent  height={"90vh"} overflowY={"scroll"}>
           <ModalHeader>Manage Columns</ModalHeader>
           <ModalCloseButton
             onClick={() => {
