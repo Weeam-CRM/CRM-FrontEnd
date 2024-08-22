@@ -100,6 +100,7 @@ export default function CheckTable(props) {
     dateTime,
     setDateTime,
     pages,
+        fetchAdvancedSearch,
     totalLeads,
     fetchSearchedData,
     setData,
@@ -206,36 +207,30 @@ export default function CheckTable(props) {
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       setIsLoding(true);
-      const searchResult = allData?.filter(
-        (item) =>
-          (!values?.leadName ||
-            (item?.leadName &&
-              item?.leadName
-                ?.toLowerCase()
-                ?.includes(values?.leadName?.toLowerCase()))) &&
-          (!values?.leadStatus ||
-            (values?.leadStatus === "new"
-              ? item?.leadStatus === "" || item?.leadStatus === "new"
-              : item?.leadStatus
-                  ?.toLowerCase()
-                  ?.includes(values?.leadStatus?.toLowerCase()))) &&
-          (!values?.leadEmail ||
-            (item?.leadEmail &&
-              item?.leadEmail
-                ?.toLowerCase()
-                ?.includes(values?.leadEmail?.toLowerCase()))) &&
-          (!values?.agentAssigned ||
-            (item?.agentAssigned &&
-              item?.agentAssigned === values?.agentAssigned)) &&
-          (!values?.managerAssigned ||
-            (item?.managerAssigned &&
-              item?.managerAssigned === values?.managerAssigned)) &&
-          (!values?.leadPhoneNumber ||
-            (item?.leadPhoneNumber &&
-              item?.leadPhoneNumber
-                ?.toString()
-                ?.includes(values?.leadPhoneNumber)))
-      );
+     
+           const data = {};
+      if (values.leadName) {
+        data["leadName"] = values.leadName;
+      }
+      if (values.leadEmail) {
+        data["leadEmail"] = values.leadEmail;
+      }
+      if (values.leadStatus) {
+        data["leadStatus"] = values.leadStatus;
+      }
+      if (values.leadPhoneNumber) {
+        data["leadPhoneNumber"] = values.leadPhoneNumber;
+      }
+      if (values.managerAssigned) {
+        data["managerAssigned"] = values.managerAssigned;
+      }
+      if (values.agentAssigned) {
+        data["agentAssigned"] = values.agentAssigned;
+      }
+      fetchAdvancedSearch(data, 1, pageSize);
+      setUpdatedPage(0);
+      setGopageValue(1);
+
 
       let agent = null;
       if (values?.agentAssigned && user?.roles[0]?.roleName === "Manager") {
@@ -271,12 +266,8 @@ export default function CheckTable(props) {
           undefined,
       ].filter((value) => value);
       setGetTagValues(getValue);
-      setUpdatedPage(0);
-      setSearchedData(searchResult);
-      setDisplaySearchData(true);
       setAdvaceSearch(false);
       setSearchClear(true);
-      setIsLoding(false);
       resetForm();
     },
   });
