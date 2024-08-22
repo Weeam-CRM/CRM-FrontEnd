@@ -34,6 +34,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import axios from "axios";
 import {
   useGlobalFilter,
   usePagination,
@@ -75,9 +76,11 @@ import DataNotFound from "components/notFoundData";
 import RenderManager from "./RenderManager";
 import RenderAgent from "./RenderAgent";
 import RenderStatus from "./RenderStatus";
+import ApprovalStatus from "./ApprovalStatus";
 import { MdTask } from "react-icons/md";
 import AddTask from "./addTask";
-import LeadsModal from "../LeadsModal";
+import { toast } from "react-toastify";
+import { putApi } from "services/api";
 
 export default function CheckTable(props) {
   const {
@@ -101,27 +104,24 @@ export default function CheckTable(props) {
     dateTime,
     setDateTime,
     pages,
-    fetchAdvancedSearch,
     totalLeads,
     fetchSearchedData,
     setData,
+    checkApproval
   } = props;
   const textColor = useColorModeValue("gray.500", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
   const [leadData, setLeadData] = useState([]);
   const columns = useMemo(() => dataColumn, [dataColumn]);
-  const [selectedValues, setSelectedValues] = useState([])
+  const [selectedValues, setSelectedValues] = useState([]);
   const [getTagValues, setGetTagValues] = useState([]);
   const [gopageValue, setGopageValue] = useState(1);
 
   const user = JSON.parse(localStorage.getItem("user"));
   const tree = useSelector((state) => state.user.tree);
 
-  const [leadsModal, setLeadsModal] = useState({
-    isOpen: false,
-    lid: null,
-  });
   const [deleteModel, setDelete] = useState(false);
+  const [approvalStatus, setApprovalStatus] = useState(false);
   const [addEmailHistory, setAddEmailHistory] = useState(false);
   const [addPhoneCall, setAddPhoneCall] = useState(false);
   const [advaceSearch, setAdvaceSearch] = useState(false);
@@ -146,6 +146,8 @@ export default function CheckTable(props) {
   const [manageColumns, setManageColumns] = useState(false);
   const [tempSelectedColumns, setTempSelectedColumns] = useState(dataColumn); // State to track changes
   const [taskInits, setTaskInits] = useState({});
+
+ 
 
   const csvColumns = [
     { Header: "Name", accessor: "leadName" },
@@ -212,29 +214,36 @@ export default function CheckTable(props) {
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       setIsLoding(true);
-
-      const data = {};
-      if (values.leadName) {
-        data["leadName"] = values.leadName;
-      }
-      if (values.leadEmail) {
-        data["leadEmail"] = values.leadEmail;
-      }
-      if (values.leadStatus) {
-        data["leadStatus"] = values.leadStatus;
-      }
-      if (values.leadPhoneNumber) {
-        data["leadPhoneNumber"] = values.leadPhoneNumber;
-      }
-      if (values.managerAssigned) {
-        data["managerAssigned"] = values.managerAssigned;
-      }
-      if (values.agentAssigned) {
-        data["agentAssigned"] = values.agentAssigned;
-      }
-      fetchAdvancedSearch(data, 1, pageSize);
-      setUpdatedPage(0);
-      setGopageValue(1);
+      const searchResult = allData?.filter(
+        (item) =>
+          (!values?.leadName ||
+            (item?.leadName &&
+              item?.leadName
+                ?.toLowerCase()
+                ?.includes(values?.leadName?.toLowerCase()))) &&
+          (!values?.leadStatus ||
+            (values?.leadStatus === "new"
+              ? item?.leadStatus === "" || item?.leadStatus === "new"
+              : item?.leadStatus
+                  ?.toLowerCase()
+                  ?.includes(values?.leadStatus?.toLowerCase()))) &&
+          (!values?.leadEmail ||
+            (item?.leadEmail &&
+              item?.leadEmail
+                ?.toLowerCase()
+                ?.includes(values?.leadEmail?.toLowerCase()))) &&
+          (!values?.agentAssigned ||
+            (item?.agentAssigned &&
+              item?.agentAssigned === values?.agentAssigned)) &&
+          (!values?.managerAssigned ||
+            (item?.managerAssigned &&
+              item?.managerAssigned === values?.managerAssigned)) &&
+          (!values?.leadPhoneNumber ||
+            (item?.leadPhoneNumber &&
+              item?.leadPhoneNumber
+                ?.toString()
+                ?.includes(values?.leadPhoneNumber)))
+      );
 
       let agent = null;
       if (values?.agentAssigned && user?.roles[0]?.roleName === "Manager") {
@@ -270,8 +279,12 @@ export default function CheckTable(props) {
           undefined,
       ].filter((value) => value);
       setGetTagValues(getValue);
+      setUpdatedPage(0);
+      setSearchedData(searchResult);
+      setDisplaySearchData(true);
       setAdvaceSearch(false);
       setSearchClear(true);
+      setIsLoding(false);
       resetForm();
     },
   });
@@ -282,7 +295,7 @@ export default function CheckTable(props) {
     setUpdatedPage(0);
     fetchData(1, pageSize);
     setGopageValue(1);
-    setUpdatedPage(0);
+    setUpdatedPage(0); 
   };
 
   const {
@@ -302,7 +315,7 @@ export default function CheckTable(props) {
       columns,
       data,
       manualPagination: true,
-      initialState: { pageIndex: updatedPage, pageSize: 200 },
+      initialState: { pageIndex: updatedPage },
       pageCount: pages,
     },
     useGlobalFilter,
@@ -339,13 +352,6 @@ export default function CheckTable(props) {
         prevSelectedValues.filter((selectedValue) => selectedValue !== value)
       );
     }
-  };
-
-  const handleLeadsModal = (lid) => {
-    setLeadsModal({
-      isOpen: true,
-      lid,
-    });
   };
 
   const handleClick = () => {
@@ -421,6 +427,78 @@ export default function CheckTable(props) {
     }
   };
 
+  const approveChangeHandler = async(e,leadId) =>{
+    const user = JSON.parse(localStorage.getItem('user'))
+    console.log(user?.role,"role")
+    if(e?.target?.value == "none") return;
+    try{
+     const res = await axios.put("http://localhost:5000/api/adminApproval/update",{
+      isApproved:e?.target?.value == "accept"?true:false,
+      objectId:checkApproval(leadId)._id,
+      // isManager:
+     },{
+      headers:{
+        Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
+      }
+     })
+
+     if(res?.data?.status){
+      if(checkApproval(leadId).agentId?false:true){
+        try {
+          // setLoading(true);
+          const dataObj = {
+            managerAssigned:checkApproval(leadId)?.managerId ,
+          }; 
+    
+          if (e.target.value === "") {
+            dataObj["agentAssigned"] = "";
+          }
+    
+          await putApi(`api/lead/edit/${leadId}`, dataObj);
+          toast.success("Manager updated successfuly");
+          // setManagerSelected(dataObj.managerAssigned || "");
+          // setData(prevData => {
+          //   const newData = [...prevData]; 
+    
+          //   const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
+          //   if(updateIdx !== -1) {
+          //     newData[updateIdx].managerAssigned = dataObj.managerAssigned; 
+          //     newData[updateIdx].agentAssigned = ""; 
+          //   }
+          //   return newData; 
+          // })
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed to update the manager");
+        }
+      }else{
+        try {
+          const data = {
+            agentAssigned: checkApproval(leadId)?.agentId,
+          };
+    
+          // setLoading(true); 
+    
+          await putApi(`api/lead/edit/${leadId}`, data);
+          toast.success("Agent updated successfuly");
+          
+          // fetchData();
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed to update the agent");
+        }
+      }
+       
+    
+      
+     }
+
+     console.log(res,"response from update of lead request")
+    }catch(error){
+      console.log("error",error)
+    }
+  }
+
   const convertJsonToCsvOrExcel = (
     jsonArray,
     csvColumns,
@@ -442,28 +520,28 @@ export default function CheckTable(props) {
   };
 
   const fetchSearch = () => {
-    if (searchbox.current?.value?.trim()) {
-      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize);
-      setUpdatedPage(0);
-      setGopageValue(1);
+    if(searchbox.current?.value?.trim()) {
+      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize); 
+      setUpdatedPage(0); 
+      setGopageValue(1); 
     }
-  };
+  }
 
   useEffect(() => {
-    setGopageValue(1);
-    setUpdatedPage(0);
-    if (displaySearchData) {
-      fetchSearchedData(searchbox.current?.value?.trim());
+    setGopageValue(1); 
+    setUpdatedPage(0); 
+    if(displaySearchData) {
+      fetchSearchedData(searchbox.current?.value?.trim()); 
     } else {
-      fetchData();
+      fetchData(); 
     }
+
   }, [action]);
 
   useEffect(() => {
-    setGopageValue(1);
-    setUpdatedPage(0);
-    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData)
-      fetchData();
+    setGopageValue(1); 
+    setUpdatedPage(0); 
+    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData) fetchData();
   }, [dateTime]);
 
   useEffect(() => {
@@ -481,7 +559,7 @@ export default function CheckTable(props) {
 
   useEffect(() => {
     setUpdatedPage(0);
-    setGopageValue(1);
+    setGopageValue(1); 
     if (displaySearchData) {
       fetchSearchedData(searchbox.current?.value?.trim() || "", 1, pageSize);
     } else {
@@ -577,7 +655,7 @@ export default function CheckTable(props) {
               <CustomSearchInput
                 searchbox={searchbox}
                 dataColumn={dataColumn}
-                isPaginated={true}
+                pageSize={pageSize}
                 fetchSearch={fetchSearch}
               />
               <Button
@@ -887,26 +965,23 @@ export default function CheckTable(props) {
                           );
                         } else if (cell?.column.Header === "Name") {
                           data = access?.view ? (
-                            <Text
-                              onClick={() =>
-                                handleLeadsModal(row.original?._id)
-                              }
-                              me="10px"
-                              sx={{
-                                "&:hover": {
-                                  color: "blue.500",
-                                  textDecoration: "underline",
-
-                                },
-                              }}
-                              cursor="pointer"
-                              color="brand.600"
-                              fontSize="sm"
-                              // fontWeight="500"
-                              fontWeight="700"
-                            >
-                              {cell?.value?.text || cell?.value}
-                            </Text>
+                            <Link to={`/leadView/${row?.original?._id}`}>
+                              <Text
+                                me="10px"
+                                sx={{
+                                  "&:hover": {
+                                    color: "blue.500",
+                                    textDecoration: "underline",
+                                  },
+                                }}
+                                color="brand.600"
+                                fontSize="sm"
+                                // fontWeight="500"
+                                fontWeight="700"
+                              >
+                                {cell?.value?.text || cell?.value}
+                              </Text>
+                            </Link>
                           ) : (
                             <Text
                               me="10px"
@@ -981,6 +1056,36 @@ export default function CheckTable(props) {
                               />
                             </div>
                           );
+                        } else if (cell?.column.Header === "Lead Approval"){
+                          data = (
+                            // <div className="selectOpt">
+                            //   <ApprovalStatus
+                            //     setUpdatedStatuses={setUpdatedStatuses}
+                            //     id={cell?.row?.original?._id}
+                            //     cellValue={cell?.value}
+                            //   />
+                            // </div>
+                            checkApproval(row?.original?._id?.toString()).approvalStatus != "pending"?checkApproval(row?.original?._id?.toString()).approvalStatus :<Select
+                            defaultValue={"None"}
+                            // className={changeStatus(value)}
+                            onChange={(e)=>approveChangeHandler(e,row?.original?._id?.toString())}
+                            height={7}
+                            width={130}
+                            style={{ fontSize: "14px" }}
+                          >
+                            <option value="none">None</option>
+                            <option value="accept">Accept</option>
+                            <option value="reject">Reject</option>
+                                  </Select>
+                          );
+                        }  else if(cell?.column.Header === "Approval Status"){
+                            data=(
+                              <h1 style={{textAlign:"center"}}>
+                                { 
+                                checkApproval(row?.original?._id?.toString()).approvalStatus
+                            }
+                              </h1>
+                            )
                         } else if (cell?.column.Header === "Manager") {
                           data = (
                             <RenderManager
@@ -989,12 +1094,15 @@ export default function CheckTable(props) {
                               setData={setData}
                               leadID={row?.original?._id?.toString()}
                               value={cell?.value}
+                              checkApproval={checkApproval}
                             />
                           );
                         } else if (cell?.column.Header === "Agent") {
                           data = (
                             <>
                               <RenderAgent
+                              checkApproval={checkApproval}
+                                
                                 setData={setData}
                                 fetchData={fetchData}
                                 leadID={row?.original?._id?.toString()}
@@ -1044,44 +1152,8 @@ export default function CheckTable(props) {
                               fontWeight="900"
                               textAlign={"center"}
                             >
-                              {new Date(
-                                cell?.value?.text || cell?.value
-                              ).toLocaleString() || "-"}
+                              {new Date(cell?.value?.text || cell?.value).toLocaleString() || "-"}
                             </Text>
-                          );
-                        } else if (cell?.column.Header === "Last Note") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "IP") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "Lead Address") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "Lead Campaign") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "Lead Email") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "Lead Medium") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (
-                          cell?.column.Header === "Campaign Page URL"
-                        ) {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "Are you in UAE?") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
                           );
                         } else if (cell?.column.Header === "Action") {
                           data = (
@@ -1542,7 +1614,7 @@ export default function CheckTable(props) {
                 </GridItem>
               )}
 
-              {user?.role === "superAdmin" && (
+              {user?.role === "superAdmin" && values.managerAssigned && (
                 <GridItem colSpan={{ base: 12, md: 6 }}>
                   <FormLabel
                     display="flex"
@@ -1566,7 +1638,9 @@ export default function CheckTable(props) {
                       </option>
                       {tree &&
                         tree["managers"] &&
-                          Object.values(tree['agents'])?.flat()?.map((user) => {
+                        tree["agents"][
+                          "manager-" + values.managerAssigned
+                        ]?.map((user) => {
                           return (
                             <option
                               key={user?._id?.toString()}
@@ -1666,7 +1740,7 @@ export default function CheckTable(props) {
         isCentered
       >
         <ModalOverlay />
-        <ModalContent height={"90vh"} overflowY={"scroll"}>
+        <ModalContent>
           <ModalHeader>Manage Columns</ModalHeader>
           <ModalCloseButton
             onClick={() => {
@@ -1730,13 +1804,6 @@ export default function CheckTable(props) {
         setAction={setAction}
         setSelectAllChecked={setSelectAllChecked}
       />
-
-  {leadsModal.isOpen &&
-      <LeadsModal
-        leadsModal={leadsModal}
-        onClose={() => setLeadsModal({ isOpen: false, lid: null })}
-      />
-  }
     </>
   );
 }
