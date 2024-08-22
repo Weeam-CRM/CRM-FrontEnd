@@ -77,6 +77,7 @@ import RenderAgent from "./RenderAgent";
 import RenderStatus from "./RenderStatus";
 import { MdTask } from "react-icons/md";
 import AddTask from "./addTask";
+import LeadsModal from "../LeadsModal";
 
 export default function CheckTable(props) {
   const {
@@ -116,6 +117,10 @@ export default function CheckTable(props) {
   const user = JSON.parse(localStorage.getItem("user"));
   const tree = useSelector((state) => state.user.tree);
 
+  const [leadsModal, setLeadsModal] = useState({
+    isOpen: false,
+    lid: null,
+  });
   const [deleteModel, setDelete] = useState(false);
   const [addEmailHistory, setAddEmailHistory] = useState(false);
   const [addPhoneCall, setAddPhoneCall] = useState(false);
@@ -334,6 +339,13 @@ export default function CheckTable(props) {
         prevSelectedValues.filter((selectedValue) => selectedValue !== value)
       );
     }
+  };
+
+  const handleLeadsModal = (lid) => {
+    setLeadsModal({
+      isOpen: true,
+      lid,
+    });
   };
 
   const handleClick = () => {
@@ -875,23 +887,26 @@ export default function CheckTable(props) {
                           );
                         } else if (cell?.column.Header === "Name") {
                           data = access?.view ? (
-                            <Link to={`/leadView/${row?.original?._id}`}>
-                              <Text
-                                me="10px"
-                                sx={{
-                                  "&:hover": {
-                                    color: "blue.500",
-                                    textDecoration: "underline",
-                                  },
-                                }}
-                                color="brand.600"
-                                fontSize="sm"
-                                // fontWeight="500"
-                                fontWeight="700"
-                              >
-                                {cell?.value?.text || cell?.value}
-                              </Text>
-                            </Link>
+                            <Text
+                              onClick={() =>
+                                handleLeadsModal(row.original?._id)
+                              }
+                              me="10px"
+                              sx={{
+                                "&:hover": {
+                                  color: "blue.500",
+                                  textDecoration: "underline",
+
+                                },
+                              }}
+                              cursor="pointer"
+                              color="brand.600"
+                              fontSize="sm"
+                              // fontWeight="500"
+                              fontWeight="700"
+                            >
+                              {cell?.value?.text || cell?.value}
+                            </Text>
                           ) : (
                             <Text
                               me="10px"
@@ -1034,7 +1049,7 @@ export default function CheckTable(props) {
                               ).toLocaleString() || "-"}
                             </Text>
                           );
-                        }  else if (cell?.column.Header === "Last Note") {
+                        } else if (cell?.column.Header === "Last Note") {
                           data = (
                             <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
                           );
@@ -1068,8 +1083,7 @@ export default function CheckTable(props) {
                           data = (
                             <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
                           );
-                        }
-                         else if (cell?.column.Header === "Action") {
+                        } else if (cell?.column.Header === "Action") {
                           data = (
                             <Text
                               fontSize="md"
@@ -1654,7 +1668,7 @@ export default function CheckTable(props) {
         isCentered
       >
         <ModalOverlay />
-        <ModalContent  height={"90vh"} overflowY={"scroll"}>
+        <ModalContent height={"90vh"} overflowY={"scroll"}>
           <ModalHeader>Manage Columns</ModalHeader>
           <ModalCloseButton
             onClick={() => {
@@ -1718,6 +1732,13 @@ export default function CheckTable(props) {
         setAction={setAction}
         setSelectAllChecked={setSelectAllChecked}
       />
+
+  {leadsModal.isOpen &&
+      <LeadsModal
+        leadsModal={leadsModal}
+        onClose={() => setLeadsModal({ isOpen: false, lid: null })}
+      />
+  }
     </>
   );
 }

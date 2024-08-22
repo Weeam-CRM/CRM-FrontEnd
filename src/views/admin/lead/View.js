@@ -55,8 +55,7 @@ import LeadNotes from "./components/LeadNotes";
 import { FaPlus } from "react-icons/fa";
 import NewNoteModal from "./components/NewNoteModal";
 
-const View = () => {
-  const param = useParams();
+const View = ({param}) => {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -269,7 +268,7 @@ const View = () => {
                       )}
                     </MenuList>
                   </Menu>
-                  <Link to="/lead">
+                  {/* <Link to="/lead">
                     <Button
                       leftIcon={<IoIosArrowBack />}
                       size="sm"
@@ -277,7 +276,7 @@ const View = () => {
                     >
                       Back
                     </Button>
-                  </Link>
+                  </Link> */}
                 </Flex>
               </GridItem>
             </Grid>
