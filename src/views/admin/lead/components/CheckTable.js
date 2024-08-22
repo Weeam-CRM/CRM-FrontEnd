@@ -1542,7 +1542,7 @@ export default function CheckTable(props) {
                 </GridItem>
               )}
 
-              {user?.role === "superAdmin" && values.managerAssigned && (
+              {user?.role === "superAdmin" && (
                 <GridItem colSpan={{ base: 12, md: 6 }}>
                   <FormLabel
                     display="flex"
@@ -1566,9 +1566,7 @@ export default function CheckTable(props) {
                       </option>
                       {tree &&
                         tree["managers"] &&
-                        tree["agents"][
-                          "manager-" + values.managerAssigned
-                        ]?.map((user) => {
+                          Object.values(tree['agents'])?.flat()?.map((user) => {
                           return (
                             <option
                               key={user?._id?.toString()}
