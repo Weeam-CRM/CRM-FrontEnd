@@ -297,7 +297,7 @@ export default function CheckTable(props) {
       columns,
       data,
       manualPagination: true,
-      initialState: { pageIndex: updatedPage },
+      initialState: { pageIndex: updatedPage, pageSize: 200 },
       pageCount: pages,
     },
     useGlobalFilter,

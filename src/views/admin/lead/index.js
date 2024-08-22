@@ -100,7 +100,7 @@ const Index = () => {
     selectedColumns?.find((colum) => colum?.Header === item.Header)
   );
 
-  const fetchData = async (pageNo = 1, pageSize = 10) => {
+  const fetchData = async (pageNo = 1, pageSize = 200) => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
@@ -115,7 +115,7 @@ const Index = () => {
     setIsLoding(false);
   };
 
-   const fetchSearchedData = async (term="",pageNo = 1, pageSize = 10) => {
+   const fetchSearchedData = async (term="",pageNo = 1, pageSize = 200) => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
@@ -131,7 +131,7 @@ const Index = () => {
     setIsLoding(false);
   };
   
-    const fetchAdvancedSearch = async (data = {}, pageNo = 1, pageSize = 10) => {
+    const fetchAdvancedSearch = async (data = {}, pageNo = 1, pageSize = 200) => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
