@@ -40,14 +40,6 @@ const Index = () => {
     { Header: "Date And Time", accessor: "createdDate", width: 40 },
     { Header: "Timetocall", accessor: "timetocall" },
     { Header: "Nationality", accessor: "nationality" },
-        {Header: "Last Note", accessor: "lastNote"}, 
-    {Header: "IP", accessor: "ip"}, 
-    {Header: "Lead Address", accessor: "leadAddress"}, 
-    {Header: "Lead Campaign", accessor: "leadSourceCampaign"}, 
-    {Header: "Lead Email", accessor: "leadEmail"}, 
-    {Header: "Lead Medium", accessor: "leadSourceMedium"}, 
-    {Header: "Campaign Page URL", accessor: "pageUrl"}, 
-    {Header: "Are you in UAE?", accessor: "r_u_in_uae"}, 
     { Header: "Action", isSortable: false, center: true },
   ];
   const tableColumnsManager = [
@@ -103,7 +95,7 @@ const Index = () => {
     selectedColumns?.find((colum) => colum?.Header === item.Header)
   );
 
-  const fetchData = async (pageNo = 1, pageSize = 200) => {
+  const fetchData = async (pageNo = 1, pageSize = 10) => {
     setIsLoding(true);
     let result = await getApi(
       // user.role === "superAdmin"
@@ -119,7 +111,7 @@ const Index = () => {
     setIsLoding(false);
   };
 
-   const fetchSearchedData = async (term="",pageNo = 1, pageSize = 200) => {
+   const fetchSearchedData = async (term="",pageNo = 1, pageSize = 10) => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
@@ -134,35 +126,6 @@ const Index = () => {
     setTotalLeads(result.data?.totalLeads || 0); 
     setIsLoding(false);
   };
-  
-    const fetchAdvancedSearch = async (data = {}, pageNo = 1, pageSize = 200) => {
-    setIsLoding(true);
-    let result = await getApi(
-      user.role === "superAdmin"
-        ? "api/lead/advanced-search" +
-            "?data=" +
-            JSON.stringify(data) +
-            "&dateTime=" +
-            dateTime?.from +
-            "|" +
-            dateTime?.to +
-            "&page=" +
-            pageNo +
-            "&pageSize=" +
-            pageSize
-        : `api/lead/advanced-search?data=${JSON.stringify(data)}&user=${user._id}&role=${
-            user.roles[0]?.roleName
-          }&dateTime=${
-            dateTime?.from + "|" + dateTime?.to
-          }&page=${pageNo}&pageSize=${pageSize}`
-    );
-      setDisplaySearchData(true);
-    setIsLoding(false);
-    setSearchedData(result.data?.result || []);
-    setPages(result.data?.totalPages || 0);
-    setTotalLeads(result.data?.totalLeads || 0);
-  };
-
 
   const autoAssign = async () => {
     try {
@@ -227,7 +190,6 @@ const Index = () => {
             setDisplaySearchData={setDisplaySearchData}
             setDynamicColumns={setDynamicColumns}
             dynamicColumns={dynamicColumns}
-            fetchAdvancedSearch={fetchAdvancedSearch}
             selectedColumns={selectedColumns}
             access={permission}
             setSelectedColumns={setSelectedColumns}

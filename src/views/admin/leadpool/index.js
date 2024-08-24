@@ -24,78 +24,84 @@ const Index = () => {
   const [pages, setPages] = useState(0); 
   const [approvals,setApprovals] = useState([]);
   const [filteredLeads,setFilteredLeads] = useState([]);
-
+  const [currentState, setCurrentState]=useState("all_leads")
   const tree = useSelector((state) => state.user.tree);
-
+  
   const [permission, emailAccess, callAccess] = HasAccess([
     "Lead",
     "Email",
     "Call",
   ]);
-  const tableColumns = [
+  let tableColumns = [
     { Header: "#", accessor: "_id", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
     { Header: "Manager", accessor: "managerAssigned" },
     { Header: "Agent", accessor: "agentAssigned" },
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Lead Approval", accessor: "leadWhatsappNumber" },
-    { Header: "Phone Number", accessor: "leadPhoneNumber" },
-    { Header: "Email", accessor: "leadEmail" },
-    
-     { Header: "Score", accessor: "leadScore" },
+    { Header: "Intrest", accessor: "interest" },
+    { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
   ];
-  const tableColumnsManager = [
+  let tableColumnsManager = [
     { Header: "#", accessor: "_id", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
-    // { Header: "Manager", accessor: "managerAssigned" },
+    { Header: "Manager", accessor: "managerAssigned" },
     { Header: "Agent", accessor: "agentAssigned" },
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Approval Status", accessor: "leadWhatsappNumber" },
-    { Header: "Phone Number", accessor: "leadPhoneNumber" },
-    { Header: "Email", accessor: "leadEmail" },
-     { Header: "Score", accessor: "leadScore" },
+    { Header: "Intrest", accessor: "interest" },
+    { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
   ];
-  const tableColumnsAgent = [
+  let tableColumnsAgent = [
     { Header: "#", accessor: "_id", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
-    // { Header: "Manager", accessor: "managerAssigned" },
-    // { Header: "Agent", accessor: "agentAssigned" },
+    { Header: "Manager", accessor: "managerAssigned" },
+    { Header: "Agent", accessor: "agentAssigned" },
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Approval Status", accessor: "leadWhatsappNumber" },
-    { Header: "Phone Number", accessor: "leadPhoneNumber" },
-    { Header: "Email", accessor: "leadEmail" },
-    
-     { Header: "Score", accessor: "leadScore" },
+    { Header: "Intrest", accessor: "interest" },
+    { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
   ];
 
-  useEffect(()=>{
-    async function fetchApprovals(){
-      try {
-      //  const res = await getApi("api/adminApproval/get","")
-       const res = await axios.get("http://127.0.0.1:5000/api/adminApproval/get",{
-        headers:{
-          Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
-        }
-       })
-       setApprovals(res?.data)
-      } catch (error) {
-       console.log(error,"error")
+  async function fetchApprovals(){
+    try {
+    //  const res = await getApi("api/adminApproval/get","")
+     const res = await axios.get("http://127.0.0.1:5000/api/adminApproval/get",{
+      headers:{
+        Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
       }
-     }
+     })
+     setApprovals(res?.data)
+    } catch (error) {
+     console.log(error,"error")
+    }
+   }
+  useEffect(()=>{
+    
 
      fetchApprovals();
-   },[])
+   },[data])
 
    useEffect(()=>{
-
+    if(currentState == "all_leads"){
+      setFilteredLeads(data)
+      if(currentState == "Accepeted"){}
+      return;
+    }
    const newFilteredLeads = data?.filter((row)=>{
       return approvals.find(approval=>approval.leadId == row?._id)
+      
    })
-   setFilteredLeads(newFilteredLeads);
-   },[data,approvals])
+   console.log(newFilteredLeads , "Requested Lead")
+   const leadApprovals = newFilteredLeads?.filter((lead)=>{
+    const approval = approvals.find(approval=>lead?._id == approval?.leadId)
+    return approval?.approvalStatus == currentState
+ })
+   setFilteredLeads(leadApprovals);
+   },[data,approvals,currentState])
 
   const roleColumns = {
     Manager: tableColumnsManager,
@@ -127,7 +133,7 @@ const Index = () => {
     setIsLoding(true);
     let result = await getApi(
       true
-        ? "api/lead/" + "?dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + pageSize
+        ? "api/lead/" + "?dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + 200
         : `api/lead/?user=${user._id}&role=${
             user.roles[0]?.roleName
           }&dateTime=${dateTime?.from + "|" + dateTime?.to}&page=${pageNo}&pageSize=${pageSize}`
@@ -170,20 +176,28 @@ const Index = () => {
       toast.error("Something went wrong!");
     }
   };
-
   const checkApproval = (id) =>{
-    return approvals.find(approval=>approval?.leadId == id);
+    // console.log("Approval Id", id)
+    // console.log("Approvalsss...", approvals)
+    return approvals.find(approval=> { 
+      // console.log("Approval id ,,", approval?.leadId, id)
+      return approval?.leadId == id
+     }
+    );
   }
 
   useEffect(() => {
     setColumns(tableColumns);
   }, [action]);
 
-
-
   return (
     <div>
+      <Button  onClick={()=> setCurrentState("all_leads") } >All Leads</Button>
+      <Button  onClick={()=> setCurrentState("pending") } >Pending</Button>
+          <Button onClick={()=> setCurrentState("Accepted")} >Approved  Leads</Button>
+          <Button onClick={()=> setCurrentState("Rejected")}>Rejected Leads</Button>
       <Grid templateColumns="repeat(6, 1fr)" mb={3} gap={4}>
+      
         <GridItem colSpan={6}>
         {role === "Manager" && 
             <Flex justifyContent={"flex-end"} mb={4}>
@@ -228,6 +242,7 @@ const Index = () => {
             emailAccess={emailAccess}
             callAccess={callAccess}
           /> */}
+          
           <CheckTable
            checkApproval = {checkApproval}
             dateTime={dateTime}

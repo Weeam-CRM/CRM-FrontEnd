@@ -88,8 +88,8 @@ const Edit = (props) => {
     const param = useParams()
 
     const getManagerNameById = (id) =>{
-      const manager =  tree.managers.find(manager=>{
-            return manager._id == values?.managerAssigned  ;  
+      const manager =  tree?.managers?.find(manager=>{
+            return manager?._id == values?.managerAssigned  ;  
     });
 
     return manager?.firstName + " " + manager?.lastName

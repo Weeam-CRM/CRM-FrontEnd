@@ -2,10 +2,10 @@ import { Box, CircularProgress, Select, useColorModeValue } from "@chakra-ui/rea
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { postApi } from "services/api";
 import { putApi } from "services/api";
-import axios from "axios"
-const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData,checkApproval}) => {
+import axios from 'axios'
+
+const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
   const [AgentSelected, setAgentSelected] = useState("");
   const [agents, setAgents] = useState([]);
   const tree = useSelector((state) => state.user.tree);
@@ -19,10 +19,37 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData,checkA
       const agentsList = tree?.agents["manager-" + managerAssigned];
       setAgents(agentsList || []);
       setAgentSelected(value);
-     
     }
   }, [managerAssigned, value, tree]);
 
+
+  // const handleChangeAgent = async (e) => {
+  //   try {
+  //     const data = {
+  //       agentAssigned: e.target.value,
+  //     };
+
+  //     setLoading(true); 
+
+  //     await putApi(`api/lead/edit/${leadID}`, data);
+  //     toast.success("Agent updated successfuly");
+  //     // setAgentSelected(data.agentAssigned || "");
+  //        setData(prevData => {
+  //       const newData = [...prevData]; 
+
+  //       const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
+  //       if(updateIdx !== -1) {
+  //         newData[updateIdx].agentAssigned = data.agentAssigned; 
+  //       }
+  //       return newData; 
+  //     })
+  //     // fetchData();
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Failed to update the agent");
+  //   }
+  //     setLoading(false); 
+  // };
 
   const handleChangeAgent = async (e) => {
     const user = JSON.parse(localStorage.getItem('user'))
@@ -37,7 +64,7 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData,checkA
         }
       })
       console.log(res.data)
-
+      fetchData()
     }catch(error){
       console.log(error,"error")
     }
@@ -66,17 +93,10 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData,checkA
         console.log(error);
         toast.error("Failed to update the agent");
       }
+        setLoading(false); 
     }
 
   };
-
-  const getAgentId = () =>{
-    const agent = agents?.find(agent=>agent?._id == checkApproval(leadID)?.agentId)
-    
-    return agent?._id;
-   }
-  
-
   if (agents?.length) {
     return loading ? (
       <Box
@@ -93,9 +113,7 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData,checkA
       <Select
         placeholder="No Agent"
         onInput={handleChangeAgent}
-        // value={AgentSelected === null ? "" : AgentSelected}
-        disabled
-        value={getAgentId()}
+        value={AgentSelected === null ? "" : AgentSelected}
         style={{
           color: !AgentSelected ? "grey" : textColor,
         }}

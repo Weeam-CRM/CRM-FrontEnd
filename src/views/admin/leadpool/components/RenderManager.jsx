@@ -2,11 +2,9 @@ import { Box, CircularProgress, Select, useColorModeValue } from "@chakra-ui/rea
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { postApi } from "services/api";
 import { putApi } from "services/api";
 import axios from "axios";
-
-const RenderManager = ({ value, leadID, fetchData, pageIndex, setData ,checkApproval}) => {
+const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
   const [ManagerSelected, setManagerSelected] = useState("");
   const tree = useSelector((state) => state.user.tree);
   const [loading, setLoading] = useState(false);
@@ -29,6 +27,7 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData ,checkAppr
         }
       })
       console.log(res.data)
+      fetchData()
 
     }catch(error){
       console.log(error,"error")
@@ -71,11 +70,6 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData ,checkAppr
 
     const textColor = useColorModeValue("black", "white");
 
-    const getManagerId = () =>{
-     const manager = tree?.managers?.find(manager=>manager?._id == checkApproval(leadID)?.managerId)
-     
-     return manager?._id;
-    }
 
   return loading ? (
     <Box border={"1px solid #eee"} borderRadius={"4px"} padding={"3"} display={"flex"} alignItems={"center"}>
@@ -87,12 +81,9 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData ,checkAppr
       style={{
         color: !ManagerSelected ? "grey" : textColor,
       }}
-      // value={ManagerSelected || ""}
-      value={getManagerId()}
-      disabled={true}
+      value={ManagerSelected || ""}
       onChange={handleChangeManager}
       placeholder="No Manager"
-
     >
       {tree &&
         tree?.managers?.map((manager) => (

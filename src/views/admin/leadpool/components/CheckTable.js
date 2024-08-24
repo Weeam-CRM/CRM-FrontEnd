@@ -1057,6 +1057,7 @@ export default function CheckTable(props) {
                             </div>
                           );
                         } else if (cell?.column.Header === "Lead Approval"){
+                          console.log(checkApproval(row?.original?._id),"leadId")
                           data = (
                             // <div className="selectOpt">
                             //   <ApprovalStatus
@@ -1065,7 +1066,7 @@ export default function CheckTable(props) {
                             //     cellValue={cell?.value}
                             //   />
                             // </div>
-                            checkApproval(row?.original?._id?.toString()).approvalStatus != "pending"?checkApproval(row?.original?._id?.toString()).approvalStatus :<Select
+                            checkApproval(row?.original?._id)?.approvalStatus != "pending"?checkApproval(row?.original?._id?.toString())?.approvalStatus :<Select
                             defaultValue={"None"}
                             // className={changeStatus(value)}
                             onChange={(e)=>approveChangeHandler(e,row?.original?._id?.toString())}
@@ -1082,7 +1083,7 @@ export default function CheckTable(props) {
                             data=(
                               <h1 style={{textAlign:"center"}}>
                                 { 
-                                checkApproval(row?.original?._id?.toString()).approvalStatus
+                                checkApproval(row?.original?._id?.toString())?.approvalStatus
                             }
                               </h1>
                             )

@@ -77,7 +77,6 @@ import RenderAgent from "./RenderAgent";
 import RenderStatus from "./RenderStatus";
 import { MdTask } from "react-icons/md";
 import AddTask from "./addTask";
-import LeadsModal from "../LeadsModal";
 
 export default function CheckTable(props) {
   const {
@@ -101,7 +100,6 @@ export default function CheckTable(props) {
     dateTime,
     setDateTime,
     pages,
-    fetchAdvancedSearch,
     totalLeads,
     fetchSearchedData,
     setData,
@@ -110,17 +108,13 @@ export default function CheckTable(props) {
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
   const [leadData, setLeadData] = useState([]);
   const columns = useMemo(() => dataColumn, [dataColumn]);
-  const [selectedValues, setSelectedValues] = useState([])
+  const [selectedValues, setSelectedValues] = useState([]);
   const [getTagValues, setGetTagValues] = useState([]);
   const [gopageValue, setGopageValue] = useState(1);
 
   const user = JSON.parse(localStorage.getItem("user"));
   const tree = useSelector((state) => state.user.tree);
 
-  const [leadsModal, setLeadsModal] = useState({
-    isOpen: false,
-    lid: null,
-  });
   const [deleteModel, setDelete] = useState(false);
   const [addEmailHistory, setAddEmailHistory] = useState(false);
   const [addPhoneCall, setAddPhoneCall] = useState(false);
@@ -212,29 +206,36 @@ export default function CheckTable(props) {
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       setIsLoding(true);
-
-      const data = {};
-      if (values.leadName) {
-        data["leadName"] = values.leadName;
-      }
-      if (values.leadEmail) {
-        data["leadEmail"] = values.leadEmail;
-      }
-      if (values.leadStatus) {
-        data["leadStatus"] = values.leadStatus;
-      }
-      if (values.leadPhoneNumber) {
-        data["leadPhoneNumber"] = values.leadPhoneNumber;
-      }
-      if (values.managerAssigned) {
-        data["managerAssigned"] = values.managerAssigned;
-      }
-      if (values.agentAssigned) {
-        data["agentAssigned"] = values.agentAssigned;
-      }
-      fetchAdvancedSearch(data, 1, pageSize);
-      setUpdatedPage(0);
-      setGopageValue(1);
+      const searchResult = allData?.filter(
+        (item) =>
+          (!values?.leadName ||
+            (item?.leadName &&
+              item?.leadName
+                ?.toLowerCase()
+                ?.includes(values?.leadName?.toLowerCase()))) &&
+          (!values?.leadStatus ||
+            (values?.leadStatus === "new"
+              ? item?.leadStatus === "" || item?.leadStatus === "new"
+              : item?.leadStatus
+                  ?.toLowerCase()
+                  ?.includes(values?.leadStatus?.toLowerCase()))) &&
+          (!values?.leadEmail ||
+            (item?.leadEmail &&
+              item?.leadEmail
+                ?.toLowerCase()
+                ?.includes(values?.leadEmail?.toLowerCase()))) &&
+          (!values?.agentAssigned ||
+            (item?.agentAssigned &&
+              item?.agentAssigned === values?.agentAssigned)) &&
+          (!values?.managerAssigned ||
+            (item?.managerAssigned &&
+              item?.managerAssigned === values?.managerAssigned)) &&
+          (!values?.leadPhoneNumber ||
+            (item?.leadPhoneNumber &&
+              item?.leadPhoneNumber
+                ?.toString()
+                ?.includes(values?.leadPhoneNumber)))
+      );
 
       let agent = null;
       if (values?.agentAssigned && user?.roles[0]?.roleName === "Manager") {
@@ -270,8 +271,12 @@ export default function CheckTable(props) {
           undefined,
       ].filter((value) => value);
       setGetTagValues(getValue);
+      setUpdatedPage(0);
+      setSearchedData(searchResult);
+      setDisplaySearchData(true);
       setAdvaceSearch(false);
       setSearchClear(true);
+      setIsLoding(false);
       resetForm();
     },
   });
@@ -282,7 +287,7 @@ export default function CheckTable(props) {
     setUpdatedPage(0);
     fetchData(1, pageSize);
     setGopageValue(1);
-    setUpdatedPage(0);
+    setUpdatedPage(0); 
   };
 
   const {
@@ -302,7 +307,7 @@ export default function CheckTable(props) {
       columns,
       data,
       manualPagination: true,
-      initialState: { pageIndex: updatedPage, pageSize: 200 },
+      initialState: { pageIndex: updatedPage },
       pageCount: pages,
     },
     useGlobalFilter,
@@ -339,13 +344,6 @@ export default function CheckTable(props) {
         prevSelectedValues.filter((selectedValue) => selectedValue !== value)
       );
     }
-  };
-
-  const handleLeadsModal = (lid) => {
-    setLeadsModal({
-      isOpen: true,
-      lid,
-    });
   };
 
   const handleClick = () => {
@@ -442,28 +440,28 @@ export default function CheckTable(props) {
   };
 
   const fetchSearch = () => {
-    if (searchbox.current?.value?.trim()) {
-      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize);
-      setUpdatedPage(0);
-      setGopageValue(1);
+    if(searchbox.current?.value?.trim()) {
+      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize); 
+      setUpdatedPage(0); 
+      setGopageValue(1); 
     }
-  };
+  }
 
   useEffect(() => {
-    setGopageValue(1);
-    setUpdatedPage(0);
-    if (displaySearchData) {
-      fetchSearchedData(searchbox.current?.value?.trim());
+    setGopageValue(1); 
+    setUpdatedPage(0); 
+    if(displaySearchData) {
+      fetchSearchedData(searchbox.current?.value?.trim()); 
     } else {
-      fetchData();
+      fetchData(); 
     }
+
   }, [action]);
 
   useEffect(() => {
-    setGopageValue(1);
-    setUpdatedPage(0);
-    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData)
-      fetchData();
+    setGopageValue(1); 
+    setUpdatedPage(0); 
+    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData) fetchData();
   }, [dateTime]);
 
   useEffect(() => {
@@ -481,7 +479,7 @@ export default function CheckTable(props) {
 
   useEffect(() => {
     setUpdatedPage(0);
-    setGopageValue(1);
+    setGopageValue(1); 
     if (displaySearchData) {
       fetchSearchedData(searchbox.current?.value?.trim() || "", 1, pageSize);
     } else {
@@ -577,7 +575,7 @@ export default function CheckTable(props) {
               <CustomSearchInput
                 searchbox={searchbox}
                 dataColumn={dataColumn}
-                isPaginated={true}
+                pageSize={pageSize}
                 fetchSearch={fetchSearch}
               />
               <Button
@@ -887,26 +885,23 @@ export default function CheckTable(props) {
                           );
                         } else if (cell?.column.Header === "Name") {
                           data = access?.view ? (
-                            <Text
-                              onClick={() =>
-                                handleLeadsModal(row.original?._id)
-                              }
-                              me="10px"
-                              sx={{
-                                "&:hover": {
-                                  color: "blue.500",
-                                  textDecoration: "underline",
-
-                                },
-                              }}
-                              cursor="pointer"
-                              color="brand.600"
-                              fontSize="sm"
-                              // fontWeight="500"
-                              fontWeight="700"
-                            >
-                              {cell?.value?.text || cell?.value}
-                            </Text>
+                            <Link to={`/leadView/${row?.original?._id}`}>
+                              <Text
+                                me="10px"
+                                sx={{
+                                  "&:hover": {
+                                    color: "blue.500",
+                                    textDecoration: "underline",
+                                  },
+                                }}
+                                color="brand.600"
+                                fontSize="sm"
+                                // fontWeight="500"
+                                fontWeight="700"
+                              >
+                                {cell?.value?.text || cell?.value}
+                              </Text>
+                            </Link>
                           ) : (
                             <Text
                               me="10px"
@@ -1044,44 +1039,8 @@ export default function CheckTable(props) {
                               fontWeight="900"
                               textAlign={"center"}
                             >
-                              {new Date(
-                                cell?.value?.text || cell?.value
-                              ).toLocaleString() || "-"}
+                              {new Date(cell?.value?.text || cell?.value).toLocaleString() || "-"}
                             </Text>
-                          );
-                        } else if (cell?.column.Header === "Last Note") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "IP") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "Lead Address") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "Lead Campaign") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "Lead Email") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "Lead Medium") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (
-                          cell?.column.Header === "Campaign Page URL"
-                        ) {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
-                          );
-                        } else if (cell?.column.Header === "Are you in UAE?") {
-                          data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
                           );
                         } else if (cell?.column.Header === "Action") {
                           data = (
@@ -1542,7 +1501,7 @@ export default function CheckTable(props) {
                 </GridItem>
               )}
 
-              {user?.role === "superAdmin" && (
+              {user?.role === "superAdmin" && values.managerAssigned && (
                 <GridItem colSpan={{ base: 12, md: 6 }}>
                   <FormLabel
                     display="flex"
@@ -1566,7 +1525,9 @@ export default function CheckTable(props) {
                       </option>
                       {tree &&
                         tree["managers"] &&
-                          Object.values(tree['agents'])?.flat()?.map((user) => {
+                        tree["agents"][
+                          "manager-" + values.managerAssigned
+                        ]?.map((user) => {
                           return (
                             <option
                               key={user?._id?.toString()}
@@ -1666,7 +1627,7 @@ export default function CheckTable(props) {
         isCentered
       >
         <ModalOverlay />
-        <ModalContent height={"90vh"} overflowY={"scroll"}>
+        <ModalContent>
           <ModalHeader>Manage Columns</ModalHeader>
           <ModalCloseButton
             onClick={() => {
@@ -1730,13 +1691,6 @@ export default function CheckTable(props) {
         setAction={setAction}
         setSelectAllChecked={setSelectAllChecked}
       />
-
-  {leadsModal.isOpen &&
-      <LeadsModal
-        leadsModal={leadsModal}
-        onClose={() => setLeadsModal({ isOpen: false, lid: null })}
-      />
-  }
     </>
   );
 }
