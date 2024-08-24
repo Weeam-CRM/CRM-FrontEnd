@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { putApi } from "services/api";
 import axios from "axios";
+import { constant } from "constant";
 const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
   const [ManagerSelected, setManagerSelected] = useState("");
   const tree = useSelector((state) => state.user.tree);
@@ -19,7 +20,7 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
 
 
     try{
-      const res = await axios.post("http://localhost:5000/api/adminApproval/add",{
+      const res = await axios.post(constant["baseUrl"]+"/api/adminApproval/add",{
         leadId: leadID, managerId: e.target.value
       },{
         headers:{

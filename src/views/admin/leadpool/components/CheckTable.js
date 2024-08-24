@@ -81,6 +81,7 @@ import { MdTask } from "react-icons/md";
 import AddTask from "./addTask";
 import { toast } from "react-toastify";
 import { putApi } from "services/api";
+import { constant } from "constant";
 
 export default function CheckTable(props) {
   const {
@@ -432,7 +433,7 @@ export default function CheckTable(props) {
     console.log(user?.role,"role")
     if(e?.target?.value == "none") return;
     try{
-     const res = await axios.put("http://localhost:5000/api/adminApproval/update",{
+     const res = await axios.put(constant["baseUrl"]+"/api/adminApproval/update",{
       isApproved:e?.target?.value == "accept"?true:false,
       objectId:checkApproval(leadId)._id,
       // isManager:

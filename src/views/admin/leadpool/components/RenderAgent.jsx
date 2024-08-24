@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { putApi } from "services/api";
 import axios from 'axios'
+import { constant } from "constant";
 
 const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
   const [AgentSelected, setAgentSelected] = useState("");
@@ -56,7 +57,7 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
     console.log(user?._id,e?.target?.value,"ids ")
     if(user._id == e.target.value){
     try{
-      const res = await axios.post("http://localhost:5000/api/adminApproval/add",{
+      const res = await axios.post(constant["baseUrl"]+"/api/adminApproval/add",{
         leadId: leadID,managerId:managerAssigned, agentId: e.target.value
       },{
         headers:{
