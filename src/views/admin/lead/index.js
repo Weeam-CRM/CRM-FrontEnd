@@ -89,8 +89,8 @@ const Index = () => {
   );
   const [action, setAction] = useState(false);
   const [dateTime, setDateTime] = useState({
-    from: "",
-    to: "",
+    from: null,
+    to: null,
   });
   const [autoAssignLoading, setAutoAssignLoading] = useState(false);
   const [columns, setColumns] = useState(roleColumns[role] || tableColumns);

@@ -462,7 +462,7 @@ export default function CheckTable(props) {
   useEffect(() => {
     setGopageValue(1);
     setUpdatedPage(0);
-    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData)
+    if (fetchData && (dateTime.from !== null || dateTime.to !== null) && !displaySearchData)
       fetchData();
   }, [dateTime]);
 
@@ -568,10 +568,7 @@ export default function CheckTable(props) {
                 fontWeight="700"
               >
                 Leads (
-                <CountUpComponent
-                  key={data?.length}
-                  targetNumber={totalLeads}
-                />
+                  <span>{totalLeads || 0}</span>
                 )
               </Text>
               <CustomSearchInput
