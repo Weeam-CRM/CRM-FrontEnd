@@ -34,11 +34,12 @@ function App() {
     setAppLoaded(false); 
     const response = await getApi("api/user/tree");
     const data = response.data;
-    setAppLoaded(true);
+    dispatch(setTree(data));
 
-    setTimeout(() => {
-      dispatch(setTree(data));
+    setTimeout(() =>{
+      setAppLoaded(true);
     }, 0); 
+
   };
 
 
