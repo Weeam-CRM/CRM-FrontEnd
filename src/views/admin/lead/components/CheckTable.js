@@ -1066,6 +1066,10 @@ export default function CheckTable(props) {
                           data = (
                             <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
                           );
+                        } else if (cell?.column.Header === "Source Content") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
                         } else if (cell?.column.Header === "Lead Email") {
                           data = (
                             <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
