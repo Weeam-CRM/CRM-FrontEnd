@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { putApi } from "services/api";
 
-const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
+const RenderManager = ({ value, leadID, fetchData, pageIndex, displaySearchData, setSearchedData, setData }) => {
   const [ManagerSelected, setManagerSelected] = useState("");
   const tree = useSelector((state) => state.user.tree);
   const [loading, setLoading] = useState(false);
@@ -12,8 +12,9 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
   const handleChangeManager = async (e) => {
     try {
       setLoading(true);
+      const value = e.target.value; 
       const dataObj = {
-        managerAssigned: e.target.value,
+        managerAssigned: value,
       };
 
       if (e.target.value === "") {
@@ -23,9 +24,11 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
       await putApi(`api/lead/edit/${leadID}`, dataObj);
       toast.success("Manager updated successfuly");
       // setManagerSelected(dataObj.managerAssigned || "");
-      setData(prevData => {
-        const newData = [...prevData]; 
 
+      if(displaySearchData) {
+
+      setSearchedData(prevData => {
+        const newData = [...prevData]; 
         const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
         if(updateIdx !== -1) {
           newData[updateIdx].managerAssigned = dataObj.managerAssigned; 
@@ -33,6 +36,17 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
         }
         return newData; 
       })
+      } else {
+      setData(prevData => {
+        const newData = [...prevData]; 
+        const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
+        if(updateIdx !== -1) {
+          newData[updateIdx].managerAssigned = dataObj.managerAssigned; 
+          newData[updateIdx].agentAssigned = ""; 
+        }
+        return newData; 
+      })
+      }
     } catch (error) {
       console.log(error);
       toast.error("Failed to update the manager");

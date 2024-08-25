@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { putApi } from "services/api";
 
-const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
+const RenderAgent = ({ value, managerAssigned, leadID, fetchData, displaySearchData, setSearchedData, setData}) => {
   const [AgentSelected, setAgentSelected] = useState("");
   const [agents, setAgents] = useState([]);
   const tree = useSelector((state) => state.user.tree);
@@ -33,6 +33,19 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
       await putApi(`api/lead/edit/${leadID}`, data);
       toast.success("Agent updated successfuly");
       // setAgentSelected(data.agentAssigned || "");
+
+      if(displaySearchData) {
+         setSearchedData(prevData => {
+        const newData = [...prevData]; 
+
+        const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
+        if(updateIdx !== -1) {
+          newData[updateIdx].agentAssigned = data.agentAssigned; 
+        }
+        return newData; 
+      })
+        
+      } else {
          setData(prevData => {
         const newData = [...prevData]; 
 
@@ -42,6 +55,8 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, setData}) => {
         }
         return newData; 
       })
+
+      }
       // fetchData();
     } catch (error) {
       console.log(error);

@@ -982,6 +982,8 @@ export default function CheckTable(props) {
                           data = (
                             <RenderManager
                               fetchData={fetchData}
+                              displaySearchData={displaySearchData}
+                              setSearchedData={setSearchedData}
                               pageIndex={pageIndex}
                               setData={setData}
                               leadID={row?.original?._id?.toString()}
@@ -996,6 +998,8 @@ export default function CheckTable(props) {
                                 fetchData={fetchData}
                                 leadID={row?.original?._id?.toString()}
                                 managerAssigned={row?.original?.managerAssigned}
+                              displaySearchData={displaySearchData}
+                              setSearchedData={setSearchedData}
                                 value={cell?.value}
                               />
                             </>
