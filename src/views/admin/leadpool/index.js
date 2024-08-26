@@ -14,25 +14,11 @@ import { postApi } from "services/api";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { constant } from "constant";
 const Index = () => {
-  const [isLoding, setIsLoding] = useState(false);
-  const [data, setData] = useState([]);
-  const [displaySearchData, setDisplaySearchData] = useState(false);
-  const [searchedData, setSearchedData] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
-  const [totalLeads, setTotalLeads] = useState(0); 
-  const [pages, setPages] = useState(0); 
-  const [approvals,setApprovals] = useState([]);
-  const [filteredLeads,setFilteredLeads] = useState([]);
-  const [currentState, setCurrentState]=useState("all_leads")
-  const tree = useSelector((state) => state.user.tree);
-  
-  const [permission, emailAccess, callAccess] = HasAccess([
-    "Lead",
-    "Email",
-    "Call",
-  ]);
-  let tableColumns = [
+  const role = user?.roles[0]?.roleName;
+  const [tableColumns,setTableColumns] = useState([
     { Header: "#", accessor: "_id", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
     { Header: "Manager", accessor: "managerAssigned" },
@@ -42,8 +28,8 @@ const Index = () => {
     { Header: "Intrest", accessor: "interest" },
     { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
-  ];
-  let tableColumnsManager = [
+  ])
+  const [tableColumnsManager,setTableColumnsManager] = useState([
     { Header: "#", accessor: "_id", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
     { Header: "Manager", accessor: "managerAssigned" },
@@ -53,7 +39,7 @@ const Index = () => {
     { Header: "Intrest", accessor: "interest" },
     { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
-  ];
+  ]);
   let tableColumnsAgent = [
     { Header: "#", accessor: "_id", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
@@ -65,11 +51,48 @@ const Index = () => {
     { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
   ];
+  const roleColumns = {
+    Manager: tableColumnsManager,
+    Agent: tableColumnsAgent,
+  };
+  const [isLoding, setIsLoding] = useState(false);
+  const [data, setData] = useState([]);
+  const [displaySearchData, setDisplaySearchData] = useState(false);
+  const [searchedData, setSearchedData] = useState([]);
+  // 
+  const [totalLeads, setTotalLeads] = useState(0); 
+  const [pages, setPages] = useState(0); 
+  const [approvals,setApprovals] = useState([]);
+  const [filteredLeads,setFilteredLeads] = useState([]);
+  const [currentState, setCurrentState]=useState("all_leads")
+  const tree = useSelector((state) => state.user.tree);
+  
+  const [dynamicColumns, setDynamicColumns] = useState(
+    roleColumns[role] || tableColumns
+  );
+  const [selectedColumns, setSelectedColumns] = useState(
+    roleColumns[role] || tableColumns
+  );
+  const [action, setAction] = useState(false);
+  const [dateTime, setDateTime] = useState({
+    from: "",
+    to: "",
+  });
+  const [autoAssignLoading, setAutoAssignLoading] = useState(false);
+  const [columns, setColumns] = useState(roleColumns[role] || tableColumns);
+  const { isOpen } = useDisclosure();
+  const [permission, emailAccess, callAccess] = HasAccess([
+    "Lead",
+    "Email",
+    "Call",
+  ]);
+ 
+  
 
   async function fetchApprovals(){
     try {
     //  const res = await getApi("api/adminApproval/get","")
-     const res = await axios.get("http://127.0.0.1:5000/api/adminApproval/get",{
+     const res = await axios.get(constant["baseUrl"]+"api/adminApproval/get",{
       headers:{
         Authorization:  (localStorage.getItem("token") || sessionStorage.getItem("token"))
       }
@@ -86,9 +109,38 @@ const Index = () => {
    },[data])
 
    useEffect(()=>{
+
+    if(currentState=="Accepted"){
+      setTableColumnsManager([
+        { Header: "#", accessor: "intID", isSortable: false, width: 10 },
+        { Header: "Name", accessor: "leadName", width: 20 },
+        { Header: "Manager", accessor: "managerAssigned" },
+        { Header: "Agent", accessor: "agentAssigned" },
+        { Header: "Status", accessor: "leadStatus" },
+        { Header: "Whatsapp Number", accessor: "leadWhatsappNumber" },
+        { Header: "Phone Number", accessor: "leadPhoneNumber" },
+        { Header: "Date And Time", accessor: "createdDate" },
+        { Header: "Timetocall", accessor: "timetocall" },
+        { Header: "Nationality", accessor: "nationality" },
+        { Header: "Action", isSortable: false, center: true },
+      ])
+    }else{
+      setTableColumnsManager([
+        { Header: "#", accessor: "_id", isSortable: false, width: 10 },
+    { Header: "Name", accessor: "leadName", width: 20 },
+    { Header: "Manager", accessor: "managerAssigned" },
+    { Header: "Agent", accessor: "agentAssigned" },
+    { Header: "Status", accessor: "leadStatus" },
+    { Header: "Approval Status", accessor: "leadWhatsappNumber" },
+    { Header: "Intrest", accessor: "interest" },
+    { Header: "Nationality", accessor: "nationality" },
+    { Header: "Action", isSortable: false, center: true },
+      ])
+    }
+
     if(currentState == "all_leads"){
       setFilteredLeads(data)
-      if(currentState == "Accepeted"){}
+
       return;
     }
    const newFilteredLeads = data?.filter((row)=>{
@@ -98,32 +150,18 @@ const Index = () => {
    console.log(newFilteredLeads , "Requested Lead")
    const leadApprovals = newFilteredLeads?.filter((lead)=>{
     const approval = approvals.find(approval=>lead?._id == approval?.leadId)
-    return approval?.approvalStatus == currentState
+    return approval?.approvalStatus == currentState && (approval.managerId == user._id || approval.agentId == user._id)
  })
    setFilteredLeads(leadApprovals);
    },[data,approvals,currentState])
 
-  const roleColumns = {
-    Manager: tableColumnsManager,
-    Agent: tableColumnsAgent,
-  };
+ 
 
-  const role = user?.roles[0]?.roleName;
-
-  const [dynamicColumns, setDynamicColumns] = useState(
-    roleColumns[role] || tableColumns
-  );
-  const [selectedColumns, setSelectedColumns] = useState(
-    roleColumns[role] || tableColumns
-  );
-  const [action, setAction] = useState(false);
-  const [dateTime, setDateTime] = useState({
-    from: "",
-    to: "",
-  });
-  const [autoAssignLoading, setAutoAssignLoading] = useState(false);
-  const [columns, setColumns] = useState(roleColumns[role] || tableColumns);
-  const { isOpen } = useDisclosure();
+  
+useEffect(()=>{
+  setDynamicColumns(roleColumns[role] || tableColumns)
+  setSelectedColumns(roleColumns[role] || tableColumns)
+},[tableColumnsManager])
 
   const dataColumn = dynamicColumns?.filter((item) =>
     selectedColumns?.find((colum) => colum?.Header === item.Header)
@@ -189,13 +227,40 @@ const Index = () => {
   useEffect(() => {
     setColumns(tableColumns);
   }, [action]);
-
+console.log(dynamicColumns,"manager")
   return (
     <div>
-      <Button  onClick={()=> setCurrentState("all_leads") } >All Leads</Button>
-      <Button  onClick={()=> setCurrentState("pending") } >Pending</Button>
-          <Button onClick={()=> setCurrentState("Accepted")} >Approved  Leads</Button>
-          <Button onClick={()=> setCurrentState("Rejected")}>Rejected Leads</Button>
+      <Button  onClick={()=> setCurrentState("all_leads") } sx={{
+        backgroundColor:currentState == "all_leads"&&"#B79045",
+        color:currentState == "all_leads"&&"white",
+        "_hover":{
+        backgroundColor:currentState == "all_leads"&&"#B79045",
+        }
+      }}>All Leads</Button>
+      <Button  onClick={()=> setCurrentState("pending") } 
+        sx={{
+          backgroundColor:currentState == "pending"&&"#B79045",
+        color:currentState == "pending"&&"white",
+        "_hover":{
+        backgroundColor:currentState == "pending"&&"#B79045",
+        }
+        }}>Pending</Button>
+          <Button onClick={()=> setCurrentState("Accepted")} 
+            sx={{
+              backgroundColor:currentState == "Accepted"&&"#B79045",
+        color:currentState == "Accepted"&&"white",
+        "_hover":{
+        backgroundColor:currentState == "Accepted"&&"#B79045",
+        }
+            }}>Approved  Leads</Button>
+          <Button onClick={()=> setCurrentState("Rejected")}
+            sx={{
+              backgroundColor:currentState == "Rejected"&&"#B79045",
+        color:currentState == "Rejected"&&"white",
+        "_hover":{
+        backgroundColor:currentState == "Rejected"&&"#B79045",
+        }
+            }}>Rejected Leads</Button>
       <Grid templateColumns="repeat(6, 1fr)" mb={3} gap={4}>
       
         <GridItem colSpan={6}>

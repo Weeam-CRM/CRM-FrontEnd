@@ -113,7 +113,8 @@ export default function CheckTable(props) {
   const textColor = useColorModeValue("gray.500", "white");
   const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
   const [leadData, setLeadData] = useState([]);
-  const columns = useMemo(() => dataColumn, [dataColumn]);
+  // const columns = useMemo(() => dataColumn, [dataColumn]);
+  const columns = dataColumn;
   const [selectedValues, setSelectedValues] = useState([]);
   const [getTagValues, setGetTagValues] = useState([]);
   const [gopageValue, setGopageValue] = useState(1);
@@ -147,7 +148,10 @@ export default function CheckTable(props) {
   const [manageColumns, setManageColumns] = useState(false);
   const [tempSelectedColumns, setTempSelectedColumns] = useState(dataColumn); // State to track changes
   const [taskInits, setTaskInits] = useState({});
-
+  useEffect(()=>{
+    setTempSelectedColumns(dataColumn)
+  },[dataColumn])
+  console.log(dataColumn,"dataColumn")
  
 
   const csvColumns = [
@@ -433,7 +437,7 @@ export default function CheckTable(props) {
     console.log(user?.role,"role")
     if(e?.target?.value == "none") return;
     try{
-     const res = await axios.put(constant["baseUrl"]+"/api/adminApproval/update",{
+     const res = await axios.put(constant["baseUrl"]+"api/adminApproval/update",{
       isApproved:e?.target?.value == "accept"?true:false,
       objectId:checkApproval(leadId)._id,
       // isManager:

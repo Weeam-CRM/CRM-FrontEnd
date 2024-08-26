@@ -20,7 +20,7 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, setData }) => {
 
 
     try{
-      const res = await axios.post(constant["baseUrl"]+"/api/adminApproval/add",{
+      const res = await axios.post(constant["baseUrl"]+"api/adminApproval/add",{
         leadId: leadID, managerId: e.target.value
       },{
         headers:{
