@@ -147,7 +147,7 @@ export default function UserReports() {
         `api/lead/?role=${user?.roles[0]?.roleName}&user=${user._id}`
       );
     }
-    setLeadData(lead?.data?.result || []);
+    setLeadData(lead?.data?.totalLeads || 0);
   };
 
   const fetchCalls = async () => {
@@ -308,7 +308,7 @@ export default function UserReports() {
               />
             }
             name="Leads"
-            value={leadData?.length || 0}
+            value={leadData || 0}
           />
         )}
         {(callView?.create ||

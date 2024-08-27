@@ -77,6 +77,9 @@ import RenderAgent from "./RenderAgent";
 import RenderStatus from "./RenderStatus";
 import { MdTask } from "react-icons/md";
 import AddTask from "./addTask";
+import LeadsModal from "../LeadsModal";
+import LastNoteText from "./LastNoteText";
+import AdvancedSearchModal from "./AdvancedSearchModal";
 
 export default function CheckTable(props) {
   const {
@@ -100,6 +103,7 @@ export default function CheckTable(props) {
     dateTime,
     setDateTime,
     pages,
+    fetchAdvancedSearch,
     totalLeads,
     fetchSearchedData,
     setData,
@@ -115,6 +119,10 @@ export default function CheckTable(props) {
   const user = JSON.parse(localStorage.getItem("user"));
   const tree = useSelector((state) => state.user.tree);
 
+  const [leadsModal, setLeadsModal] = useState({
+    isOpen: false,
+    lid: null,
+  });
   const [deleteModel, setDelete] = useState(false);
   const [addEmailHistory, setAddEmailHistory] = useState(false);
   const [addPhoneCall, setAddPhoneCall] = useState(false);
@@ -206,36 +214,29 @@ export default function CheckTable(props) {
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
       setIsLoding(true);
-      const searchResult = allData?.filter(
-        (item) =>
-          (!values?.leadName ||
-            (item?.leadName &&
-              item?.leadName
-                ?.toLowerCase()
-                ?.includes(values?.leadName?.toLowerCase()))) &&
-          (!values?.leadStatus ||
-            (values?.leadStatus === "new"
-              ? item?.leadStatus === "" || item?.leadStatus === "new"
-              : item?.leadStatus
-                  ?.toLowerCase()
-                  ?.includes(values?.leadStatus?.toLowerCase()))) &&
-          (!values?.leadEmail ||
-            (item?.leadEmail &&
-              item?.leadEmail
-                ?.toLowerCase()
-                ?.includes(values?.leadEmail?.toLowerCase()))) &&
-          (!values?.agentAssigned ||
-            (item?.agentAssigned &&
-              item?.agentAssigned === values?.agentAssigned)) &&
-          (!values?.managerAssigned ||
-            (item?.managerAssigned &&
-              item?.managerAssigned === values?.managerAssigned)) &&
-          (!values?.leadPhoneNumber ||
-            (item?.leadPhoneNumber &&
-              item?.leadPhoneNumber
-                ?.toString()
-                ?.includes(values?.leadPhoneNumber)))
-      );
+
+      const data = {};
+      if (values.leadName) {
+        data["leadName"] = values.leadName;
+      }
+      if (values.leadEmail) {
+        data["leadEmail"] = values.leadEmail;
+      }
+      if (values.leadStatus) {
+        data["leadStatus"] = values.leadStatus;
+      }
+      if (values.leadPhoneNumber) {
+        data["leadPhoneNumber"] = values.leadPhoneNumber;
+      }
+      if (values.managerAssigned) {
+        data["managerAssigned"] = values.managerAssigned;
+      }
+      if (values.agentAssigned) {
+        data["agentAssigned"] = values.agentAssigned;
+      }
+      fetchAdvancedSearch(data, 1, pageSize);
+      setUpdatedPage(0);
+      setGopageValue(1);
 
       let agent = null;
       if (values?.agentAssigned && user?.roles[0]?.roleName === "Manager") {
@@ -271,12 +272,8 @@ export default function CheckTable(props) {
           undefined,
       ].filter((value) => value);
       setGetTagValues(getValue);
-      setUpdatedPage(0);
-      setSearchedData(searchResult);
-      setDisplaySearchData(true);
       setAdvaceSearch(false);
       setSearchClear(true);
-      setIsLoding(false);
       resetForm();
     },
   });
@@ -287,7 +284,7 @@ export default function CheckTable(props) {
     setUpdatedPage(0);
     fetchData(1, pageSize);
     setGopageValue(1);
-    setUpdatedPage(0); 
+    setUpdatedPage(0);
   };
 
   const {
@@ -307,7 +304,7 @@ export default function CheckTable(props) {
       columns,
       data,
       manualPagination: true,
-      initialState: { pageIndex: updatedPage },
+      initialState: { pageIndex: updatedPage, pageSize: 200 },
       pageCount: pages,
     },
     useGlobalFilter,
@@ -344,6 +341,13 @@ export default function CheckTable(props) {
         prevSelectedValues.filter((selectedValue) => selectedValue !== value)
       );
     }
+  };
+
+  const handleLeadsModal = (lid) => {
+    setLeadsModal({
+      isOpen: true,
+      lid,
+    });
   };
 
   const handleClick = () => {
@@ -440,28 +444,32 @@ export default function CheckTable(props) {
   };
 
   const fetchSearch = () => {
-    if(searchbox.current?.value?.trim()) {
-      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize); 
-      setUpdatedPage(0); 
-      setGopageValue(1); 
+    if (searchbox.current?.value?.trim()) {
+      fetchSearchedData(searchbox.current?.value?.trim(), 1, pageSize);
+      setUpdatedPage(0);
+      setGopageValue(1);
     }
-  }
+  };
 
   useEffect(() => {
-    setGopageValue(1); 
-    setUpdatedPage(0); 
-    if(displaySearchData) {
-      fetchSearchedData(searchbox.current?.value?.trim()); 
+    setGopageValue(1);
+    setUpdatedPage(0);
+    if (displaySearchData) {
+      fetchSearchedData(searchbox.current?.value?.trim());
     } else {
-      fetchData(); 
+      fetchData();
     }
-
   }, [action]);
 
   useEffect(() => {
-    setGopageValue(1); 
-    setUpdatedPage(0); 
-    if (fetchData && (dateTime.from || dateTime.to) && !displaySearchData) fetchData();
+    setGopageValue(1);
+    setUpdatedPage(0);
+    if (
+      fetchData &&
+      (dateTime.from !== null || dateTime.to !== null) &&
+      !displaySearchData
+    )
+      fetchData();
   }, [dateTime]);
 
   useEffect(() => {
@@ -479,7 +487,7 @@ export default function CheckTable(props) {
 
   useEffect(() => {
     setUpdatedPage(0);
-    setGopageValue(1); 
+    setGopageValue(1);
     if (displaySearchData) {
       fetchSearchedData(searchbox.current?.value?.trim() || "", 1, pageSize);
     } else {
@@ -565,17 +573,12 @@ export default function CheckTable(props) {
                 fontSize="22px"
                 fontWeight="700"
               >
-                Leads (
-                <CountUpComponent
-                  key={data?.length}
-                  targetNumber={totalLeads}
-                />
-                )
+                Leads (<span>{totalLeads || 0}</span>)
               </Text>
               <CustomSearchInput
                 searchbox={searchbox}
                 dataColumn={dataColumn}
-                pageSize={pageSize}
+                isPaginated={true}
                 fetchSearch={fetchSearch}
               />
               <Button
@@ -767,7 +770,7 @@ export default function CheckTable(props) {
                       <Flex
                         align="center"
                         justifyContent={column.center ? "center" : "start"}
-                        fontSize={{ sm: "10px", lg: "12px" }}
+                        fontSize={{ sm: "14px", lg: "16px" }}
                       >
                         {column.Header === "#" && (
                           <Checkbox
@@ -885,23 +888,25 @@ export default function CheckTable(props) {
                           );
                         } else if (cell?.column.Header === "Name") {
                           data = access?.view ? (
-                            <Link to={`/leadView/${row?.original?._id}`}>
-                              <Text
-                                me="10px"
-                                sx={{
-                                  "&:hover": {
-                                    color: "blue.500",
-                                    textDecoration: "underline",
-                                  },
-                                }}
-                                color="brand.600"
-                                fontSize="sm"
-                                // fontWeight="500"
-                                fontWeight="700"
-                              >
-                                {cell?.value?.text || cell?.value}
-                              </Text>
-                            </Link>
+                            <Text
+                              onClick={() =>
+                                handleLeadsModal(row.original?._id)
+                              }
+                              me="10px"
+                              sx={{
+                                "&:hover": {
+                                  color: "blue.500",
+                                  textDecoration: "underline",
+                                },
+                              }}
+                              cursor="pointer"
+                              color="brand.600"
+                              fontSize="sm"
+                              // fontWeight="500"
+                              fontWeight="700"
+                            >
+                              {cell?.value?.text || cell?.value}
+                            </Text>
                           ) : (
                             <Text
                               me="10px"
@@ -980,6 +985,8 @@ export default function CheckTable(props) {
                           data = (
                             <RenderManager
                               fetchData={fetchData}
+                              displaySearchData={displaySearchData}
+                              setSearchedData={setSearchedData}
                               pageIndex={pageIndex}
                               setData={setData}
                               leadID={row?.original?._id?.toString()}
@@ -994,6 +1001,8 @@ export default function CheckTable(props) {
                                 fetchData={fetchData}
                                 leadID={row?.original?._id?.toString()}
                                 managerAssigned={row?.original?.managerAssigned}
+                                displaySearchData={displaySearchData}
+                                setSearchedData={setSearchedData}
                                 value={cell?.value}
                               />
                             </>
@@ -1039,8 +1048,50 @@ export default function CheckTable(props) {
                               fontWeight="900"
                               textAlign={"center"}
                             >
-                              {new Date(cell?.value?.text || cell?.value).toLocaleString() || "-"}
+                              {new Date(
+                                cell?.value?.text || cell?.value
+                              ).toLocaleString() || "-"}
                             </Text>
+                          );
+                        } else if (cell?.column.Header === "Last Note") {
+                          data = (
+                            <Box maxWidth={300}>
+                              <LastNoteText text={cell?.value} />
+                            </Box>
+                          );
+                        } else if (cell?.column.Header === "IP") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Address") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Campaign") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Source Content") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Email") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Lead Medium") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (
+                          cell?.column.Header === "Campaign Page URL"
+                        ) {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                          );
+                        } else if (cell?.column.Header === "Are you in UAE?") {
+                          data = (
+                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
                           );
                         } else if (cell?.column.Header === "Action") {
                           data = (
@@ -1304,321 +1355,20 @@ export default function CheckTable(props) {
         />
       </Card>
       {/* Advance filter */}
-      <Modal
-        size="2xl"
-        onClose={() => {
-          setAdvaceSearch(false);
-          resetForm();
-        }}
-        isOpen={advaceSearch}
-        isCentered
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Advance Search</ModalHeader>
-          <ModalCloseButton
-            onClick={() => {
-              setAdvaceSearch(false);
-              resetForm();
-            }}
-          />
-          <ModalBody>
-            <Grid templateColumns="repeat(12, 1fr)" mb={3} gap={2}>
-              <GridItem colSpan={{ base: 12, md: 6 }}>
-                <FormLabel
-                  display="flex"
-                  ms="4px"
-                  fontSize="sm"
-                  fontWeight="600"
-                  color={"#000"}
-                  mb="0"
-                  mt={2}
-                >
-                  Name
-                </FormLabel>
-                <Input
-                  fontSize="sm"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values?.leadName}
-                  name="leadName"
-                  placeholder="Enter Lead Name"
-                  fontWeight="500"
-                />
-                <Text mb="10px" color={"red"}>
-                  {" "}
-                  {errors.leadName && touched.leadName && errors.leadName}
-                </Text>
-              </GridItem>
-              <GridItem colSpan={{ base: 12, md: 6 }}>
-                <FormLabel
-                  display="flex"
-                  ms="4px"
-                  fontSize="sm"
-                  fontWeight="600"
-                  color={"#000"}
-                  mb="0"
-                  mt={2}
-                >
-                  Status
-                </FormLabel>
-                <Select
-                  value={values?.leadStatus}
-                  fontSize="sm"
-                  name="leadStatus"
-                  onChange={handleChange}
-                  fontWeight="500"
-                  placeholder={"Select Lead Status"}
-                >
-                  <option value="active">Interested</option>
-                  <option value="pending">Not-interested</option>
-                  <option value="sold">Sold</option>
-                  <option value="new">New</option>
-                  <option value="no_answer">No answer</option>
-                  <option value="unreachable">Unreachable</option>
+      <AdvancedSearchModal
+        advaceSearch={advaceSearch}
+        dirty={dirty}
+        errors={errors}
+        handleBlur={handleBlur}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        isLoding={isLoding}
+        resetForm={resetForm}
+        setAdvaceSearch={setAdvaceSearch}
+        touched={touched}
+        values={values}
+      />
 
-                  <option value="waiting">Waiting</option>
-                  <option value="follow_up">Follow Up</option>
-                  <option value="meeting">Meeting</option>
-                  <option value="follow_up_after_meeting">
-                    Follow Up After Meeting
-                  </option>
-                  <option value="deal">Deal</option>
-                  <option value="junk">Junk</option>
-                  <option value="whatsapp_send">Whatsapp Send</option>
-                  <option value="whatsapp_rec">Whatsapp Rec</option>
-                  <option value="deal_out">Deal Out</option>
-                  <option value="shift_project">Shift Project</option>
-                  <option value="wrong_number">Wrong Number</option>
-                  <option value="broker">Broker</option>
-                  <option value="voice_mail">Voice Mail</option>
-                  <option value="request">Request</option>
-                </Select>
-                <Text mb="10px" color={"red"}>
-                  {" "}
-                  {errors.leadStatus && touched.leadStatus && errors.leadStatus}
-                </Text>
-              </GridItem>
-
-              <GridItem colSpan={{ base: 12, md: 6 }}>
-                <FormLabel
-                  display="flex"
-                  ms="4px"
-                  fontSize="sm"
-                  fontWeight="600"
-                  color={"#000"}
-                  mb="0"
-                  mt={2}
-                >
-                  Email
-                </FormLabel>
-                <Input
-                  fontSize="sm"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values?.leadEmail}
-                  name="leadEmail"
-                  placeholder="Enter Lead Email"
-                  fontWeight="500"
-                />
-                <Text mb="10px" color={"red"}>
-                  {" "}
-                  {errors.leadEmail && touched.leadEmail && errors.leadEmail}
-                </Text>
-              </GridItem>
-              <GridItem colSpan={{ base: 12, md: 6 }}>
-                <FormLabel
-                  display="flex"
-                  ms="4px"
-                  fontSize="sm"
-                  fontWeight="600"
-                  color={"#000"}
-                  mb="0"
-                  mt={2}
-                >
-                  Phone Number
-                </FormLabel>
-                <Input
-                  fontSize="sm"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values?.leadPhoneNumber}
-                  name="leadPhoneNumber"
-                  placeholder="Enter Lead PhoneNumber"
-                  fontWeight="500"
-                />
-                <Text mb="10px" color={"red"}>
-                  {" "}
-                  {errors.leadPhoneNumber &&
-                    touched.leadPhoneNumber &&
-                    errors.leadPhoneNumber}
-                </Text>
-              </GridItem>
-
-              {user?.role === "superAdmin" && (
-                <GridItem colSpan={{ base: 12, md: 6 }}>
-                  <FormLabel
-                    display="flex"
-                    ms="4px"
-                    fontSize="sm"
-                    fontWeight="600"
-                    color={"#000"}
-                    mb="0"
-                    mt={2}
-                  >
-                    Manager
-                  </FormLabel>
-                  <Box>
-                    <Select
-                      name="managerAssigned"
-                      onChange={handleChange}
-                      value={values["managerAssigned"]}
-                    >
-                      <option selected value={""}>
-                        Select manager
-                      </option>
-                      {tree &&
-                        tree["managers"] &&
-                        tree["managers"]?.map((user) => {
-                          return (
-                            <option
-                              key={user?._id?.toString()}
-                              value={user?._id?.toString()}
-                            >
-                              {user?.firstName + " " + user?.lastName}
-                            </option>
-                          );
-                        })}
-                    </Select>
-                  </Box>
-
-                  <Text mb="10px" color={"red"}>
-                    {" "}
-                    {errors.fromLeadScore &&
-                      touched.fromLeadScore &&
-                      errors.fromLeadScore}
-                  </Text>
-                </GridItem>
-              )}
-
-              {user?.role === "superAdmin" && values.managerAssigned && (
-                <GridItem colSpan={{ base: 12, md: 6 }}>
-                  <FormLabel
-                    display="flex"
-                    ms="4px"
-                    fontSize="sm"
-                    fontWeight="600"
-                    color={"#000"}
-                    mb="0"
-                    mt={2}
-                  >
-                    Agent
-                  </FormLabel>
-                  <Box>
-                    <Select
-                      name="agentAssigned"
-                      onChange={handleChange}
-                      value={values["agentAssigned"]}
-                    >
-                      <option selected value={""}>
-                        Select agent
-                      </option>
-                      {tree &&
-                        tree["managers"] &&
-                        tree["agents"][
-                          "manager-" + values.managerAssigned
-                        ]?.map((user) => {
-                          return (
-                            <option
-                              key={user?._id?.toString()}
-                              value={user?._id?.toString()}
-                            >
-                              {user?.firstName + " " + user?.lastName}
-                            </option>
-                          );
-                        })}
-                    </Select>
-                  </Box>
-
-                  <Text mb="10px" color={"red"}>
-                    {" "}
-                    {errors.fromLeadScore &&
-                      touched.fromLeadScore &&
-                      errors.fromLeadScore}
-                  </Text>
-                </GridItem>
-              )}
-
-              {user?.roles[0]?.roleName === "Manager" && (
-                <GridItem colSpan={{ base: 12, md: 6 }}>
-                  <FormLabel
-                    display="flex"
-                    ms="4px"
-                    fontSize="sm"
-                    fontWeight="600"
-                    color={"#000"}
-                    mb="0"
-                    mt={2}
-                  >
-                    Agent
-                  </FormLabel>
-                  <Box>
-                    <Select
-                      name="agentAssigned"
-                      onChange={handleChange}
-                      value={values["agentAssigned"]}
-                    >
-                      <option selected value={""}>
-                        Select agent
-                      </option>
-                      {tree &&
-                        tree["managers"] &&
-                        tree["agents"]["manager-" + user?._id?.toString()]?.map(
-                          (user) => {
-                            return (
-                              <option
-                                key={user?._id?.toString()}
-                                value={user?._id?.toString()}
-                              >
-                                {user?.firstName + " " + user?.lastName}
-                              </option>
-                            );
-                          }
-                        )}
-                    </Select>
-                  </Box>
-
-                  <Text mb="10px" color={"red"}>
-                    {" "}
-                    {errors.fromLeadScore &&
-                      touched.fromLeadScore &&
-                      errors.fromLeadScore}
-                  </Text>
-                </GridItem>
-              )}
-            </Grid>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              colorScheme="brand"
-              size="sm"
-              mr={2}
-              onClick={handleSubmit}
-              disabled={isLoding || !dirty ? true : false}
-            >
-              {isLoding ? <Spinner /> : "Search"}
-            </Button>
-            <Button
-              colorScheme="red"
-              variant="outline"
-              size="sm"
-              onClick={() => resetForm()}
-            >
-              Clear
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
       <Modal
         onClose={() => {
           setManageColumns(false);
@@ -1627,7 +1377,7 @@ export default function CheckTable(props) {
         isCentered
       >
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent height={"90vh"} overflowY={"scroll"}>
           <ModalHeader>Manage Columns</ModalHeader>
           <ModalCloseButton
             onClick={() => {
@@ -1691,6 +1441,13 @@ export default function CheckTable(props) {
         setAction={setAction}
         setSelectAllChecked={setSelectAllChecked}
       />
+
+      {leadsModal.isOpen && (
+        <LeadsModal
+          leadsModal={leadsModal}
+          onClose={() => setLeadsModal({ isOpen: false, lid: null })}
+        />
+      )}
     </>
   );
 }

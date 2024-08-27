@@ -40,7 +40,7 @@ const Index = () => {
     { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
   ]);
-  let tableColumnsAgent = [
+  const [ tableColumnsAgent, setTableColumnsAgent] = useState( [
     { Header: "#", accessor: "_id", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
     { Header: "Manager", accessor: "managerAssigned" },
@@ -50,7 +50,7 @@ const Index = () => {
     { Header: "Intrest", accessor: "interest" },
     { Header: "Nationality", accessor: "nationality" },
     { Header: "Action", isSortable: false, center: true },
-  ];
+  ]);
   const roleColumns = {
     Manager: tableColumnsManager,
     Agent: tableColumnsAgent,
@@ -124,8 +124,32 @@ const Index = () => {
         { Header: "Nationality", accessor: "nationality" },
         { Header: "Action", isSortable: false, center: true },
       ])
+      setTableColumnsAgent([
+        { Header: "#", accessor: "intID", isSortable: false, width: 10 },
+        { Header: "Name", accessor: "leadName", width: 20 },
+        { Header: "Manager", accessor: "managerAssigned" },
+        { Header: "Agent", accessor: "agentAssigned" },
+        { Header: "Status", accessor: "leadStatus" },
+        { Header: "Whatsapp Number", accessor: "leadWhatsappNumber" },
+        { Header: "Phone Number", accessor: "leadPhoneNumber" },
+        { Header: "Date And Time", accessor: "createdDate" },
+        { Header: "Timetocall", accessor: "timetocall" },
+        { Header: "Nationality", accessor: "nationality" },
+        { Header: "Action", isSortable: false, center: true },
+      ])
     }else{
       setTableColumnsManager([
+        { Header: "#", accessor: "_id", isSortable: false, width: 10 },
+    { Header: "Name", accessor: "leadName", width: 20 },
+    { Header: "Manager", accessor: "managerAssigned" },
+    { Header: "Agent", accessor: "agentAssigned" },
+    { Header: "Status", accessor: "leadStatus" },
+    { Header: "Approval Status", accessor: "leadWhatsappNumber" },
+    { Header: "Intrest", accessor: "interest" },
+    { Header: "Nationality", accessor: "nationality" },
+    { Header: "Action", isSortable: false, center: true },
+      ])
+      setTableColumnsAgent([
         { Header: "#", accessor: "_id", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
     { Header: "Manager", accessor: "managerAssigned" },

@@ -82,7 +82,7 @@ import AddTask from "./addTask";
 import { toast } from "react-toastify";
 import { putApi } from "services/api";
 import { constant } from "constant";
-
+import AdvancedSearchModal from "./AdvancedSearchModal";
 export default function CheckTable(props) {
   const {
     tableData,
@@ -660,7 +660,7 @@ export default function CheckTable(props) {
               <CustomSearchInput
                 searchbox={searchbox}
                 dataColumn={dataColumn}
-                pageSize={pageSize}
+                isPaginated={true}
                 fetchSearch={fetchSearch}
               />
               <Button
@@ -1423,6 +1423,19 @@ export default function CheckTable(props) {
         />
       </Card>
       {/* Advance filter */}
+      <AdvancedSearchModal
+        advaceSearch={advaceSearch}
+        dirty={dirty}
+        errors={errors}
+        handleBlur={handleBlur}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        isLoding={isLoding}
+        resetForm={resetForm}
+        setAdvaceSearch={setAdvaceSearch}
+        touched={touched}
+        values={values}
+      />
       <Modal
         size="2xl"
         onClose={() => {

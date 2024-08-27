@@ -4,6 +4,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  keyframes,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -40,12 +41,20 @@ const Index = () => {
     { Header: "Date And Time", accessor: "createdDate", width: 40 },
     { Header: "Timetocall", accessor: "timetocall" },
     { Header: "Nationality", accessor: "nationality" },
+        {Header: "Last Note", width: 100, accessor: "lastNote"}, 
+    {Header: "IP", accessor: "ip"}, 
+    {Header: "Lead Address", accessor: "leadAddress"}, 
+    {Header: "Lead Campaign", accessor: "leadCampaign"}, 
+    {Header: "Source Content", accessor: "leadSourceDetails"}, 
+    {Header: "Lead Email", accessor: "leadEmail"}, 
+    {Header: "Lead Medium", accessor: "leadSourceMedium"}, 
+    {Header: "Campaign Page URL", accessor: "pageUrl"}, 
+    {Header: "Are you in UAE?", accessor: "r_u_in_uae"}, 
     { Header: "Action", isSortable: false, center: true },
   ];
   const tableColumnsManager = [
     { Header: "#", accessor: "intID", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
-    { Header: "Manager", accessor: "managerAssigned" },
     { Header: "Agent", accessor: "agentAssigned" },
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Whatsapp Number", accessor: "leadWhatsappNumber" },
@@ -58,8 +67,6 @@ const Index = () => {
   const tableColumnsAgent = [
     { Header: "#", accessor: "intID", isSortable: false, width: 10 },
     { Header: "Name", accessor: "leadName", width: 20 },
-    { Header: "Manager", accessor: "managerAssigned" },
-    { Header: "Agent", accessor: "agentAssigned" },
     { Header: "Status", accessor: "leadStatus" },
     { Header: "Whatsapp Number", accessor: "leadWhatsappNumber" },
     { Header: "Phone Number", accessor: "leadPhoneNumber" },
@@ -84,8 +91,8 @@ const Index = () => {
   );
   const [action, setAction] = useState(false);
   const [dateTime, setDateTime] = useState({
-    from: "",
-    to: "",
+    from: null,
+    to: null,
   });
   const [autoAssignLoading, setAutoAssignLoading] = useState(false);
   const [columns, setColumns] = useState(roleColumns[role] || tableColumns);
@@ -95,11 +102,10 @@ const Index = () => {
     selectedColumns?.find((colum) => colum?.Header === item.Header)
   );
 
-  const fetchData = async (pageNo = 1, pageSize = 10) => {
+  const fetchData = async (pageNo = 1, pageSize = 200) => {
     setIsLoding(true);
     let result = await getApi(
-      // user.role === "superAdmin"
-      true
+      user.role === "superAdmin"
         ? "api/lead/" + "?dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + pageSize
         : `api/lead/?user=${user._id}&role=${
             user.roles[0]?.roleName
@@ -111,7 +117,7 @@ const Index = () => {
     setIsLoding(false);
   };
 
-   const fetchSearchedData = async (term="",pageNo = 1, pageSize = 10) => {
+   const fetchSearchedData = async (term="",pageNo = 1, pageSize = 200) => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
@@ -126,6 +132,35 @@ const Index = () => {
     setTotalLeads(result.data?.totalLeads || 0); 
     setIsLoding(false);
   };
+  
+    const fetchAdvancedSearch = async (data = {}, pageNo = 1, pageSize = 200) => {
+    setIsLoding(true);
+    let result = await getApi(
+      user.role === "superAdmin"
+        ? "api/lead/advanced-search" +
+            "?data=" +
+            JSON.stringify(data) +
+            "&dateTime=" +
+            dateTime?.from +
+            "|" +
+            dateTime?.to +
+            "&page=" +
+            pageNo +
+            "&pageSize=" +
+            pageSize
+        : `api/lead/advanced-search?data=${JSON.stringify(data)}&user=${user._id}&role=${
+            user.roles[0]?.roleName
+          }&dateTime=${
+            dateTime?.from + "|" + dateTime?.to
+          }&page=${pageNo}&pageSize=${pageSize}`
+    );
+      setDisplaySearchData(true);
+    setIsLoding(false);
+    setSearchedData(result.data?.result || []);
+    setPages(result.data?.totalPages || 0);
+    setTotalLeads(result.data?.totalLeads || 0);
+  };
+
 
   const autoAssign = async () => {
     try {
@@ -190,6 +225,7 @@ const Index = () => {
             setDisplaySearchData={setDisplaySearchData}
             setDynamicColumns={setDynamicColumns}
             dynamicColumns={dynamicColumns}
+            fetchAdvancedSearch={fetchAdvancedSearch}
             selectedColumns={selectedColumns}
             access={permission}
             setSelectedColumns={setSelectedColumns}

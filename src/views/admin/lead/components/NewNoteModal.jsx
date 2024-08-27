@@ -1,78 +1,114 @@
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { Box, Grid, GridItem, Text, VStack, useColorModeValue } from "@chakra-ui/react";
 import Spinner from "components/spinner/Spinner";
-import { useState } from "react";
-import { postApi } from "services/api";
+import { getApi } from "services/api";
 import { toast } from "react-toastify";
-import { Textarea } from "@chakra-ui/react";
+import DataNotFound from "components/notFoundData";
 
-const NewNoteModal = ({ setNoteAdded, onClose, isOpen, paramId }) => {
-  const [noteValue, setNoteValue] = useState("");
-  const [isLoding, setIsLoding] = useState(false);
+const LeadNotes = ({ lid, noteAdded }) => {
+  const [notesLoading, setNotesLoading] = useState(true);
+  const [allNotes, setAllNotes] = useState([]);
 
-  const handleAddNote = async () => {
-    if (noteValue.trim()) {
-      try {
-        setIsLoding(true);
-        await postApi("api/leadnote", {
-          leadID: paramId,
-          note: noteValue,
-        });
-        toast.success("Note added successfuly");
-        setNoteAdded((noteAdded) => (noteAdded === 0 ? 1 : 0));
-        setNoteValue("");
-        onClose();
-      } catch (error) {
-        console.log(error);
-        toast.error("Something went wrong!");
-      }
-      setIsLoding(false);
+  const textColor = useColorModeValue("gray.500", "white");
+
+  const fetchLeadNotes = async (lid) => {
+    try {
+      setNotesLoading(true);
+      const leadNotes = await getApi("api/leadnote/" + lid);
+      setAllNotes(leadNotes.data || []);
+      setNotesLoading(false);
+    } catch (err) {
+      console.log(err);
+      toast.error("Couldn't fetch lead notes");
     }
   };
 
+  useEffect(() => {
+    if (lid) {
+      fetchLeadNotes(lid);
+    }
+  }, [noteAdded]);
+
   return (
     <div>
-      <Modal size="2xl" onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add a new note</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Textarea
-            style={{
-                whiteSpace: "pre-wrap"
-            }}
-            size={"md"}
-            rows={5}
-              value={noteValue}
-              onInput={(e) => setNoteValue(e.target.value)}
-              mr={3}
-              placeholder="Type here"
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              colorScheme="brand"
-              size="sm"
-              mr={2}
-              onClick={handleAddNote}
-              disabled={isLoding ? true : false}
+      {notesLoading ? (
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          height={200}
+        >
+          <Spinner />
+        </Box>
+      ) : (
+        <VStack mt={4} alignItems="flex-start">
+          {allNotes.length === 0 && (
+            <Text
+              textAlign={"center"}
+              width="100%"
+              color={textColor}
+              fontSize="sm"
+              fontWeight="700"
             >
-              {isLoding ? <Spinner /> : "Add"}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+              <DataNotFound />
+            </Text>
+          )}
+          {allNotes.length > 0 && (
+            <Grid
+              width={"100%"}
+              templateColumns="repeat(12, 1fr)"
+              gap={4}
+              mb={2}
+            >
+              {allNotes.map((note) => {
+                return (
+                  <GridItem colSpan={{ base: 12, md: 6, lg: 6 }}>
+                    <Box
+                      backgroundColor={"whitesmoke"}
+                      borderRadius={"10px"}
+                      width={"100%"}
+                      p={4}
+                      m={1}
+                      height={"100%"}
+                    >
+                      <Box
+                      color={"black"}
+                        width={"100%"}
+                        display={"flex"}
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                      >
+                        <Text fontStyle={"italic"}>
+                          {note.addedBy?.firstName +
+                            " " +
+                            note.addedBy?.lastName}
+                        </Text>
+                        <Text fontSize={13}>
+                          {new Date(note.createdAt).toLocaleString("en-GB", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                            hour12: false,
+                          })}
+                        </Text>
+                      </Box>
+
+                      <Text  overflowX={"scroll"} pb={3} color={"black"} fontWeight={"bold"} mt={3}>
+                        <pre>{note.note}</pre>
+                      </Text>
+                    </Box>
+                  </GridItem>
+                );
+              })}
+            </Grid>
+          )}
+        </VStack>
+      )}
     </div>
   );
 };
 
-export default NewNoteModal;
+export default LeadNotes;
