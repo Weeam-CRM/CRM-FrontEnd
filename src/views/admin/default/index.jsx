@@ -208,6 +208,16 @@ export default function UserReports() {
         0,
       color: "#a37f08",
     },
+       {
+      name: "Reassigned",
+      status: "reassigned",
+      length:
+        (task &&
+          task?.length > 0 &&
+          task?.filter((item) => item?.status === "reassigned")?.length) ||
+        0,
+      color: "#7038db",
+    },
     {
       name: "In Progress",
       status: "inProgress",

@@ -1,17 +1,29 @@
-import { Box, CircularProgress, Select, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  CircularProgress,
+  Select,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { putApi } from "services/api";
 
-const RenderAgent = ({ value, managerAssigned, leadID, fetchData, displaySearchData, setSearchedData, setData}) => {
+const RenderAgent = ({
+  value,
+  managerAssigned,
+  leadID,
+  fetchData,
+  displaySearchData,
+  setSearchedData,
+  setData,
+}) => {
   const [AgentSelected, setAgentSelected] = useState("");
   const [agents, setAgents] = useState([]);
   const tree = useSelector((state) => state.user.tree);
   const [loading, setLoading] = useState(false);
 
-      const textColor = useColorModeValue("black", "white");
-
+  const textColor = useColorModeValue("black", "white");
 
   useEffect(() => {
     if (tree && tree["managers"]) {
@@ -21,48 +33,50 @@ const RenderAgent = ({ value, managerAssigned, leadID, fetchData, displaySearchD
     }
   }, [managerAssigned, value, tree]);
 
-
   const handleChangeAgent = async (e) => {
     try {
       const data = {
         agentAssigned: e.target.value,
+        leadStatus: "reassigned",
       };
 
-      setLoading(true); 
+      setLoading(true);
 
       await putApi(`api/lead/edit/${leadID}`, data);
       toast.success("Agent updated successfuly");
       // setAgentSelected(data.agentAssigned || "");
 
-      if(displaySearchData) {
-         setSearchedData(prevData => {
-        const newData = [...prevData]; 
+      if (displaySearchData) {
+        setSearchedData((prevData) => {
+          const newData = [...prevData];
 
-        const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
-        if(updateIdx !== -1) {
-          newData[updateIdx].agentAssigned = data.agentAssigned; 
-        }
-        return newData; 
-      })
-        
+          const updateIdx = newData.findIndex(
+            (l) => l._id.toString() === leadID
+          );
+          if (updateIdx !== -1) {
+            newData[updateIdx].agentAssigned = data.agentAssigned;
+          }
+          return newData;
+        });
       } else {
-         setData(prevData => {
-        const newData = [...prevData]; 
+        setData((prevData) => {
+          const newData = [...prevData];
 
-        const updateIdx = newData.findIndex((l) => l._id.toString() === leadID); 
-        if(updateIdx !== -1) {
-          newData[updateIdx].agentAssigned = data.agentAssigned; 
-        }
-        return newData; 
-      })
-
+          const updateIdx = newData.findIndex(
+            (l) => l._id.toString() === leadID
+          );
+          if (updateIdx !== -1) {
+            newData[updateIdx].agentAssigned = data.agentAssigned;
+          }
+          return newData;
+        });
       }
       // fetchData();
     } catch (error) {
       console.log(error);
       toast.error("Failed to update the agent");
     }
-      setLoading(false); 
+    setLoading(false);
   };
 
   if (agents?.length) {

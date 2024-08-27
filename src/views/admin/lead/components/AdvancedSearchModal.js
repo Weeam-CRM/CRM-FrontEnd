@@ -103,6 +103,7 @@ const AdvancedSearchModal = ({
               >
                 <option value="active">Interested</option>
                 <option value="pending">Not-interested</option>
+                <option value="reassigned">Reassigned</option>
                 <option value="sold">Sold</option>
                 <option value="new">New</option>
                 <option value="no_answer">No answer</option>

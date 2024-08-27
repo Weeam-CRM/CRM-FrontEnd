@@ -48,6 +48,14 @@ const LeadsSummary = ({ user, dateTime }) => {
         primary: "#fbf4dd",
         secondary: "#a37f08",
       },
+
+       "Reassigned": {
+        count:
+          leadData?.filter((lead) => lead?.leadStatus === "reassigned")?.length ||
+          0,
+        primary: "#ffeeeb",
+        secondary: "#d6401d",
+      },
       "Sold Leads": {
         count:
           leadData?.filter((lead) => lead?.leadStatus === "sold")?.length || 0,

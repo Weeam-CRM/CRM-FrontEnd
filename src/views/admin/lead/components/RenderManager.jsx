@@ -15,6 +15,7 @@ const RenderManager = ({ value, leadID, fetchData, pageIndex, displaySearchData,
       const value = e.target.value; 
       const dataObj = {
         managerAssigned: value,
+        leadStatus: "reassigned"
       };
 
       if (e.target.value === "") {

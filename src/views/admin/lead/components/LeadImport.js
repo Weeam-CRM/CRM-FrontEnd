@@ -180,6 +180,7 @@ function LeadImport() {
         Interested: "active",
         Sold: "sold",
         "Not interested": "pending",
+        "Reassigned": "reassigned",
         New: "new",
         "No Answer": "no_answer",
         Unreachable: "unreachable",

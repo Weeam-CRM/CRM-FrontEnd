@@ -57,6 +57,7 @@ const RenderStatus = ({ id, cellValue, setUpdatedStatuses }) => {
         <option value="active">Interested</option>
         <option value="sold">Sold</option>
         <option value="pending">Not interested</option>
+        <option value="reassigned">Reassigned</option>
         <option value="new">New</option>
         <option value="no_answer">No Answer</option>
         <option value="unreachable">Unreachable</option>

@@ -17,6 +17,10 @@ const ApexChart = (props) => {
     leadData && leadData?.length && leadData?.length > 0
       ? leadData?.filter((lead) => lead?.leadStatus === "pending")?.length
       : 0;
+  let reassignedLength =
+    leadData && leadData?.length && leadData?.length > 0
+      ? leadData?.filter((lead) => lead?.leadStatus === "reassigned")?.length
+      : 0;
   let soldLength =
     leadData && leadData?.length && leadData?.length > 0
       ? leadData?.filter((lead) => lead?.leadStatus === "sold")?.length
@@ -89,6 +93,7 @@ const ApexChart = (props) => {
     newLength,
     activeLength,
     pendingLength,
+    reassignedLength,
     soldLength,
     noAnswerLength,
     unreachableLength,
@@ -130,6 +135,7 @@ const ApexChart = (props) => {
       "New",
       "Interested",
       "Not interested",
+      "Reassigned",
       "Sold",
       "No Answer",
       "Unreachable",
