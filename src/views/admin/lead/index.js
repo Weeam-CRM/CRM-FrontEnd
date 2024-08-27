@@ -21,8 +21,8 @@ const Index = () => {
   const [displaySearchData, setDisplaySearchData] = useState(false);
   const [searchedData, setSearchedData] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
-  const [totalLeads, setTotalLeads] = useState(0); 
-  const [pages, setPages] = useState(0); 
+  const [totalLeads, setTotalLeads] = useState(0);
+  const [pages, setPages] = useState(0);
   const tree = useSelector((state) => state.user.tree);
 
   const [permission, emailAccess, callAccess] = HasAccess([
@@ -41,15 +41,15 @@ const Index = () => {
     { Header: "Date And Time", accessor: "createdDate", width: 40 },
     { Header: "Timetocall", accessor: "timetocall" },
     { Header: "Nationality", accessor: "nationality" },
-        {Header: "Last Note", width: 100, accessor: "lastNote"}, 
-    {Header: "IP", accessor: "ip"}, 
-    {Header: "Lead Address", accessor: "leadAddress"}, 
-    {Header: "Lead Campaign", accessor: "leadCampaign"}, 
-    {Header: "Source Content", accessor: "leadSourceDetails"}, 
-    {Header: "Lead Email", accessor: "leadEmail"}, 
-    {Header: "Lead Medium", accessor: "leadSourceMedium"}, 
-    {Header: "Campaign Page URL", accessor: "pageUrl"}, 
-    {Header: "Are you in UAE?", accessor: "r_u_in_uae"}, 
+    { Header: "Last Note", width: 100, accessor: "lastNote" },
+    { Header: "IP", accessor: "ip" },
+    { Header: "Lead Address", accessor: "leadAddress" },
+    { Header: "Lead Campaign", accessor: "leadCampaign" },
+    { Header: "Source Content", accessor: "leadSourceDetails" },
+    { Header: "Lead Email", accessor: "leadEmail" },
+    { Header: "Lead Medium", accessor: "leadSourceMedium" },
+    { Header: "Campaign Page URL", accessor: "pageUrl" },
+    { Header: "Are you in UAE?", accessor: "r_u_in_uae" },
     { Header: "Action", isSortable: false, center: true },
   ];
   const tableColumnsManager = [
@@ -86,8 +86,10 @@ const Index = () => {
   const [dynamicColumns, setDynamicColumns] = useState(
     roleColumns[role] || tableColumns
   );
+
+  const hiddenFields = JSON.parse(localStorage.getItem("hiddenCols") || "[]"); 
   const [selectedColumns, setSelectedColumns] = useState(
-    roleColumns[role] || tableColumns
+    roleColumns[role] || tableColumns.filter((c) => hiddenFields.includes(c.accessor) === false)
   );
   const [action, setAction] = useState(false);
   const [dateTime, setDateTime] = useState({
@@ -101,39 +103,60 @@ const Index = () => {
   const dataColumn = dynamicColumns?.filter((item) =>
     selectedColumns?.find((colum) => colum?.Header === item.Header)
   );
-
   const fetchData = async (pageNo = 1, pageSize = 200) => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
-        ? "api/lead/" + "?dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + pageSize
+        ? "api/lead/" +
+            "?dateTime=" +
+            dateTime?.from +
+            "|" +
+            dateTime?.to +
+            "&page=" +
+            pageNo +
+            "&pageSize=" +
+            pageSize
         : `api/lead/?user=${user._id}&role=${
             user.roles[0]?.roleName
-          }&dateTime=${dateTime?.from + "|" + dateTime?.to}&page=${pageNo}&pageSize=${pageSize}`
+          }&dateTime=${
+            dateTime?.from + "|" + dateTime?.to
+          }&page=${pageNo}&pageSize=${pageSize}`
     );
     setData(result.data?.result || []);
-    setPages(result.data?.totalPages || 0); 
-    setTotalLeads(result.data?.totalLeads || 0); 
+    setPages(result.data?.totalPages || 0);
+    setTotalLeads(result.data?.totalLeads || 0);
     setIsLoding(false);
   };
 
-   const fetchSearchedData = async (term="",pageNo = 1, pageSize = 200) => {
+  const fetchSearchedData = async (term = "", pageNo = 1, pageSize = 200) => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
-        ? "api/lead/search" + "?term=" +term + "&dateTime=" + dateTime?.from + "|" + dateTime?.to + "&page=" + pageNo + "&pageSize=" + pageSize
+        ? "api/lead/search" +
+            "?term=" +
+            term +
+            "&dateTime=" +
+            dateTime?.from +
+            "|" +
+            dateTime?.to +
+            "&page=" +
+            pageNo +
+            "&pageSize=" +
+            pageSize
         : `api/lead/search?term=${term}&user=${user._id}&role=${
             user.roles[0]?.roleName
-          }&dateTime=${dateTime?.from + "|" + dateTime?.to}&page=${pageNo}&pageSize=${pageSize}`
+          }&dateTime=${
+            dateTime?.from + "|" + dateTime?.to
+          }&page=${pageNo}&pageSize=${pageSize}`
     );
     setDisplaySearchData(true);
-    setSearchedData(result.data?.result || []); 
-    setPages(result.data?.totalPages || 0); 
-    setTotalLeads(result.data?.totalLeads || 0); 
+    setSearchedData(result.data?.result || []);
+    setPages(result.data?.totalPages || 0);
+    setTotalLeads(result.data?.totalLeads || 0);
     setIsLoding(false);
   };
-  
-    const fetchAdvancedSearch = async (data = {}, pageNo = 1, pageSize = 200) => {
+
+  const fetchAdvancedSearch = async (data = {}, pageNo = 1, pageSize = 200) => {
     setIsLoding(true);
     let result = await getApi(
       user.role === "superAdmin"
@@ -148,19 +171,18 @@ const Index = () => {
             pageNo +
             "&pageSize=" +
             pageSize
-        : `api/lead/advanced-search?data=${JSON.stringify(data)}&user=${user._id}&role=${
-            user.roles[0]?.roleName
-          }&dateTime=${
+        : `api/lead/advanced-search?data=${JSON.stringify(data)}&user=${
+            user._id
+          }&role=${user.roles[0]?.roleName}&dateTime=${
             dateTime?.from + "|" + dateTime?.to
           }&page=${pageNo}&pageSize=${pageSize}`
     );
-      setDisplaySearchData(true);
+    setDisplaySearchData(true);
     setIsLoding(false);
     setSearchedData(result.data?.result || []);
     setPages(result.data?.totalPages || 0);
     setTotalLeads(result.data?.totalLeads || 0);
   };
-
 
   const autoAssign = async () => {
     try {
@@ -184,13 +206,11 @@ const Index = () => {
     setColumns(tableColumns);
   }, [action]);
 
-
-
   return (
     <div>
       <Grid templateColumns="repeat(6, 1fr)" mb={3} gap={4}>
         <GridItem colSpan={6}>
-        {role === "Manager" && 
+          {role === "Manager" && (
             <Flex justifyContent={"flex-end"} mb={4}>
               <Button
                 onClick={autoAssign}
@@ -202,7 +222,7 @@ const Index = () => {
                 {autoAssignLoading ? "Assigning.." : "Auto Assign"}
               </Button>
             </Flex>
-        }
+          )}
           <CheckTable
             dateTime={dateTime}
             setDateTime={setDateTime}

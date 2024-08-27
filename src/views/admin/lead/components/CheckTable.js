@@ -55,7 +55,13 @@ import Card from "components/card/Card";
 import CountUpComponent from "components/countUpComponent/countUpComponent";
 import Pagination from "components/pagination/Pagination";
 import Spinner from "components/spinner/Spinner";
-import { FaHistory, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import {
+  FaHistory,
+  FaLessThan,
+  FaSort,
+  FaSortDown,
+  FaSortUp,
+} from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getApi } from "services/api";
@@ -299,11 +305,22 @@ export default function CheckTable(props) {
     dirty,
   } = formik;
 
+  const hiddenFields = JSON.parse(localStorage.getItem("hiddenCols") || "[]");
+
+  const [columnVisibility, setColumnVisibility] = useState(
+    hiddenFields.reduce((acc, key) => {
+      acc[key] = false;
+      return acc;
+    }, {})
+  );
+
   const tableInstance = useTable(
     {
       columns,
       data,
       manualPagination: true,
+      state: { columnVisibility },
+      onColumnVisibilityChange: setColumnVisibility,
       initialState: { pageIndex: updatedPage, pageSize: 200 },
       pageCount: pages,
     },
@@ -1412,6 +1429,17 @@ export default function CheckTable(props) {
               mr={2}
               onClick={() => {
                 setSelectedColumns(tempSelectedColumns);
+                const tempAccessors = tempSelectedColumns.map(
+                  (t) => t.accessor
+                );
+                localStorage.setItem(
+                  "hiddenCols",
+                  JSON.stringify(
+                    dynamicColumns.filter(
+                      (d) => !tempAccessors.includes(d.accessor)
+                    ).map((d) => d.accessor)
+                  )
+                );
                 setManageColumns(false);
                 resetForm();
               }}
