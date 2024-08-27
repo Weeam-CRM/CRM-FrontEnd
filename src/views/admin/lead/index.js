@@ -4,6 +4,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  keyframes,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -40,7 +41,7 @@ const Index = () => {
     { Header: "Date And Time", accessor: "createdDate", width: 40 },
     { Header: "Timetocall", accessor: "timetocall" },
     { Header: "Nationality", accessor: "nationality" },
-        {Header: "Last Note", accessor: "lastNote"}, 
+        {Header: "Last Note", width: 100, accessor: "lastNote"}, 
     {Header: "IP", accessor: "ip"}, 
     {Header: "Lead Address", accessor: "leadAddress"}, 
     {Header: "Lead Campaign", accessor: "leadCampaign"}, 

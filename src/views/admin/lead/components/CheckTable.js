@@ -78,6 +78,7 @@ import RenderStatus from "./RenderStatus";
 import { MdTask } from "react-icons/md";
 import AddTask from "./addTask";
 import LeadsModal from "../LeadsModal";
+import LastNoteText from "./LastNoteText";
 
 export default function CheckTable(props) {
   const {
@@ -1052,7 +1053,9 @@ export default function CheckTable(props) {
                           );
                         } else if (cell?.column.Header === "Last Note") {
                           data = (
-                            <Text fontSize={"sm"}>{cell?.value || "-"}</Text>
+                            <Box maxWidth={300}>
+                              <LastNoteText text={cell?.value}/>
+                            </Box>
                           );
                         } else if (cell?.column.Header === "IP") {
                           data = (

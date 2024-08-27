@@ -91,7 +91,7 @@ const Pagination = (props) => {
               w={28}
               min={1}
               max={pageOptions?.length}
-              value={gopageValue}
+              value={gopageValue === 0 ? 1 : gopageValue}
               onChange={(value) => {
                 const page = value ? value - 1 : 0;
                 gotoPage(page);
