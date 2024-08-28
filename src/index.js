@@ -53,6 +53,8 @@ function App() {
   useEffect(() => {
     if (getToken() && user2) {
       fetchTree();
+    } else if(!getToken()) {
+      setAppLoaded(true); 
     }
   }, [user2]);
 
