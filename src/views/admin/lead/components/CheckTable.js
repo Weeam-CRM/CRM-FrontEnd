@@ -1295,6 +1295,7 @@ export default function CheckTable(props) {
                     </Tr>
                   );
                 })
+                
               )}
             </Tbody>
           </Table>
