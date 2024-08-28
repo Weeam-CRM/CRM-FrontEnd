@@ -10,46 +10,51 @@ import {
 import AuthLayout from "./layouts/auth";
 import AdminLayout from "layouts/admin";
 import UserLayout from "layouts/user";
-import { ChakraProvider, ColorModeScript, Flex, Spinner } from "@chakra-ui/react";
+import {
+  ChakraProvider,
+  ColorModeScript,
+  Flex,
+  Spinner,
+} from "@chakra-ui/react";
 import theme from "theme/theme";
 import { ThemeEditorProvider } from "@hypertheme-editor/chakra-ui";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "./redux/store";
 import { useDispatch } from "react-redux";
 import { getApi } from "services/api";
 import { setTree } from "./redux/localSlice";
 
 function App() {
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
+  const token = localStorage.getItem("token") || null;
   const dispatch = useDispatch();
   const [appLoaded, setAppLoaded] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
   useNavigate();
-  
 
-  const fetchTree = async () => {
-    setAppLoaded(false); 
-    const response = await getApi("api/user/tree");
-    const data = response.data;
-    dispatch(setTree(data));
+  const user2 = useSelector((state) => state.user.user);
 
-    setTimeout(() =>{
-      setAppLoaded(true);
-    }, 0); 
-
+  const getToken = () => {
+    return localStorage.getItem("token") || null;
   };
 
+  const fetchTree = async () => {
+    setAppLoaded(false);
+    const response = await getApi("api/user/tree");
+    const data = response.data || null;
+    dispatch(setTree(data));
+
+    setTimeout(() => {
+      setAppLoaded(true);
+    }, 0);
+  };
 
   useEffect(() => {
-    if (token) {
+    if (getToken() && user2) {
       fetchTree();
-    } else {
-      setAppLoaded(true);
     }
-  }, []);
+  }, [user2]);
 
   if (appLoaded)
     return (

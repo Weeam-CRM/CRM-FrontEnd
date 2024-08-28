@@ -80,12 +80,12 @@ function SignIn() {
   const login = async () => {
     try {
       setIsLoding(true);
-      let response = await postApi("api/user/login", values, checkBox);
+      let response = await postApi("api/user/login", values, true);
       if (response && response.status === 200) {
-        navigate("/superAdmin");
         toast.success("Login Successfully!");
         resetForm();
         dispatch(setUser(response?.data?.user));
+        navigate("/superAdmin");
       } else {
         toast.error(response.response.data?.error);
       }

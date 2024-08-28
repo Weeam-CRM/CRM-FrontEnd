@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     user: JSON.parse(window.localStorage.getItem('user')),
-    tree: {}
+    tree: null
 };
 
 const localSlice = createSlice({
