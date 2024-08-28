@@ -1170,7 +1170,7 @@ export default function CheckTable(props) {
                                     width={"max-content"}
                                     onClick={() => {
                                       navigate(
-                                        "/leadCycle/" + cell?.row?.values?._id
+                                        "/leadCycle/" + row?.original?._id
                                       );
                                     }}
                                     icon={<FaHistory fontSize={15} mb={1} />}
@@ -1235,7 +1235,7 @@ export default function CheckTable(props) {
                                       Create Follow Up
                                     </MenuItem>
                                   )}
-                                  {access?.view && (
+                                  {/* {access?.view && (
                                     <MenuItem
                                       py={2.5}
                                       color={"green"}
@@ -1248,7 +1248,7 @@ export default function CheckTable(props) {
                                     >
                                       View
                                     </MenuItem>
-                                  )}
+                                  )} */}
                                   {access?.delete && (
                                     <MenuItem
                                       py={2.5}
