@@ -321,7 +321,7 @@ export default function CheckTable(props) {
       manualPagination: true,
       state: { columnVisibility },
       onColumnVisibilityChange: setColumnVisibility,
-      initialState: { pageIndex: updatedPage, pageSize: 200 },
+      initialState: { pageIndex: updatedPage, pageSize: 80 },
       pageCount: pages,
     },
     useGlobalFilter,

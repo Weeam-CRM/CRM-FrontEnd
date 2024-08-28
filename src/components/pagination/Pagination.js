@@ -114,7 +114,7 @@ const Pagination = (props) => {
             setPageSize(Number(e.target.value));
           }}
         >
-          {[5, 10, 20, 30, 40, 50, 100, 200].map((pageSize) => (
+          {[5, 10, 20, 30, 40, 50, 80, 100, 200].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>
