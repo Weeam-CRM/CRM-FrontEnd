@@ -305,10 +305,10 @@ export default function CheckTable(props) {
     dirty,
   } = formik;
 
-  const hiddenFields = JSON.parse(localStorage.getItem("hiddenCols") || "[]");
+  const hiddenFields = JSON.parse(localStorage.getItem("hiddenCols") || "[]") || [];
 
   const [columnVisibility, setColumnVisibility] = useState(
-    hiddenFields.reduce((acc, key) => {
+    hiddenFields?.reduce((acc, key) => {
       acc[key] = false;
       return acc;
     }, {})
